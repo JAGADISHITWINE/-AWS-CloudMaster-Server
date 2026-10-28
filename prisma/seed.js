@@ -127,68 +127,77 @@ async function main() {
       // Seed Lab
       const lab = labsData[mod.moduleNumber];
       if (lab) {
-        const createdLab = await prisma.lab.create({
-          data: {
-            topicId: topic.id,
-            title: lab.title,
-            level: lab.level,
-            estimatedMinutes: lab.estimatedMinutes,
-            freeTierEligible: lab.freeTierEligible,
-            costRiskLevel: lab.costRiskLevel,
-            paidAlternativeWarning: lab.paidAlternativeWarning,
-            prerequisites: lab.prerequisites,
-            requiredPermissions: lab.requiredPermissions,
-            cleanupGuide: lab.cleanupGuide,
-            safeSimulationScript: lab.safeSimulationScript,
-            steps: {
-              create: lab.steps.map(s => ({
-                stepNumber: s.stepNumber,
-                title: s.title,
-                description: s.description,
-                consoleInstruction: s.consoleInstruction,
-                cliCommand: s.cliCommand,
-                expectedOutput: s.expectedOutput,
-                verificationTip: s.verificationTip,
-                troubleshooting: s.troubleshooting
-              }))
+        const existingLab = await prisma.lab.findFirst({ where: { topicId: topic.id } });
+        let createdLab = existingLab;
+        if (!existingLab) {
+          createdLab = await prisma.lab.create({
+            data: {
+              topicId: topic.id,
+              title: lab.title,
+              level: lab.level,
+              estimatedMinutes: lab.estimatedMinutes,
+              freeTierEligible: lab.freeTierEligible,
+              costRiskLevel: lab.costRiskLevel,
+              paidAlternativeWarning: lab.paidAlternativeWarning,
+              prerequisites: lab.prerequisites,
+              requiredPermissions: lab.requiredPermissions,
+              cleanupGuide: lab.cleanupGuide,
+              safeSimulationScript: lab.safeSimulationScript,
+              steps: {
+                create: lab.steps.map(s => ({
+                  stepNumber: s.stepNumber,
+                  title: s.title,
+                  description: s.description,
+                  consoleInstruction: s.consoleInstruction,
+                  cliCommand: s.cliCommand,
+                  expectedOutput: s.expectedOutput,
+                  verificationTip: s.verificationTip,
+                  troubleshooting: s.troubleshooting
+                }))
+              }
             }
-          }
-        });
+          });
 
-        // Add a sample cleanup tracker record for the user
-        await prisma.labCleanupRecord.create({
-          data: {
-            userId: user.id,
-            labId: createdLab.id,
-            resourceName: `lab-${mod.moduleNumber}-resource-check`,
-            serviceName: mod.title.split(' ')[0],
-            region: 'us-east-1',
-            status: 'VERIFIED',
-            verifiedAt: new Date()
-          }
-        });
+          // Add a sample cleanup tracker record for the user
+          await prisma.labCleanupRecord.create({
+            data: {
+              userId: user.id,
+              labId: createdLab.id,
+              resourceName: `lab-${mod.moduleNumber}-resource-check`,
+              serviceName: mod.title.split(' ')[0],
+              region: 'us-east-1',
+              status: 'VERIFIED',
+              verifiedAt: new Date()
+            }
+          });
+        }
       }
     }
   }
-  console.log('✅ 15 Modules, Topics, Notes, and Practical Labs seeded.');
+  console.log('✅ 20 Modules, Topics, Notes, and Practical Labs seeded.');
 
   // 4. Seed Scenarios
   for (const s of scenariosData) {
     const topicId = topicMap[s.moduleNumber];
     if (topicId) {
-      await prisma.question.create({
-        data: {
-          topicId,
-          type: 'SCENARIO',
-          difficulty: s.difficulty,
-          title: s.title,
-          prompt: s.prompt,
-          explanation: s.explanation,
-          hintsJson: s.hintsJson,
-          recommendedSolution: s.recommendedSolution,
-          tagsJson: s.tagsJson
-        }
+      const existing = await prisma.question.findFirst({
+        where: { topicId, title: s.title }
       });
+      if (!existing) {
+        await prisma.question.create({
+          data: {
+            topicId,
+            type: 'SCENARIO',
+            difficulty: s.difficulty,
+            title: s.title,
+            prompt: s.prompt,
+            explanation: s.explanation,
+            hintsJson: s.hintsJson,
+            recommendedSolution: s.recommendedSolution,
+            tagsJson: s.tagsJson
+          }
+        });
+      }
     }
   }
   console.log('✅ Real-world Troubleshooting Scenarios seeded.');
@@ -197,46 +206,56 @@ async function main() {
   for (const i of interviewsData) {
     const topicId = topicMap[i.moduleNumber];
     if (topicId) {
-      await prisma.question.create({
-        data: {
-          topicId,
-          type: 'INTERVIEW',
-          difficulty: i.difficulty,
-          title: i.title,
-          prompt: i.prompt,
-          explanation: i.explanation,
-          hintsJson: i.hintsJson,
-          rubricJson: i.rubricJson,
-          recommendedSolution: i.recommendedSolution,
-          tagsJson: i.tagsJson
-        }
+      const existing = await prisma.question.findFirst({
+        where: { topicId, title: i.title }
       });
+      if (!existing) {
+        await prisma.question.create({
+          data: {
+            topicId,
+            type: 'INTERVIEW',
+            difficulty: i.difficulty,
+            title: i.title,
+            prompt: i.prompt,
+            explanation: i.explanation,
+            hintsJson: i.hintsJson,
+            rubricJson: i.rubricJson,
+            recommendedSolution: i.recommendedSolution,
+            tagsJson: i.tagsJson
+          }
+        });
+      }
     }
   }
-  console.log('✅ AWS Technical Interview Questions & Rubrics seeded.');
+  console.log('✅ AWS & DevOps Technical Interview Questions & Rubrics seeded.');
 
   // 6. Seed Quiz Assessments
   for (const q of quizzesData) {
     const topicId = topicMap[q.moduleNumber];
     if (topicId) {
-      const question = await prisma.question.create({
-        data: {
-          topicId,
-          type: q.type,
-          difficulty: q.difficulty,
-          title: q.title,
-          prompt: q.prompt,
-          explanation: q.explanation,
-          hintsJson: q.hintsJson,
-          options: {
-            create: q.options.map(o => ({
-              optionKey: o.optionKey,
-              optionText: o.optionText,
-              isCorrect: o.isCorrect
-            }))
-          }
-        }
+      const existing = await prisma.question.findFirst({
+        where: { topicId, title: q.title }
       });
+      if (!existing) {
+        await prisma.question.create({
+          data: {
+            topicId,
+            type: q.type,
+            difficulty: q.difficulty,
+            title: q.title,
+            prompt: q.prompt,
+            explanation: q.explanation,
+            hintsJson: q.hintsJson,
+            options: {
+              create: q.options.map(o => ({
+                optionKey: o.optionKey,
+                optionText: o.optionText,
+                isCorrect: o.isCorrect
+              }))
+            }
+          }
+        });
+      }
     }
   }
   console.log('✅ Topic Quizzes, Assessments & Options seeded.');

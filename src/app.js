@@ -14,6 +14,7 @@ const quizzesRoutes = require('./routes/quizzes');
 const progressRoutes = require('./routes/progress');
 const safetyRoutes = require('./routes/safety');
 const revisionsRoutes = require('./routes/revisions');
+const aiRoutes = require('./routes/ai');
 
 const app = express();
 
@@ -59,6 +60,7 @@ app.use('/api/quizzes', quizzesRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/api/safety', safetyRoutes);
 app.use('/api/revisions', revisionsRoutes);
+app.use('/api/ai', aiRoutes);
 
 // Global Error Handler
 app.use(errorHandler);

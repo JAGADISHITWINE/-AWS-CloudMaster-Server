@@ -234,5 +234,80 @@ module.exports = [
       { optionKey: "C", optionText: "Deploy all servers in a single data center to eliminate inter-facility latency.", isCorrect: false },
       { optionKey: "D", optionText: "Avoid using backups to optimize disk space.", isCorrect: false }
     ]
+  },
+  {
+    moduleNumber: 16,
+    type: "MCQ",
+    difficulty: "Beginner",
+    title: "Git Internal Architecture & Rebase Mechanics",
+    prompt: "Why should an engineer never run 'git rebase' on a public shared branch such as 'main'?",
+    explanation: "Rebasing creates brand-new commit hashes for existing changes (replaying commits). If others have based their work on the original commits, their history diverges, forcing complex and dangerous reconciliations.",
+    hintsJson: JSON.stringify(["Remember: rebasing rewrites commit hashes and timestamps."]),
+    options: [
+      { optionKey: "A", optionText: "Because Git will automatically delete the entire repository from GitHub.", isCorrect: false },
+      { optionKey: "B", optionText: "Rebasing rewrites commit SHA hashes, creating diverging histories and merge nightmares for collaborators who already pulled the branch.", isCorrect: true },
+      { optionKey: "C", optionText: "Rebasing is only allowed on SVN repositories, not Git.", isCorrect: false },
+      { optionKey: "D", optionText: "Rebasing compresses files into zip archives that cannot be read by GitHub.", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 17,
+    type: "MCQ",
+    difficulty: "Intermediate",
+    title: "Jenkins Enterprise Controller-Agent Architecture",
+    prompt: "In a production Jenkins cluster, why is it considered a critical best practice to set the number of executors on the Jenkins Controller (Master) to 0?",
+    explanation: "Executing builds on the controller risks exhausting CPU/RAM, crashing the Jenkins web service, and exposes sensitive master credentials to untrusted build scripts.",
+    hintsJson: JSON.stringify(["Think about resource exhaustion and credentials stored on the controller disk."]),
+    options: [
+      { optionKey: "A", optionText: "Because Jenkins can only compile Java code when running on agents.", isCorrect: false },
+      { optionKey: "B", optionText: "To isolate the controller from heavy build loads (preventing UI crashes) and protect master credentials from malicious build scripts.", isCorrect: true },
+      { optionKey: "C", optionText: "Setting executors to 0 shuts down the Jenkins server permanently.", isCorrect: false },
+      { optionKey: "D", optionText: "Jenkins plugins only work on Windows machines.", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 18,
+    type: "MCQ",
+    difficulty: "Beginner",
+    title: "Linux Kernel Primitives Powering Docker",
+    prompt: "Which pair of Linux kernel features provides process isolation and hardware resource limits for Docker containers?",
+    explanation: "Namespaces provide isolation (processes only see their own network, mounts, and PIDs), while Control Groups (cgroups) enforce limits on hardware resources like CPU and RAM.",
+    hintsJson: JSON.stringify(["One isolates what the process sees, the other limits what the process can use."]),
+    options: [
+      { optionKey: "A", optionText: "Hyper-V and VMware Workstation.", isCorrect: false },
+      { optionKey: "B", optionText: "Linux Namespaces (isolation) and Control Groups / cgroups (resource quotas).", isCorrect: true },
+      { optionKey: "C", optionText: "Samba file shares and Apache HTTP Server.", isCorrect: false },
+      { optionKey: "D", optionText: "SELinux and AppArmor only, without process scheduling.", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 19,
+    type: "MCQ",
+    difficulty: "Intermediate",
+    title: "Kubernetes Control Plane Component Roles",
+    prompt: "Which Kubernetes Control Plane component is responsible for evaluating worker node resource capacity and assigning unscheduled Pods to specific healthy nodes?",
+    explanation: "The kube-scheduler detects pods that have no assigned node and runs filtering and scoring algorithms to choose the best available worker node.",
+    hintsJson: JSON.stringify(["It 'schedules' the pod to a node."]),
+    options: [
+      { optionKey: "A", optionText: "kube-proxy", isCorrect: false },
+      { optionKey: "B", optionText: "kube-scheduler", isCorrect: true },
+      { optionKey: "C", optionText: "kubelet", isCorrect: false },
+      { optionKey: "D", optionText: "etcd", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 20,
+    type: "MCQ",
+    difficulty: "Advanced",
+    title: "Production Image Tagging & Rollback Strategy",
+    prompt: "Why is tagging production Docker images with ':latest' considered a dangerous anti-pattern in automated CI/CD pipelines?",
+    explanation: "Using ':latest' is mutable and non-deterministic: you cannot identify which Git commit is running, caching can cause nodes to run different code versions, and rollbacks to previous versions are impossible.",
+    hintsJson: JSON.stringify(["How do you roll back if every build is called ':latest'?"]),
+    options: [
+      { optionKey: "A", optionText: "Because Docker Hub charges extra for images named 'latest'.", isCorrect: false },
+      { optionKey: "B", optionText: "Tagging with ':latest' is mutable and non-deterministic, making audits, caching, and instant rollbacks to a previous working version impossible.", isCorrect: true },
+      { optionKey: "C", optionText: "Kubernetes does not support strings in image names.", isCorrect: false },
+      { optionKey: "D", optionText: "It causes the Docker daemon to format the host drive.", isCorrect: false }
+    ]
   }
 ];

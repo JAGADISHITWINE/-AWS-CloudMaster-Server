@@ -283,5 +283,136 @@ module.exports = [
         keyTakeaway: "Design for failure, deploy Multi-AZ by default, decouple with queues/events, automate with IaC, and right-size continuously."
       }
     ]
+  },
+  {
+    moduleNumber: 16,
+    title: "Git & GitHub – Enterprise Source Control & GitOps",
+    slug: "git-and-github-enterprise-source-control",
+    description: "Master distributed version control, advanced branching strategies, pull request workflows, branch protection rules, GitHub Actions CI/CD automation, matrix testing, and GitOps fundamentals.",
+    icon: "git-branch",
+    level: "Beginner",
+    topics: [
+      {
+        topicNumber: 1,
+        title: "Git Fundamentals, Branching & Merge Strategies",
+        slug: "git-fundamentals-branching-merge-strategies",
+        summary: "Understand the three-tree architecture (Working Dir, Staging Index, Commit History), branching models (GitFlow vs Trunk-Based), Fast-Forward vs Three-Way merges, and Rebase vs Merge.",
+        difficulty: "Beginner",
+        estimatedMinutes: 35,
+        keyTakeaway: "Commits are immutable snapshots of the repository DAG. Use feature branches, interactive rebasing for clean history, and never rebase public shared branches."
+      },
+      {
+        topicNumber: 2,
+        title: "GitHub Actions CI/CD, Secrets & Enterprise Workflows",
+        slug: "github-actions-cicd-matrix-secrets",
+        summary: "Automate builds and deployments using YAML workflows: triggers (push, pull_request, schedule), runner environments, matrix builds across OS/Node versions, encrypted secrets, and environment protection rules.",
+        difficulty: "Intermediate",
+        estimatedMinutes: 40,
+        keyTakeaway: "GitHub Actions provides native CI/CD with reusable composite actions, encrypted environment secrets, and strict branch protection rules to enforce status checks."
+      }
+    ]
+  },
+  {
+    moduleNumber: 17,
+    title: "Jenkins – Enterprise CI/CD Pipeline Automation",
+    slug: "jenkins-enterprise-cicd-pipeline-automation",
+    description: "Enterprise continuous integration and delivery with Jenkins: Controller-Agent distributed architecture, Declarative Jenkinsfile syntax, plugins, GitHub webhooks, multi-branch pipelines, and artifact deployment.",
+    icon: "play-circle",
+    level: "Intermediate",
+    topics: [
+      {
+        topicNumber: 1,
+        title: "Jenkins Controller-Agent Architecture & Setup",
+        slug: "jenkins-architecture-master-agents",
+        summary: "Understand Jenkins master/controller orchestration, static vs dynamic ephemeral agents (Docker/K8s), plugin ecosystem, security realms, and credentials management.",
+        difficulty: "Intermediate",
+        estimatedMinutes: 35,
+        keyTakeaway: "Never execute build workloads on the Jenkins controller. Delegate jobs to ephemeral agent nodes using SSH or Docker agents to ensure security and isolation."
+      },
+      {
+        topicNumber: 2,
+        title: "Declarative Pipelines & Production Jenkinsfile Mastery",
+        slug: "declarative-jenkinsfile-production-pipelines",
+        summary: "Author production-grade Declarative Jenkinsfiles: pipeline directives (stages, steps, post actions), environment variables, credential binding, parallel execution, SonarQube code scanning, and automated notifications.",
+        difficulty: "Advanced",
+        estimatedMinutes: 45,
+        keyTakeaway: "Store your Jenkinsfile in source control next to application code (Pipeline-as-Code). Use post-build conditions (always, success, failure) for automated rollbacks and alerts."
+      }
+    ]
+  },
+  {
+    moduleNumber: 18,
+    title: "Docker – Modern Containerization Deep Dive",
+    slug: "docker-modern-containerization-deep-dive",
+    description: "Container virtualization fundamentals: Linux namespaces & cgroups, Docker daemon architecture, multi-stage Dockerfile optimization, caching, Docker Compose multi-service stacks, networking, and volumes.",
+    icon: "box",
+    level: "Beginner",
+    topics: [
+      {
+        topicNumber: 1,
+        title: "Container Internals, Namespaces & Docker Architecture",
+        slug: "docker-internals-container-architecture",
+        summary: "Deconstruct how containers work: Linux cgroups for resource quotas, namespaces for process isolation, Union File Systems (OverlayFS), and the Docker engine lifecycle (Client, dockerd, containerd, runc).",
+        difficulty: "Beginner",
+        estimatedMinutes: 35,
+        keyTakeaway: "Containers are isolated Linux processes sharing the host kernel, not full-blown virtual machines. They start in milliseconds with minimal memory overhead."
+      },
+      {
+        topicNumber: 2,
+        title: "Dockerfile Multi-Stage Builds, Compose & Networking",
+        slug: "dockerfile-multistage-compose-networking",
+        summary: "Craft hardened, lightweight production images with multi-stage builds, non-root USER directives, .dockerignore, bridge/host/overlay networks, named volume persistence, and multi-container Docker Compose definitions.",
+        difficulty: "Intermediate",
+        estimatedMinutes: 45,
+        keyTakeaway: "Use multi-stage builds to discard build tools and compilers from the final runtime image. Run as a non-root user and never store sensitive secrets in image layers."
+      }
+    ]
+  },
+  {
+    moduleNumber: 19,
+    title: "Kubernetes (K8s) – Production Container Orchestration",
+    slug: "kubernetes-production-container-orchestration",
+    description: "Enterprise container orchestration: Control Plane (API Server, etcd, Scheduler) & Worker Nodes (Kubelet, Kube-Proxy), Pods, Deployments, Services (ClusterIP, NodePort, LoadBalancer), Ingress, ConfigMaps, Secrets, PV/PVC, and Helm.",
+    icon: "layers",
+    level: "Advanced",
+    topics: [
+      {
+        topicNumber: 1,
+        title: "Kubernetes Architecture, Control Plane & Core Primitives",
+        slug: "kubernetes-architecture-control-plane-nodes",
+        summary: "Master the K8s distributed architecture: kube-apiserver, etcd key-value store, kube-scheduler, kube-controller-manager, Kubelet node agent, kube-proxy routing, and the fundamental Pod lifecycle.",
+        difficulty: "Intermediate",
+        estimatedMinutes: 45,
+        keyTakeaway: "Kubernetes operates via declarative state: you define the desired state in YAML, and controllers continuously reconcile the actual state to match."
+      },
+      {
+        topicNumber: 2,
+        title: "Workloads, Services, Ingress, Helm & Troubleshooting",
+        slug: "k8s-workloads-services-networking-helm",
+        summary: "Deploy resilient microservices using Deployments, ReplicaSets, Services, Nginx Ingress Controllers, ConfigMaps, Secrets, PersistentVolumes, Helm charts, and diagnose CrashLoopBackOff & OOMKilled pods.",
+        difficulty: "Advanced",
+        estimatedMinutes: 50,
+        keyTakeaway: "Decouple pods using Services and Ingress. Always set CPU/memory requests and limits, configure Liveness and Readiness probes, and manage releases with Helm."
+      }
+    ]
+  },
+  {
+    moduleNumber: 20,
+    title: "Complete End-to-End DevOps & Cloud CI/CD Mastery",
+    slug: "complete-end-to-end-devops-cloud-cicd",
+    description: "Synthesize the full modern cloud-native engineering stack: Git commit -> GitHub webhook -> Jenkins pipeline -> Docker build & security scan -> AWS ECR -> Kubernetes (EKS) automated blue/green rolling deployment.",
+    icon: "cpu",
+    level: "Advanced",
+    topics: [
+      {
+        topicNumber: 1,
+        title: "The Unified Pipeline: GitHub + Jenkins + Docker + K8s + AWS",
+        slug: "end-to-end-devops-pipeline-github-jenkins-docker-k8s-aws",
+        summary: "Build an enterprise-grade automated deployment pipeline connecting GitHub source control, Jenkins CI automation, Docker containerization, Trivy vulnerability scanning, Amazon ECR container registry, and Amazon EKS Kubernetes clusters.",
+        difficulty: "Advanced",
+        estimatedMinutes: 55,
+        keyTakeaway: "Modern DevOps integrates Developer velocity with Cloud resilience: code changes automatically test, package, scan, and deploy with zero downtime and instant rollback capabilities."
+      }
+    ]
   }
 ];

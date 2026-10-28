@@ -854,5 +854,365 @@ module.exports = {
       "Multi-Region = Disaster Recovery & global latency (RTO/RPO in seconds, higher cost).",
       "Always decouple state with queues and caches."
     ])
+  },
+  16: {
+    simpleExplanation: "Git is a distributed version control system that tracks changes in any set of computer files, usually used for coordinating work among programmers. GitHub is the world's leading cloud platform hosting Git repositories, providing Pull Requests, issue tracking, and GitHub Actions CI/CD automation. Think of Git as a distributed time-machine ledger where every save point (commit) has an immutable cryptographic hash. Unlike centralized version control, every developer has a full clone of the entire project history on their laptop, allowing instant commits, branching, and offline work.",
+    coreConceptsJson: JSON.stringify([
+      { term: "Working Tree vs Index vs HEAD", definition: "The three trees of Git: Working directory (untracked/modified files), Staging Index (changes queued for next commit), and HEAD (the current commit snapshot)." },
+      { term: "Branching & Fast-Forward", definition: "A branch in Git is simply a lightweight movable 41-byte pointer to a commit. Fast-Forward occurs when the target branch has no diverging commits." },
+      { term: "Rebase vs Merge", definition: "Merge preserves complete historical chronology by creating a 3-way merge commit; Rebase rewrites commit history by replaying feature commits on top of the latest base branch for a linear log." },
+      { term: "GitHub Actions Workflows", definition: "YAML-defined automated processes triggered by repository events (push, pull_request, schedule) running on Ubuntu, Windows, or macOS runner VMs." },
+      { term: "Branch Protection & Secrets", definition: "Rules preventing direct pushes to main, requiring passing CI checks and PR approvals, while storing encrypted tokens in repository secrets." }
+    ]),
+    internalsExplanation: "Under the hood in the .git folder, Git stores all data as a Directed Acyclic Graph (DAG) of content-addressed objects: 'blobs' (raw file contents without names), 'trees' (directories mapping file names and permissions to blob hashes), 'commits' (metadata referencing a root tree, author, timestamp, and parent commit hashes), and 'tags'. Everything is keyed by SHA-1 or SHA-256 hashes. Because commits reference parent hashes, modifying any historical byte changes all downstream hashes, making Git an immutable cryptographic ledger.",
+    architectureSvg: `<svg viewBox="0 0 800 240" xmlns="http://www.w3.org/2000/svg" class="w-full">
+      <rect x="10" y="10" width="780" height="220" rx="12" fill="#0B132B" stroke="#1C2541" stroke-width="2"/>
+      <g transform="translate(40, 60)">
+        <rect x="0" y="0" width="120" height="100" rx="8" fill="#1C2541" stroke="#3A86FF" stroke-width="1.5"/>
+        <text x="60" y="35" fill="#F8FAFC" font-size="12" font-family="system-ui" text-anchor="middle" font-weight="bold">Working Dir</text>
+        <text x="60" y="55" fill="#94A3B8" font-size="10" font-family="system-ui" text-anchor="middle">Local Files</text>
+        <text x="60" y="75" fill="#38BDF8" font-size="9" font-family="monospace" text-anchor="middle">git add</text>
+      </g>
+      <path d="M 170 110 L 200 110" stroke="#38BDF8" stroke-width="2"/>
+      <g transform="translate(210, 60)">
+        <rect x="0" y="0" width="120" height="100" rx="8" fill="#1C2541" stroke="#8338EC" stroke-width="1.5"/>
+        <text x="60" y="35" fill="#F8FAFC" font-size="12" font-family="system-ui" text-anchor="middle" font-weight="bold">Staging Index</text>
+        <text x="60" y="55" fill="#94A3B8" font-size="10" font-family="system-ui" text-anchor="middle">Snapshot Prep</text>
+        <text x="60" y="75" fill="#C084FC" font-size="9" font-family="monospace" text-anchor="middle">git commit</text>
+      </g>
+      <path d="M 340 110 L 370 110" stroke="#8338EC" stroke-width="2"/>
+      <g transform="translate(380, 60)">
+        <rect x="0" y="0" width="120" height="100" rx="8" fill="#1C2541" stroke="#FF006E" stroke-width="1.5"/>
+        <text x="60" y="35" fill="#F8FAFC" font-size="12" font-family="system-ui" text-anchor="middle" font-weight="bold">Local Repo</text>
+        <text x="60" y="55" fill="#94A3B8" font-size="10" font-family="system-ui" text-anchor="middle">Commit DAG</text>
+        <text x="60" y="75" fill="#FB7185" font-size="9" font-family="monospace" text-anchor="middle">git push</text>
+      </g>
+      <path d="M 510 110 L 540 110" stroke="#FF006E" stroke-width="2"/>
+      <g transform="translate(550, 60)">
+        <rect x="0" y="0" width="200" height="100" rx="8" fill="#1C2541" stroke="#06D6A0" stroke-width="1.5"/>
+        <text x="100" y="35" fill="#F8FAFC" font-size="12" font-family="system-ui" text-anchor="middle" font-weight="bold">GitHub Remote</text>
+        <text x="100" y="55" fill="#94A3B8" font-size="10" font-family="system-ui" text-anchor="middle">Pull Requests &amp; Reviews</text>
+        <text x="100" y="75" fill="#34D399" font-size="9" font-family="monospace" text-anchor="middle">GitHub Actions CI/CD</text>
+      </g>
+    </svg>`,
+    cliExamplesJson: JSON.stringify([
+      { command: "git checkout -b feature/user-auth", explanation: "Creates and switches to a new feature branch isolated from main." },
+      { command: "git add -p", explanation: "Interactively stages specific hunks of changes rather than blind staging." },
+      { command: "git commit -m 'feat: implement JWT token expiration validation'", explanation: "Creates an atomic commit following conventional commit standards." },
+      { command: "git rebase -i HEAD~3", explanation: "Interactively squashes, rewinds, and rewrites the last 3 local commits before PR submission." },
+      { command: "gh pr create --title 'Add OAuth2 login' --body 'Resolves #42'", explanation: "Creates a GitHub Pull Request directly from your terminal using GitHub CLI." }
+    ]),
+    bestPracticesJson: JSON.stringify([
+      "Adopt Trunk-Based Development or short-lived feature branches (<48 hours) to minimize merge conflicts.",
+      "Never run 'git push --force' on shared branches (main/develop); use '--force-with-lease' if rebasing a personal feature branch.",
+      "Enforce Branch Protection on main requiring: 1+ PR approval, passing CI status checks, and linear history.",
+      "Store all sensitive API keys and cloud credentials in GitHub Repository Secrets (Settings -> Secrets & variables)."
+    ]),
+    securityNotes: "Enable GitHub Secret Scanning and Dependabot alerts. Ensure your .gitignore contains sensitive files like .env, id_rsa, and node_modules before staging.",
+    costImplications: "GitHub offers free unlimited public and private repositories, plus 2,000 Free Actions CI/CD minutes per month on public and private accounts.",
+    commonMistakesJson: JSON.stringify([
+      "Accidentally committing credentials or .env files into Git history (even if deleted in a later commit, secrets remain in git reflog and commit history).",
+      "Rebasing a public shared branch that other team members have already cloned, creating diverging DAG histories.",
+      "Making massive 2,000-line pull requests that reviewers cannot effectively audit."
+    ]),
+    quickRevisionJson: JSON.stringify([
+      "Working Dir (untracked) -> git add -> Staging Index -> git commit -> Local Repo -> git push -> GitHub Remote.",
+      "Rebase = rewrites commit base for linear history (clean git log).",
+      "Merge = keeps historical timeline with a merge commit.",
+      "GitHub Actions = Trigger (push/PR) -> Job (runner VM) -> Steps (actions/run commands)."
+    ])
+  },
+  17: {
+    simpleExplanation: "Jenkins is the industry-standard, open-source automation server used by millions of engineering teams to build, test, and deploy software continuously. Think of Jenkins as the automated factory conductor: the moment code is pushed to GitHub, a webhook triggers Jenkins. The Jenkins Controller assigns tasks to build worker nodes (Agents), runs automated unit tests, inspects code quality with SonarQube, packages Docker containers, and deploys artifacts to staging and production servers.",
+    coreConceptsJson: JSON.stringify([
+      { term: "Jenkins Controller (Master)", definition: "The brain that manages configuration, schedules jobs, authenticates users, monitors agent health, and parses Jenkinsfiles." },
+      { term: "Jenkins Agent (Node)", definition: "Worker machines (VMs, Docker containers, or Kubernetes pods) where build and test commands actually run." },
+      { term: "Declarative Pipeline", definition: "A structured, readable Pipeline-as-Code DSL defined in a 'Jenkinsfile' committed directly into the source code repository." },
+      { term: "GitHub Webhooks", definition: "HTTP POST callbacks from GitHub to Jenkins URL notifying Jenkins instantly when code is pushed or a PR is opened." },
+      { term: "Credentials Store", definition: "Secure encrypted credential management for SSH keys, Docker registry tokens, AWS IAM secret keys, and API tokens." }
+    ]),
+    internalsExplanation: "Jenkins operates on a Java Virtual Machine runtime. The Controller orchestrates job queues and dispatches build tasks to agents over SSH or the Remoting protocol (inbound JNLP agent connections). In modern cloud architectures, static agent VMs are replaced by dynamic ephemeral agents: when a build starts, the Jenkins Kubernetes or Docker plugin spins up a container agent, executes the build stages inside the container, stashes artifacts, and terminates the container, ensuring 100% clean, non-contaminated build environments.",
+    architectureSvg: `<svg viewBox="0 0 800 240" xmlns="http://www.w3.org/2000/svg" class="w-full">
+      <rect x="10" y="10" width="780" height="220" rx="12" fill="#0B132B" stroke="#1C2541" stroke-width="2"/>
+      <g transform="translate(30, 65)">
+        <rect x="0" y="0" width="110" height="90" rx="8" fill="#1C2541" stroke="#38BDF8" stroke-width="1.5"/>
+        <text x="55" y="35" fill="#F8FAFC" font-size="11" font-family="system-ui" text-anchor="middle" font-weight="bold">GitHub</text>
+        <text x="55" y="55" fill="#94A3B8" font-size="9" font-family="system-ui" text-anchor="middle">Push Event</text>
+        <text x="55" y="75" fill="#38BDF8" font-size="8" font-family="monospace" text-anchor="middle">Webhook POST</text>
+      </g>
+      <path d="M 150 110 L 190 110" stroke="#38BDF8" stroke-width="2"/>
+      <g transform="translate(200, 50)">
+        <rect x="0" y="0" width="160" height="120" rx="8" fill="#1E293B" stroke="#F59E0B" stroke-width="1.5"/>
+        <text x="80" y="30" fill="#F8FAFC" font-size="12" font-family="system-ui" text-anchor="middle" font-weight="bold">Jenkins Controller</text>
+        <text x="80" y="50" fill="#94A3B8" font-size="9" font-family="system-ui" text-anchor="middle">Orchestrator &amp; Queue</text>
+        <rect x="15" y="65" width="130" height="40" rx="4" fill="#0F172A"/>
+        <text x="80" y="85" fill="#FBBF24" font-size="8" font-family="monospace" text-anchor="middle">Declarative Jenkinsfile</text>
+        <text x="80" y="98" fill="#94A3B8" font-size="8" font-family="system-ui" text-anchor="middle">Parse stages &amp; steps</text>
+      </g>
+      <path d="M 370 110 L 410 110" stroke="#F59E0B" stroke-width="2"/>
+      <g transform="translate(420, 50)">
+        <rect x="0" y="0" width="160" height="120" rx="8" fill="#1E293B" stroke="#10B981" stroke-width="1.5"/>
+        <text x="80" y="30" fill="#F8FAFC" font-size="12" font-family="system-ui" text-anchor="middle" font-weight="bold">Ephemeral Agent</text>
+        <text x="80" y="50" fill="#94A3B8" font-size="9" font-family="system-ui" text-anchor="middle">Docker / K8s Pod</text>
+        <text x="80" y="75" fill="#34D399" font-size="8" font-family="monospace" text-anchor="middle">1. Run Unit Tests</text>
+        <text x="80" y="90" fill="#34D399" font-size="8" font-family="monospace" text-anchor="middle">2. SonarQube Scan</text>
+        <text x="80" y="105" fill="#34D399" font-size="8" font-family="monospace" text-anchor="middle">3. Docker Build</text>
+      </g>
+      <path d="M 590 110 L 630 110" stroke="#10B981" stroke-width="2"/>
+      <g transform="translate(640, 65)">
+        <rect x="0" y="0" width="120" height="90" rx="8" fill="#1C2541" stroke="#A855F7" stroke-width="1.5"/>
+        <text x="60" y="35" fill="#F8FAFC" font-size="11" font-family="system-ui" text-anchor="middle" font-weight="bold">Deployment</text>
+        <text x="60" y="55" fill="#94A3B8" font-size="9" font-family="system-ui" text-anchor="middle">Docker Hub / ECR</text>
+        <text x="60" y="75" fill="#C084FC" font-size="8" font-family="monospace" text-anchor="middle">K8s Deployment</text>
+      </g>
+    </svg>`,
+    cliExamplesJson: JSON.stringify([
+      { command: "docker run -d -p 8080:8080 -p 50000:50000 -v jenkins_home:/var/jenkins_home --name jenkins jenkins/jenkins:lts-jdk17", explanation: "Launches the official Jenkins Long Term Support (LTS) container with persistent storage volume." },
+      { command: "docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword", explanation: "Retrieves the initial cryptographic administrator password to unlock the Jenkins setup wizard." },
+      { command: "java -jar jenkins-cli.jar -s http://localhost:8080/ -auth admin:pass who-am-i", explanation: "Authenticates and verifies CLI communication with the Jenkins Controller." }
+    ]),
+    bestPracticesJson: JSON.stringify([
+      "Never execute builds on the Jenkins Controller (set Controller Executors to 0). Use ephemeral container agents.",
+      "Store all pipelines as version-controlled 'Jenkinsfile' in Git (Pipeline-as-Code) rather than configuring freestyle jobs in the UI.",
+      "Use Declarative Pipelines with strict 'post' blocks (always, success, failure) to send Slack notifications or trigger rollbacks.",
+      "Bind credentials using withCredentials([string(...), usernamePassword(...)]) to prevent secrets from being exposed in console build logs."
+    ]),
+    securityNotes: "Disable Script Security bypass. Regularly update Jenkins plugins using the Plugin Manager to patch known CVEs. Restrict the Agent-to-Controller TCP port 50000 behind private subnets.",
+    costImplications: "Jenkins is 100% free and open-source under the MIT license. You pay zero licensing fees; you only cover the underlying compute (e.g. an AWS EC2 t3.small or free local Docker engine).",
+    commonMistakesJson: JSON.stringify([
+      "Hardcoding passwords or AWS access keys directly inside the Jenkinsfile.",
+      "Running heavy build scripts directly on the Controller, causing the web UI to crash due to out-of-memory errors.",
+      "Not cleaning up Docker container images on static worker nodes, causing root disks to fill up (100% disk usage)."
+    ]),
+    quickRevisionJson: JSON.stringify([
+      "Controller = Schedules & web UI (no build execution).",
+      "Agent = Executes commands in isolated workspace.",
+      "Jenkinsfile structure: pipeline { agent any; stages { stage('Build') { steps { sh 'npm test' } } }; post { always { cleanWs() } } }.",
+      "Webhook = GitHub calls Jenkins instantly on code push."
+    ])
+  },
+  18: {
+    simpleExplanation: "Docker revolutionized software engineering by allowing developers to package an application together with all of its libraries, system dependencies, configuration files, and runtime into a single, standardized unit called a Container. If an application runs on your laptop, Docker guarantees it will run identically in testing, staging, and AWS production without 'works on my machine' surprises. Unlike virtual machines that bundle an entire guest operating system (gigabytes in size), Docker containers share the host Linux kernel, booting in milliseconds and consuming megabytes of RAM.",
+    coreConceptsJson: JSON.stringify([
+      { term: "Image vs Container", definition: "An Image is a read-only, immutable blueprint composed of stacked filesystem layers. A Container is a runnable, isolated instance of an image with a thin read-write layer." },
+      { term: "Linux Namespaces & Cgroups", definition: "Namespaces provide process isolation (PID, Network, Mount, User); Control Groups (cgroups) meter and limit physical hardware resources (CPU, RAM, I/O)." },
+      { term: "Multi-Stage Builds", definition: "A Dockerfile technique where compile-time SDKs and build tools run in stage 1, and only the minimal production binaries are copied into stage 2, shrinking image size by up to 90%." },
+      { term: "Docker Compose", definition: "A declarative YAML specification (compose.yaml) used to define and run multi-container applications (e.g., React frontend + Node API + MySQL database) with automated service discovery." },
+      { term: "Storage Volumes vs Bind Mounts", definition: "Named volumes are managed by Docker in /var/lib/docker/volumes for persistent data; bind mounts map specific host directories into the container for live code reloading." }
+    ]),
+    internalsExplanation: "Docker is built on the Open Container Initiative (OCI) runtime spec. The Docker CLI talks via a UNIX socket (/var/run/docker.sock) to dockerd (daemon). dockerd calls containerd (container supervisor), which invokes runc (lightweight low-level OCI CLI). runc issues Linux syscalls: clone() with CLONE_NEWPID, CLONE_NEWNET, CLONE_NEWNS flags to instantiate namespaces, and writes to /sys/fs/cgroup to constrain memory and CPU cores. The filesystem is assembled via OverlayFS, where read-only image layers are stacked, and container file writes occur in an ephemeral Copy-on-Write (CoW) upper layer.",
+    architectureSvg: `<svg viewBox="0 0 800 240" xmlns="http://www.w3.org/2000/svg" class="w-full">
+      <rect x="10" y="10" width="780" height="220" rx="12" fill="#0B132B" stroke="#1C2541" stroke-width="2"/>
+      <g transform="translate(40, 50)">
+        <rect x="0" y="0" width="130" height="120" rx="8" fill="#1C2541" stroke="#38BDF8" stroke-width="1.5"/>
+        <text x="65" y="30" fill="#F8FAFC" font-size="11" font-family="system-ui" text-anchor="middle" font-weight="bold">Dockerfile</text>
+        <text x="65" y="48" fill="#94A3B8" font-size="8" font-family="monospace" text-anchor="middle">FROM node:20-alpine</text>
+        <text x="65" y="65" fill="#94A3B8" font-size="8" font-family="monospace" text-anchor="middle">WORKDIR /app</text>
+        <text x="65" y="82" fill="#94A3B8" font-size="8" font-family="monospace" text-anchor="middle">COPY . .</text>
+        <text x="65" y="99" fill="#38BDF8" font-size="8" font-family="monospace" text-anchor="middle">CMD ["npm","start"]</text>
+      </g>
+      <path d="M 180 110 L 220 110" stroke="#38BDF8" stroke-width="2"/>
+      <g transform="translate(230, 50)">
+        <rect x="0" y="0" width="140" height="120" rx="8" fill="#1E293B" stroke="#818CF8" stroke-width="1.5"/>
+        <text x="70" y="30" fill="#F8FAFC" font-size="11" font-family="system-ui" text-anchor="middle" font-weight="bold">Image (Layers)</text>
+        <rect x="15" y="45" width="110" height="18" rx="3" fill="#312E81"/>
+        <text x="70" y="58" fill="#C7D2FE" font-size="8" font-family="monospace" text-anchor="middle">Layer 3: App Code</text>
+        <rect x="15" y="68" width="110" height="18" rx="3" fill="#3730A3"/>
+        <text x="70" y="81" fill="#C7D2FE" font-size="8" font-family="monospace" text-anchor="middle">Layer 2: Dependencies</text>
+        <rect x="15" y="91" width="110" height="18" rx="3" fill="#4338CA"/>
+        <text x="70" y="104" fill="#C7D2FE" font-size="8" font-family="monospace" text-anchor="middle">Layer 1: Base Alpine OS</text>
+      </g>
+      <path d="M 380 110 L 420 110" stroke="#818CF8" stroke-width="2"/>
+      <g transform="translate(430, 45)">
+        <rect x="0" y="0" width="160" height="130" rx="8" fill="#0F172A" stroke="#06D6A0" stroke-width="1.5"/>
+        <text x="80" y="25" fill="#F8FAFC" font-size="11" font-family="system-ui" text-anchor="middle" font-weight="bold">Running Container</text>
+        <rect x="15" y="35" width="130" height="20" rx="3" fill="#065F46"/>
+        <text x="80" y="48" fill="#A7F3D0" font-size="8" font-family="monospace" text-anchor="middle">R/W Thin Overlay Layer</text>
+        <text x="80" y="75" fill="#34D399" font-size="9" font-family="system-ui" text-anchor="middle">Namespaces (PID, NET)</text>
+        <text x="80" y="95" fill="#34D399" font-size="9" font-family="system-ui" text-anchor="middle">Cgroups (CPU, RAM Limits)</text>
+        <text x="80" y="115" fill="#94A3B8" font-size="8" font-family="monospace" text-anchor="middle">Port 3000 -> 80</text>
+      </g>
+      <path d="M 600 110 L 640 110" stroke="#06D6A0" stroke-width="2"/>
+      <g transform="translate(650, 60)">
+        <rect x="0" y="0" width="110" height="100" rx="8" fill="#1C2541" stroke="#F43F5E" stroke-width="1.5"/>
+        <text x="55" y="35" fill="#F8FAFC" font-size="11" font-family="system-ui" text-anchor="middle" font-weight="bold">Storage</text>
+        <text x="55" y="55" fill="#94A3B8" font-size="9" font-family="system-ui" text-anchor="middle">Named Volumes</text>
+        <text x="55" y="75" fill="#FB7185" font-size="8" font-family="monospace" text-anchor="middle">Persist DB Data</text>
+      </g>
+    </svg>`,
+    cliExamplesJson: JSON.stringify([
+      { command: "docker build -t my-web-app:v1.0 .", explanation: "Builds a Docker image using the Dockerfile in the current directory and tags it." },
+      { command: "docker run -d -p 8080:80 --name web-prod --restart unless-stopped my-web-app:v1.0", explanation: "Runs container in detached mode, binds host port 8080 to container port 80, and enables auto-restart." },
+      { command: "docker ps -a --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'", explanation: "Lists all active and stopped containers with status and port mappings." },
+      { command: "docker exec -it web-prod sh", explanation: "Opens an interactive shell inside the running container for troubleshooting." },
+      { command: "docker compose up -d --build", explanation: "Builds images and starts multi-container services defined in docker-compose.yml in the background." }
+    ]),
+    bestPracticesJson: JSON.stringify([
+      "Always use Multi-Stage Builds to separate compilation from runtime, drastically reducing image vulnerability attack surface.",
+      "Order Dockerfile commands from least frequently changing to most frequently changing to maximize Docker layer caching (e.g. COPY package.json -> RUN npm install -> COPY src/).",
+      "Run as a non-root user using 'USER node' or 'USER 10001' to prevent container breakout privilege escalations.",
+      "Always create a .dockerignore file to exclude node_modules, .git, and .env from being baked into image layers."
+    ]),
+    securityNotes: "Never mount the Docker socket (/var/run/docker.sock) inside untrusted containers, as this grants full root access to the host machine. Scan images with 'docker scout' or 'trivy'.",
+    costImplications: "Docker Engine is 100% free and open-source. Docker Hub provides free public image repositories and 1 free private repository with generous rate limits.",
+    commonMistakesJson: JSON.stringify([
+      "Using massive base images like 'ubuntu:latest' (100MB+) instead of minimal 'alpine' (5MB) or Google Distroless images for production runtime.",
+      "Storing database files inside the container's ephemeral writable layer instead of an attached Docker Named Volume (all data lost on container restart).",
+      "Running 'npm install' after copying the entire source directory, which invalidates the Docker layer cache on every code change."
+    ]),
+    quickRevisionJson: JSON.stringify([
+      "Container = Process isolated by Namespaces (PID, NET) & Cgroups (CPU, RAM).",
+      "Dockerfile: FROM -> WORKDIR -> COPY -> RUN -> USER -> EXPOSE -> CMD.",
+      "Multi-Stage: Stage 1 builds binary, Stage 2 copies only binary to minimal OS.",
+      "Compose: compose.yaml defines services, networks, and persistent volumes."
+    ])
+  },
+  19: {
+    simpleExplanation: "Kubernetes (often abbreviated as K8s) is the world's most popular open-source container orchestration platform, originally designed by Google and maintained by the Cloud Native Computing Foundation (CNCF). While Docker runs individual containers on a single host, Kubernetes manages fleets of hundreds or thousands of containers across a cluster of server nodes. Kubernetes automates container scheduling, self-healing (restarting crashed containers), zero-downtime rolling deployments, horizontal autoscaling based on traffic, and service discovery.",
+    coreConceptsJson: JSON.stringify([
+      { term: "Control Plane Components", definition: "kube-apiserver (central REST gateway), etcd (distributed key-value state store), kube-scheduler (assigns pods to nodes), kube-controller-manager (reconciles desired state)." },
+      { term: "Worker Node Components", definition: "kubelet (agent communicating with API server and runtime), kube-proxy (maintains IP packet filtering rules / IPVS), Container Runtime (containerd/CRI-O)." },
+      { term: "Pod", definition: "The smallest deployable unit in Kubernetes, consisting of one or more tightly coupled containers sharing storage and network IP." },
+      { term: "Deployment & ReplicaSet", definition: "A Deployment provides declarative updates for Pods and ReplicaSets, handling rolling upgrades and automatic rollbacks." },
+      { term: "Service & Ingress", definition: "Services provide a stable virtual IP and load-balancing across dynamic pods (ClusterIP, NodePort, LoadBalancer). Ingress routes external HTTP/HTTPS traffic to Services via URL paths and hostnames." }
+    ]),
+    internalsExplanation: "Kubernetes is built entirely on declarative reconciliation loops. You submit desired state manifests (YAML) to the kube-apiserver. The API server validates and writes the state to etcd. Controllers observe changes via Informers and Delta FIFOs. If a worker node dies, the NodeLifecycleController detects the missing heartbeat, the ReplicaSetController identifies that actual running pods < desired replicas, and the kube-scheduler evaluates healthy nodes based on affinity, taints, tolerations, and resource requests, instructing a healthy node's kubelet to spawn the replacement Pod.",
+    architectureSvg: `<svg viewBox="0 0 800 240" xmlns="http://www.w3.org/2000/svg" class="w-full">
+      <rect x="10" y="10" width="780" height="220" rx="12" fill="#0B132B" stroke="#1C2541" stroke-width="2"/>
+      <g transform="translate(30, 45)">
+        <rect x="0" y="0" width="220" height="140" rx="8" fill="#1E293B" stroke="#3B82F6" stroke-width="1.5"/>
+        <text x="110" y="25" fill="#60A5FA" font-size="12" font-family="system-ui" text-anchor="middle" font-weight="bold">Control Plane (Master)</text>
+        <rect x="15" y="38" width="85" height="35" rx="4" fill="#0F172A" stroke="#38BDF8"/>
+        <text x="57" y="55" fill="#F8FAFC" font-size="9" font-family="monospace" text-anchor="middle">API Server</text>
+        <rect x="115" y="38" width="90" height="35" rx="4" fill="#0F172A" stroke="#A855F7"/>
+        <text x="160" y="55" fill="#F8FAFC" font-size="9" font-family="monospace" text-anchor="middle">etcd Store</text>
+        <rect x="15" y="85" width="85" height="35" rx="4" fill="#0F172A" stroke="#F59E0B"/>
+        <text x="57" y="102" fill="#F8FAFC" font-size="9" font-family="monospace" text-anchor="middle">Scheduler</text>
+        <rect x="115" y="85" width="90" height="35" rx="4" fill="#0F172A" stroke="#10B981"/>
+        <text x="160" y="102" fill="#F8FAFC" font-size="9" font-family="monospace" text-anchor="middle">Controllers</text>
+      </g>
+      <path d="M 260 115 L 300 115" stroke="#3B82F6" stroke-width="2"/>
+      <g transform="translate(310, 45)">
+        <rect x="0" y="0" width="210" height="140" rx="8" fill="#1E293B" stroke="#10B981" stroke-width="1.5"/>
+        <text x="105" y="25" fill="#34D399" font-size="12" font-family="system-ui" text-anchor="middle" font-weight="bold">Worker Node 1</text>
+        <rect x="15" y="38" width="85" height="28" rx="4" fill="#0F172A"/>
+        <text x="57" y="56" fill="#F8FAFC" font-size="9" font-family="monospace" text-anchor="middle">kubelet</text>
+        <rect x="110" y="38" width="85" height="28" rx="4" fill="#0F172A"/>
+        <text x="152" y="56" fill="#F8FAFC" font-size="9" font-family="monospace" text-anchor="middle">kube-proxy</text>
+        <rect x="15" y="75" width="180" height="50" rx="4" fill="#065F46" stroke="#34D399"/>
+        <text x="105" y="95" fill="#A7F3D0" font-size="10" font-family="system-ui" text-anchor="middle" font-weight="bold">Pod: frontend-app</text>
+        <text x="105" y="112" fill="#D1FAE5" font-size="8" font-family="monospace" text-anchor="middle">Container (Port 80) + Volume</text>
+      </g>
+      <g transform="translate(540, 45)">
+        <rect x="0" y="0" width="220" height="140" rx="8" fill="#1E293B" stroke="#A855F7" stroke-width="1.5"/>
+        <text x="110" y="25" fill="#C084FC" font-size="12" font-family="system-ui" text-anchor="middle" font-weight="bold">Networking &amp; Routing</text>
+        <rect x="15" y="40" width="190" height="35" rx="4" fill="#0F172A" stroke="#8B5CF6"/>
+        <text x="110" y="58" fill="#E9D5FF" font-size="9" font-family="monospace" text-anchor="middle">Ingress (Host / Path Rules)</text>
+        <rect x="15" y="85" width="190" height="35" rx="4" fill="#0F172A" stroke="#06B6D4"/>
+        <text x="110" y="103" fill="#CFFAFE" font-size="9" font-family="monospace" text-anchor="middle">Service (ClusterIP LoadBalancing)</text>
+      </g>
+    </svg>`,
+    cliExamplesJson: JSON.stringify([
+      { command: "kubectl get nodes -o wide", explanation: "Inspects all worker nodes in the cluster with status, roles, IP addresses, and OS image." },
+      { command: "kubectl apply -f deployment.yaml", explanation: "Declaratively applies a Kubernetes resource manifest to create or update Deployments and Services." },
+      { command: "kubectl get pods --all-namespaces", explanation: "Lists all running pods across default, kube-system, and custom namespaces." },
+      { command: "kubectl describe pod my-app-765d89f89-xk2pq", explanation: "Prints detailed pod events, status conditions, and container state to troubleshoot CrashLoopBackOff." },
+      { command: "kubectl rollout status deployment/my-app", explanation: "Monitors real-time progress of a rolling deployment, verifying new replica health." }
+    ]),
+    bestPracticesJson: JSON.stringify([
+      "Always define CPU and Memory 'requests' and 'limits' on every container to prevent runaway memory leaks (OOMKilled) from starving the node.",
+      "Always implement both Liveness Probes (restarts deadlocked processes) and Readiness Probes (prevents sending traffic until container is initialized).",
+      "Store application configurations in ConfigMaps and sensitive credentials in Secrets, injecting them via environment variables or mounted files.",
+      "Use Helm charts to package, version, and template Kubernetes YAML manifests for multi-environment deployments (Dev, Staging, Prod)."
+    ]),
+    securityNotes: "Enable Role-Based Access Control (RBAC) with Least Privilege ServiceAccounts. Never run pods with 'privileged: true' unless building system daemonsets. Use NetworkPolicies to isolate namespace traffic.",
+    costImplications: "You can run Kubernetes 100% free locally using Minikube or Kind (Kubernetes in Docker). On AWS, managed EKS clusters cost $0.10/hour ($73/month) for the control plane plus standard EC2 worker instances.",
+    commonMistakesJson: JSON.stringify([
+      "Forgetting to set Readiness Probes: traffic is routed to pods before the database connection or Node.js server has finished booting, causing 502 Bad Gateway errors.",
+      "Using 'latest' image tag in production deployments: Kubernetes image pull policy can cache stale layers, preventing new code from executing.",
+      "Editing live pods directly with 'kubectl edit pod' instead of committing manifest changes to Git (breaking GitOps reproducibility)."
+    ]),
+    quickRevisionJson: JSON.stringify([
+      "Control Plane: API Server (gateway), etcd (state database), Scheduler (node placement), Controller Manager (state reconciliation).",
+      "Worker Node: kubelet (node agent), kube-proxy (network rules), containerd (runtime).",
+      "Pod = 1+ containers; Deployment = manages pod replicas & rolling updates.",
+      "Service = stable internal load-balanced IP; Ingress = HTTP layer 7 routing."
+    ])
+  },
+  20: {
+    simpleExplanation: "The pinnacle of modern cloud engineering is the automated End-to-End DevOps CI/CD Pipeline. Instead of manually SSHing into servers or clicking through cloud consoles, every code commit pushed by an engineer triggers an unbroken, automated chain of events: GitHub notifies Jenkins via webhook -> Jenkins spins up an isolated build agent -> Automated unit tests run -> Docker builds a hardened multi-stage image -> Trivy scans the image for CVE vulnerabilities -> The image is pushed to Amazon ECR -> Jenkins triggers a zero-downtime rolling update on an Amazon EKS Kubernetes cluster -> AWS CloudWatch tracks live metrics and rollouts. This is how world-class tech companies deploy to production multiple times per day with zero downtime.",
+    coreConceptsJson: JSON.stringify([
+      { term: "Continuous Integration (CI)", definition: "Automated merging, linting, unit testing, and building of code on every commit to detect bugs within minutes." },
+      { term: "Continuous Delivery (CD)", definition: "Automating the software release process so that every passing build is automatically packaged, scanned, and ready for one-click or automated deployment." },
+      { term: "Shift-Left Security (DevSecOps)", definition: "Embedding automated security vulnerability scanning (SAST, DAST, Container CVE scans with Trivy) directly into the early pipeline stages." },
+      { term: "Container Registry (Amazon ECR)", definition: "A fully managed AWS Docker container registry with built-in encryption, replication, and IAM-based access control." },
+      { term: "Zero-Downtime Rolling Deployment", definition: "Kubernetes incrementally replaces old pod replicas with new pod replicas one by one, keeping the application 100% available during upgrades." }
+    ]),
+    internalsExplanation: "The end-to-end pipeline operates through event-driven webhooks and API orchestration: 1. A developer commits code and pushes to GitHub. 2. GitHub sends an HMAC-SHA256 signed JSON payload to the Jenkins Controller's /github-webhook/ endpoint. 3. Jenkins matches the repository and triggers the multibranch pipeline. 4. The pipeline executes in a containerized agent with docker CLI and kubectl. 5. Docker builds the image using Git commit SHA (e.g. 123456789012.dkr.ecr.us-east-1.amazonaws.com/app:v1.2.3-a8f9c1). 6. Trivy scans the image layers; if CRITICAL CVEs exceed threshold, the build fails immediately. 7. Jenkins authenticates to AWS via IAM assume-role with STS, pushes to ECR, and executes 'kubectl set image deployment/prod-app app=...'. 8. Kubernetes initiates a rolling update with maxSurge: 25% and maxUnavailable: 0.",
+    architectureSvg: `<svg viewBox="0 0 800 240" xmlns="http://www.w3.org/2000/svg" class="w-full">
+      <rect x="10" y="10" width="780" height="220" rx="12" fill="#080E21" stroke="#1E293B" stroke-width="2"/>
+      <g transform="translate(25, 60)">
+        <rect x="0" y="0" width="95" height="95" rx="8" fill="#1E293B" stroke="#38BDF8" stroke-width="1.5"/>
+        <text x="47" y="30" fill="#F8FAFC" font-size="10" font-family="system-ui" text-anchor="middle" font-weight="bold">1. GitHub</text>
+        <text x="47" y="50" fill="#94A3B8" font-size="8" font-family="system-ui" text-anchor="middle">Git Push</text>
+        <text x="47" y="70" fill="#38BDF8" font-size="8" font-family="monospace" text-anchor="middle">Webhook</text>
+      </g>
+      <path d="M 125 107 L 150 107" stroke="#38BDF8" stroke-width="2"/>
+      <g transform="translate(155, 60)">
+        <rect x="0" y="0" width="105" height="95" rx="8" fill="#1E293B" stroke="#F59E0B" stroke-width="1.5"/>
+        <text x="52" y="30" fill="#F8FAFC" font-size="10" font-family="system-ui" text-anchor="middle" font-weight="bold">2. Jenkins CI</text>
+        <text x="52" y="50" fill="#94A3B8" font-size="8" font-family="system-ui" text-anchor="middle">Pipelinefile</text>
+        <text x="52" y="70" fill="#FBBF24" font-size="8" font-family="monospace" text-anchor="middle">Test &amp; Lint</text>
+      </g>
+      <path d="M 265 107 L 290 107" stroke="#F59E0B" stroke-width="2"/>
+      <g transform="translate(295, 60)">
+        <rect x="0" y="0" width="115" height="95" rx="8" fill="#1E293B" stroke="#10B981" stroke-width="1.5"/>
+        <text x="57" y="30" fill="#F8FAFC" font-size="10" font-family="system-ui" text-anchor="middle" font-weight="bold">3. Docker Build</text>
+        <text x="57" y="50" fill="#94A3B8" font-size="8" font-family="system-ui" text-anchor="middle">Multi-stage</text>
+        <text x="57" y="70" fill="#34D399" font-size="8" font-family="monospace" text-anchor="middle">Trivy CVE Scan</text>
+      </g>
+      <path d="M 415 107 L 440 107" stroke="#10B981" stroke-width="2"/>
+      <g transform="translate(445, 60)">
+        <rect x="0" y="0" width="115" height="95" rx="8" fill="#1E293B" stroke="#EC4899" stroke-width="1.5"/>
+        <text x="57" y="30" fill="#F8FAFC" font-size="10" font-family="system-ui" text-anchor="middle" font-weight="bold">4. Amazon ECR</text>
+        <text x="57" y="50" fill="#94A3B8" font-size="8" font-family="system-ui" text-anchor="middle">Container Store</text>
+        <text x="57" y="70" fill="#F472B6" font-size="8" font-family="monospace" text-anchor="middle">Immutable Tag</text>
+      </g>
+      <path d="M 565 107 L 590 107" stroke="#EC4899" stroke-width="2"/>
+      <g transform="translate(595, 50)">
+        <rect x="0" y="0" width="180" height="115" rx="8" fill="#1E293B" stroke="#8B5CF6" stroke-width="1.5"/>
+        <text x="90" y="28" fill="#C084FC" font-size="11" font-family="system-ui" text-anchor="middle" font-weight="bold">5. Amazon EKS / K8s</text>
+        <text x="90" y="48" fill="#94A3B8" font-size="8" font-family="system-ui" text-anchor="middle">Zero-Downtime Rollout</text>
+        <rect x="15" y="60" width="150" height="40" rx="4" fill="#0F172A" stroke="#34D399"/>
+        <text x="90" y="78" fill="#A7F3D0" font-size="9" font-family="monospace" text-anchor="middle">Rolling Update (v1 -> v2)</text>
+        <text x="90" y="92" fill="#6EE7B7" font-size="8" font-family="system-ui" text-anchor="middle">100% Uptime Maintained</text>
+      </g>
+    </svg>`,
+    cliExamplesJson: JSON.stringify([
+      { command: "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 123456789012.dkr.ecr.us-east-1.amazonaws.com", explanation: "Authenticates local Docker client with Amazon Elastic Container Registry using AWS CLI." },
+      { command: "docker build -t 123456789012.dkr.ecr.us-east-1.amazonaws.com/cloud-api:git-$GIT_COMMIT .", explanation: "Builds production image tagged with unique immutable Git commit SHA." },
+      { command: "trivy image --severity HIGH,CRITICAL 123456789012.dkr.ecr.us-east-1.amazonaws.com/cloud-api:git-$GIT_COMMIT", explanation: "Runs automated container security vulnerability scan before registry push." },
+      { command: "docker push 123456789012.dkr.ecr.us-east-1.amazonaws.com/cloud-api:git-$GIT_COMMIT", explanation: "Pushes the validated Docker image to private AWS ECR repository." },
+      { command: "kubectl set image deployment/cloud-api-prod cloud-api=123456789012.dkr.ecr.us-east-1.amazonaws.com/cloud-api:git-$GIT_COMMIT --record", explanation: "Initiates Kubernetes zero-downtime rolling update with recorded rollout history." }
+    ]),
+    bestPracticesJson: JSON.stringify([
+      "Never tag production images with ':latest'. Always tag with the unique Git commit SHA or semantic version (e.g. ':v1.4.2-3a8e9f') to ensure deterministic rollbacks.",
+      "Incorporate automated rollback triggers: if Kubernetes pods fail Readiness probes during rollout, execute 'kubectl rollout undo' automatically.",
+      "Separate CI from CD using GitOps (e.g. ArgoCD or Flux) where Jenkins builds and pushes the image, then commits the new image tag to an infra repository.",
+      "Enforce Least Privilege IAM roles using IRSA (IAM Roles for Service Accounts) so pods only access AWS resources they legitimately require."
+    ]),
+    securityNotes: "Use Cosign to cryptographically sign container images during Jenkins build and verify image signatures in Kubernetes using admission controllers (Kyverno or OPA Gatekeeper).",
+    costImplications: "You can simulate the entire end-to-end pipeline locally with zero cost using Git, local Jenkins container, local Docker engine, and Minikube.",
+    commonMistakesJson: JSON.stringify([
+      "Skipping automated vulnerability scanning, allowing critical CVEs to reach production clusters.",
+      "Deploying with 'kubectl apply' without verifying pod readiness, causing outages when misconfigured pods crash.",
+      "Storing AWS credentials directly inside the Jenkins VM instead of using IAM Instance Profiles or temporary STS credentials."
+    ]),
+    quickRevisionJson: JSON.stringify([
+      "Pipeline: Git Commit -> GitHub Webhook -> Jenkins CI -> Docker Multi-stage -> Trivy Security -> AWS ECR -> K8s Rolling Update.",
+      "Tagging rule: Always tag with immutable Git commit SHA.",
+      "Deployment strategy: Kubernetes RollingUpdate ensures zero downtime.",
+      "Rollback: 'kubectl rollout undo deployment/<name>' restores previous working replica instantly."
+    ])
   }
 };

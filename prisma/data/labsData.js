@@ -772,5 +772,240 @@ echo "Overall Well-Architected Score: 96 / 100"`,
         troubleshooting: "None."
       }
     ]
+  },
+  16: {
+    title: "Lab 16: GitHub Actions CI Workflow & Automated Branch Protection",
+    level: "Beginner",
+    estimatedMinutes: 25,
+    freeTierEligible: true,
+    costRiskLevel: "LOW",
+    paidAlternativeWarning: null,
+    prerequisites: "Git installed locally and a free GitHub account.",
+    requiredPermissions: "GitHub repository admin / write permissions.",
+    cleanupGuide: "Repository and workflow files reside in your personal GitHub account. No cloud resources created; zero cost cleanup.",
+    safeSimulationScript: `#!/bin/bash
+# Local simulation of GitHub Actions runner & matrix CI workflow
+echo "=== GitHub Actions CI Simulator ==="
+echo "Event: push to branch 'feature/login' triggered workflow '.github/workflows/ci.yml'"
+echo "[Runner: ubuntu-latest] Setting up Node.js 20.x..."
+echo "[Runner: ubuntu-latest] Running 'npm ci' -> 42 packages installed in 2.3s"
+echo "[Runner: ubuntu-latest] Running 'npm test' -> 18/18 tests passed (100% coverage)"
+echo "[Runner: ubuntu-latest] Running 'npm run lint' -> 0 errors, 0 warnings"
+echo "Status: SUCCESS (exit code 0). Branch protection rule verified. PR ready to merge!"`,
+    steps: [
+      {
+        stepNumber: 1,
+        title: "Initialize Git Repository & Create Feature Branch",
+        description: "Set up a clean Git tracking repository and switch to an isolated feature branch.",
+        consoleInstruction: "Open terminal in project directory. Run git status to verify clean working tree, then create your feature branch.",
+        cliCommand: "git checkout -b feature/auth-guard && echo 'const auth = true;' > auth.js && git add auth.js && git commit -m 'feat: add authentication guard'",
+        expectedOutput: "[feature/auth-guard 4a9bc12] feat: add authentication guard",
+        verificationTip: "Run 'git log -n 1' to verify commit author and cryptographic SHA.",
+        troubleshooting: "If git user is not configured, run: git config --global user.name 'Your Name' && git config --global user.email 'you@example.com'."
+      },
+      {
+        stepNumber: 2,
+        title: "Author GitHub Actions CI Workflow YAML",
+        description: "Create .github/workflows/ci.yml to automate linting and testing on every pull request.",
+        consoleInstruction: "Create directory .github/workflows and add ci.yml containing triggers: on [push, pull_request].",
+        cliCommand: "mkdir -p .github/workflows && cat << 'EOF' > .github/workflows/ci.yml\nname: CI Pipeline\non: [push, pull_request]\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: '20'\n      - run: npm test\nEOF",
+        expectedOutput: "Created .github/workflows/ci.yml with automated CI runner definition.",
+        verificationTip: "Verify YAML indentation using a linter to ensure no tab characters exist.",
+        troubleshooting: "YAML files require 2 spaces for indentation; never use hard tabs."
+      }
+    ]
+  },
+  17: {
+    title: "Lab 17: Jenkins Declarative Pipeline with Docker Agent Sandbox",
+    level: "Intermediate",
+    estimatedMinutes: 30,
+    freeTierEligible: true,
+    costRiskLevel: "LOW",
+    paidAlternativeWarning: null,
+    prerequisites: "Docker installed locally or Jenkins running on a local port.",
+    requiredPermissions: "Local Docker execution rights.",
+    cleanupGuide: "Stop and remove the local test container: docker stop jenkins-lab && docker rm jenkins-lab.",
+    safeSimulationScript: `#!/bin/bash
+# Local simulation of Jenkins Declarative Pipeline execution
+echo "=== Jenkins Declarative Pipeline Execution ==="
+echo "[Pipeline] Start of Pipeline"
+echo "[Stage: Checkout] Pulling from git https://github.com/org/app.git (commit: 8f3c21a)"
+echo "[Stage: Unit Test] Executing 'npm test' -> 24 passed in 3.1s"
+echo "[Stage: Code Quality] SonarQube quality gate: PASSED (Bugs: 0, Vulnerabilities: 0)"
+echo "[Stage: Docker Build] Building image 'app:build-42'..."
+echo "[Stage: Post] Success! Sending notification to Slack #devops-deployments"
+echo "[Pipeline] Finished: SUCCESS"`,
+    steps: [
+      {
+        stepNumber: 1,
+        title: "Launch Local Isolated Jenkins Container",
+        description: "Run Jenkins LTS container in Docker with port forward and volume mounting.",
+        consoleInstruction: "Run the docker run command to launch Jenkins on host port 8080.",
+        cliCommand: "docker run -d -p 8080:8080 -p 50000:50000 --name jenkins-lab jenkins/jenkins:lts-jdk17",
+        expectedOutput: "Container ID printed to terminal, verifying Jenkins daemon started.",
+        verificationTip: "Run 'docker logs jenkins-lab' to confirm HTTP listener is active on 8080.",
+        troubleshooting: "If port 8080 is in use, remap to -p 8081:8080."
+      },
+      {
+        stepNumber: 2,
+        title: "Create Declarative Jenkinsfile with Multi-Stage Execution",
+        description: "Write a Jenkinsfile implementing Build, Test, and Artifact Archive stages.",
+        consoleInstruction: "Create a file named 'Jenkinsfile' in the root directory.",
+        cliCommand: "cat << 'EOF' > Jenkinsfile\npipeline {\n  agent any\n  stages {\n    stage('Build') {\n      steps { echo 'Compiling application...' }\n    }\n    stage('Test') {\n      steps { echo 'Running automated test suites...' }\n    }\n  }\n  post {\n    always { echo 'Pipeline finished. Cleaning workspace.' }\n  }\n}\nEOF",
+        expectedOutput: "Jenkinsfile created with declarative pipeline structure.",
+        verificationTip: "Verify pipeline syntax using the Jenkins Pipeline Syntax Generator in the web console.",
+        troubleshooting: "Ensure 'pipeline' is all lowercase."
+      }
+    ]
+  },
+  18: {
+    title: "Lab 18: Docker Multi-Stage Optimization & Multi-Service Compose",
+    level: "Beginner",
+    estimatedMinutes: 30,
+    freeTierEligible: true,
+    costRiskLevel: "LOW",
+    paidAlternativeWarning: null,
+    prerequisites: "Docker Engine installed locally.",
+    requiredPermissions: "Local docker daemon permissions.",
+    cleanupGuide: "Tear down containers and prune local test images: docker compose down -v && docker rmi web-optimized:v1.",
+    safeSimulationScript: `#!/bin/bash
+# Local simulation of Docker multi-stage build & compose stack
+echo "=== Docker Multi-Stage Image Builder ==="
+echo "Stage 1 (Builder): FROM node:20-alpine -> installed typescript, webpack, dependencies (Total: 480MB)"
+echo "Stage 2 (Runtime): FROM node:20-alpine -> copied dist/ and production node_modules ONLY (Total: 62MB)"
+echo "→ 87% Image Size Reduction achieved!"
+echo "Starting docker-compose multi-service stack..."
+echo "[+] Network app_default Created"
+echo "[+] Container db-1 Started (MySQL 8.0 on port 3306)"
+echo "[+] Container api-1 Started (Node.js on port 5000)"
+echo "[+] Container web-1 Started (Nginx on port 80)"
+echo "Healthcheck: All services healthy! Zero cost local dev stack running."`,
+    steps: [
+      {
+        stepNumber: 1,
+        title: "Build Hardened Multi-Stage Dockerfile",
+        description: "Create an optimized Dockerfile that compiles code in builder stage and runs as non-root user in runtime stage.",
+        consoleInstruction: "Inspect Dockerfile instructions: FROM -> WORKDIR -> COPY -> RUN -> USER -> CMD.",
+        cliCommand: "cat << 'EOF' > Dockerfile\nFROM node:20-alpine AS builder\nWORKDIR /app\nCOPY package*.json ./\nRUN npm ci\nCOPY . .\nRUN npm run build\n\nFROM node:20-alpine\nWORKDIR /app\nUSER node\nCOPY --from=builder /app/package*.json ./\nCOPY --from=builder /app/node_modules ./node_modules\nCOPY --from=builder /app/dist ./dist\nEXPOSE 3000\nCMD [\"node\", \"dist/index.js\"]\nEOF",
+        expectedOutput: "Multi-stage Dockerfile created with non-root security.",
+        verificationTip: "Run 'docker build -t app-prod:test .' and observe final image size under 80MB.",
+        troubleshooting: "If permission denied during build, ensure files have readable permissions."
+      },
+      {
+        stepNumber: 2,
+        title: "Define Multi-Service Stack with Docker Compose",
+        description: "Orchestrate Web Frontend, Backend API, and MySQL Database with automated network isolation.",
+        consoleInstruction: "Create docker-compose.yml defining services, environment variables, and persistent named volumes.",
+        cliCommand: "cat << 'EOF' > compose.yaml\nservices:\n  app:\n    build: .\n    ports:\n      - \"3000:3000\"\n    environment:\n      - NODE_ENV=production\n      - DB_HOST=db\n    depends_on:\n      - db\n  db:\n    image: mysql:8.0\n    environment:\n      - MYSQL_ROOT_PASSWORD=secret\n      - MYSQL_DATABASE=app_db\n    volumes:\n      - db_data:/var/lib/mysql\nvolumes:\n  db_data:\nEOF",
+        expectedOutput: "compose.yaml created with declarative service dependencies.",
+        verificationTip: "Test configuration using 'docker compose config' before starting.",
+        troubleshooting: "Ensure indentation is consistent 2-space YAML."
+      }
+    ]
+  },
+  19: {
+    title: "Lab 19: Kubernetes Deployment, Service Discovery & Zero-Downtime Rollout",
+    level: "Advanced",
+    estimatedMinutes: 35,
+    freeTierEligible: true,
+    costRiskLevel: "LOW",
+    paidAlternativeWarning: null,
+    prerequisites: "kubectl installed locally or access to Minikube/Kind.",
+    requiredPermissions: "Kubernetes namespace create/apply permissions.",
+    cleanupGuide: "Delete the test deployment and service: kubectl delete -f k8s-deployment.yaml.",
+    safeSimulationScript: `#!/bin/bash
+# Local simulation of Kubernetes declarative state reconciliation
+echo "=== Kubernetes Cluster Simulator ==="
+echo "$ kubectl apply -f k8s-deployment.yaml"
+echo "deployment.apps/frontend-app created"
+echo "service/frontend-svc created"
+echo "configmap/app-config created"
+echo "Waiting for rollout to finish: 0 of 3 updated replicas are available..."
+echo "Waiting for rollout to finish: 1 of 3 updated replicas are available..."
+echo "Waiting for rollout to finish: 3 of 3 updated replicas are available..."
+echo "deployment 'frontend-app' successfully rolled out!"
+echo "$ kubectl get pods -l app=frontend-app"
+echo "NAME                            READY   STATUS    RESTARTS   AGE"
+echo "frontend-app-769d4bc8f-2k9jx   1/1     Running   0          18s"
+echo "frontend-app-769d4bc8f-8pxmn   1/1     Running   0          18s"
+echo "frontend-app-769d4bc8f-m5twq   1/1     Running   0          18s"`,
+    steps: [
+      {
+        stepNumber: 1,
+        title: "Create Kubernetes Deployment Manifest with Probes & Resource Limits",
+        description: "Author a production-grade Deployment YAML with 3 replicas, CPU/memory limits, and Liveness/Readiness probes.",
+        consoleInstruction: "Create k8s-deployment.yaml defining apiVersion: apps/v1, kind: Deployment.",
+        cliCommand: "cat << 'EOF' > k8s-deployment.yaml\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: cloud-app\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: cloud-app\n  template:\n    metadata:\n      labels:\n        app: cloud-app\n    spec:\n      containers:\n      - name: web\n        image: nginx:alpine\n        resources:\n          requests:\n            memory: \"64Mi\"\n            cpu: \"50m\"\n          limits:\n            memory: \"128Mi\"\n            cpu: \"100m\"\n        readinessProbe:\n          httpGet:\n            path: /\n            port: 80\n          initialDelaySeconds: 5\n          periodSeconds: 10\nEOF",
+        expectedOutput: "k8s-deployment.yaml created with health probes and resource limits.",
+        verificationTip: "Verify YAML validation using 'kubectl apply --dry-run=client -f k8s-deployment.yaml'.",
+        troubleshooting: "Always ensure resource requests are strictly smaller than limits."
+      },
+      {
+        stepNumber: 2,
+        title: "Expose Pods with a Kubernetes ClusterIP Service",
+        description: "Create a Service manifest to provide stable DNS resolution and internal load balancing across pod replicas.",
+        consoleInstruction: "Create k8s-service.yaml defining apiVersion: v1, kind: Service.",
+        cliCommand: "cat << 'EOF' > k8s-service.yaml\napiVersion: v1\nkind: Service\nmetadata:\n  name: cloud-app-svc\nspec:\n  selector:\n    app: cloud-app\n  ports:\n    - protocol: TCP\n      port: 80\n      targetPort: 80\n  type: ClusterIP\nEOF",
+        expectedOutput: "k8s-service.yaml created with selector pointing to app: cloud-app.",
+        verificationTip: "Inspect endpoints using 'kubectl get endpoints cloud-app-svc' to confirm target pod IPs are mapped.",
+        troubleshooting: "If endpoints are empty, check that the service selector matches the pod template labels exactly."
+      }
+    ]
+  },
+  20: {
+    title: "Lab 20: Unified Enterprise Pipeline: GitHub -> Jenkins -> Docker -> AWS ECR -> EKS",
+    level: "Advanced",
+    estimatedMinutes: 45,
+    freeTierEligible: true,
+    costRiskLevel: "LOW",
+    paidAlternativeWarning: "Amazon EKS clusters incur $0.10/hr control plane costs; this lab includes our zero-cost safe local CLI simulator so you can master the exact commands without deploying billable clusters.",
+    prerequisites: "AWS CLI, Docker, and kubectl configured.",
+    requiredPermissions: "ecr:GetAuthorizationToken, ecr:PutImage, eks:DescribeCluster",
+    cleanupGuide: "Zero AWS charges incurred when using the built-in simulator. If deployed to real AWS: aws ecr delete-repository --repository-name prod-api --force.",
+    safeSimulationScript: `#!/bin/bash
+# Complete End-to-End Enterprise CI/CD Pipeline Simulator
+echo "=== Enterprise DevOps Pipeline Simulation ==="
+echo "Step 1 [GitHub]: Push received on 'main' branch (commit sha: 9a7e2b1)"
+echo "Step 2 [Jenkins]: Webhook received. Allocating dynamic Docker build agent..."
+echo "Step 3 [CI Test]: Running unit tests & SonarQube static analysis -> 100% Passed"
+echo "Step 4 [Docker]: Building multi-stage container -> 'prod-api:9a7e2b1'"
+echo "Step 5 [DevSecOps]: Trivy scanning image layers -> 0 CRITICAL CVEs detected (Passed)"
+echo "Step 6 [AWS ECR]: Authenticating to 123456789012.dkr.ecr.us-east-1.amazonaws.com"
+echo "Step 7 [AWS ECR]: Pushing image layers -> SHA256 verified in registry"
+echo "Step 8 [Amazon EKS]: Executing 'kubectl set image deployment/prod-api api=prod-api:9a7e2b1'"
+echo "Step 9 [K8s Rollout]: Pod 1 updated -> Ready. Pod 2 updated -> Ready. Pod 3 updated -> Ready."
+echo "Pipeline execution finished successfully in 48 seconds with ZERO downtime!"`,
+    steps: [
+      {
+        stepNumber: 1,
+        title: "Authenticate Docker Client to Amazon ECR",
+        description: "Obtain an AWS STS authentication token and pipe it into Docker CLI to authenticate with private ECR registry.",
+        consoleInstruction: "Open AWS Console -> ECR Dashboard -> Repositories -> Click 'View push commands' for copy-paste instructions.",
+        cliCommand: "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 123456789012.dkr.ecr.us-east-1.amazonaws.com",
+        expectedOutput: "Login Succeeded",
+        verificationTip: "Verify login credentials stored in ~/.docker/config.json with temporary 12-hour expiration.",
+        troubleshooting: "If AuthFailure occurs, confirm AWS CLI credentials have ecr:GetAuthorizationToken permission."
+      },
+      {
+        stepNumber: 2,
+        title: "Build, Tag with Git SHA, and Push to Amazon ECR",
+        description: "Build the container image locally, apply an immutable tag containing the current Git commit SHA, and push to ECR.",
+        consoleInstruction: "Run docker build and docker push commands.",
+        cliCommand: "docker build -t 123456789012.dkr.ecr.us-east-1.amazonaws.com/prod-api:v1.0-9a7e2b1 . && docker push 123456789012.dkr.ecr.us-east-1.amazonaws.com/prod-api:v1.0-9a7e2b1",
+        expectedOutput: "The push refers to repository [123456789012.dkr.ecr.us-east-1.amazonaws.com/prod-api]\n9a7e2b1: Pushed\nv1.0-9a7e2b1: digest: sha256:... size: 1782",
+        verificationTip: "Check ECR console to confirm the image tag and scan-on-push results appear.",
+        troubleshooting: "Ensure the ECR repository 'prod-api' exists before pushing."
+      },
+      {
+        stepNumber: 3,
+        title: "Trigger Zero-Downtime Rolling Update on Amazon EKS",
+        description: "Instruct the Kubernetes cluster to roll out the newly pushed container image with live health verification.",
+        consoleInstruction: "Run kubectl set image command followed by rollout status check.",
+        cliCommand: "kubectl set image deployment/prod-api api=123456789012.dkr.ecr.us-east-1.amazonaws.com/prod-api:v1.0-9a7e2b1 --record && kubectl rollout status deployment/prod-api",
+        expectedOutput: "deployment.apps/prod-api image updated\ndeployment 'prod-api' successfully rolled out",
+        verificationTip: "Run 'kubectl rollout history deployment/prod-api' to inspect past revision numbers for instant rollback capability.",
+        troubleshooting: "If pods enter ImagePullBackOff, ensure the EKS worker nodes have an IAM role with ecr:BatchGetImage and ecr:GetDownloadUrlForLayer permissions."
+      }
+    ]
   }
 };
