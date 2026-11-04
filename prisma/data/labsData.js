@@ -774,65 +774,713 @@ echo "Overall Well-Architected Score: 96 / 100"`,
     ]
   },
   16: {
-    title: "Lab 16: GitHub Actions CI Workflow & Automated Branch Protection",
+    title: "Lab 16: Complete Git Local Repository Lifecycle & Atlassian Cheat Sheet Command Mastery",
     level: "Beginner",
-    estimatedMinutes: 25,
+    estimatedMinutes: 35,
     freeTierEligible: true,
     costRiskLevel: "LOW",
     paidAlternativeWarning: null,
-    prerequisites: "Git installed locally and a free GitHub account.",
-    requiredPermissions: "GitHub repository admin / write permissions.",
-    cleanupGuide: "Repository and workflow files reside in your personal GitHub account. No cloud resources created; zero cost cleanup.",
+    prerequisites: "A local terminal (Linux Ubuntu, macOS, or Git Bash on Windows).",
+    requiredPermissions: "Standard local user terminal permissions (no cloud credentials or AWS billing required).",
+    cleanupGuide: "All files and repositories created during this lab are strictly local to your machine. To clean up completely, simply delete the 'git-mastery-lab' directory: rm -rf git-mastery-lab. Zero cloud cost.",
     safeSimulationScript: `#!/bin/bash
-# Local simulation of GitHub Actions runner & matrix CI workflow
-echo "=== GitHub Actions CI Simulator ==="
-echo "Event: push to branch 'feature/login' triggered workflow '.github/workflows/ci.yml'"
-echo "[Runner: ubuntu-latest] Setting up Node.js 20.x..."
-echo "[Runner: ubuntu-latest] Running 'npm ci' -> 42 packages installed in 2.3s"
-echo "[Runner: ubuntu-latest] Running 'npm test' -> 18/18 tests passed (100% coverage)"
-echo "[Runner: ubuntu-latest] Running 'npm run lint' -> 0 errors, 0 warnings"
-echo "Status: SUCCESS (exit code 0). Branch protection rule verified. PR ready to merge!"`,
+# Comprehensive local simulation of the Git Local Repository Lifecycle & Cheat Sheet
+echo "=== Git Local Repository & Cheat Sheet Simulator ==="
+mkdir -p /tmp/git-mastery-sim && cd /tmp/git-mastery-sim
+echo "[1/8] Verifying Git installation: $(git --version)"
+git config user.name "Cloud Engineer"
+git config user.email "engineer@cloudmaster.io"
+git config alias.glog "log --graph --oneline"
+echo "[2/8] Initializing local repository..."
+git init
+echo "[3/8] Simulating Working Directory -> Staging Area with git add..."
+echo "<h1>Cloud Platform v1.0</h1>" > index.html
+git status -s
+git add index.html
+echo "[4/8] Demonstrating safe unstaging with git rm --cached..."
+git rm --cached index.html
+ls -la index.html # Confirmed: file remains safe on disk!
+git add index.html
+echo "[5/8] Creating permanent commit snapshot..."
+git commit -m "feat: initial landing page"
+echo "[6/8] Demonstrating git diff HEAD & git diff --cached..."
+echo "<p>Enterprise Microservices</p>" >> index.html
+git diff index.html
+git add index.html
+git diff --cached
+git commit -m "feat: add enterprise description"
+echo "[7/8] Demonstrating git log --graph --decorate --oneline..."
+git log --graph --decorate --oneline -n 5
+echo "[8/8] Demonstrating safe dry run git clean -n before force clean..."
+touch test.log temp.tmp
+git clean -n
+git clean -f
+echo "=== Verification SUCCESS: All Three Sections and Cheat Sheet Commands Operational ==="
+cd / && rm -rf /tmp/git-mastery-sim`,
     steps: [
       {
         stepNumber: 1,
-        title: "Initialize Git Repository & Create Feature Branch",
-        description: "Set up a clean Git tracking repository and switch to an isolated feature branch.",
-        consoleInstruction: "Open terminal in project directory. Run git status to verify clean working tree, then create your feature branch.",
-        cliCommand: "git checkout -b feature/auth-guard && echo 'const auth = true;' > auth.js && git add auth.js && git commit -m 'feat: add authentication guard'",
-        expectedOutput: "[feature/auth-guard 4a9bc12] feat: add authentication guard",
-        verificationTip: "Run 'git log -n 1' to verify commit author and cryptographic SHA.",
-        troubleshooting: "If git user is not configured, run: git config --global user.name 'Your Name' && git config --global user.email 'you@example.com'."
+        title: "Verify Git Installation on Ubuntu/Linux & Windows",
+        description: "Ensure Git is installed on your workstation and verify the installed version against recent releases.",
+        consoleInstruction: "Open your terminal or Git Bash. On Ubuntu, refresh package indexes before installing.",
+        cliCommand: "git --version\n# If not installed on Ubuntu:\n# sudo apt-get update && sudo apt-get install -y git",
+        expectedOutput: "git version 2.43.0 (or newer)",
+        verificationTip: "Always run 'git --version' after installation to confirm your shell locates the binary in your PATH.",
+        troubleshooting: "If 'command not found', run 'sudo apt-get update && sudo apt-get install -y git' on Ubuntu or install Git Bash on Windows."
       },
       {
         stepNumber: 2,
-        title: "Author GitHub Actions CI Workflow YAML",
-        description: "Create .github/workflows/ci.yml to automate linting and testing on every pull request.",
-        consoleInstruction: "Create directory .github/workflows and add ci.yml containing triggers: on [push, pull_request].",
-        cliCommand: "mkdir -p .github/workflows && cat << 'EOF' > .github/workflows/ci.yml\nname: CI Pipeline\non: [push, pull_request]\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: '20'\n      - run: npm test\nEOF",
-        expectedOutput: "Created .github/workflows/ci.yml with automated CI runner definition.",
-        verificationTip: "Verify YAML indentation using a linter to ensure no tab characters exist.",
-        troubleshooting: "YAML files require 2 spaces for indentation; never use hard tabs."
+        title: "Configure Global Identity & Git Command Aliases",
+        description: "Set your global author name and email attached to all commits, and configure productive command aliases.",
+        consoleInstruction: "Run git config commands with the --global flag to write settings to ~/.gitconfig.",
+        cliCommand: "git config --global user.name \"Cloud Engineer\"\ngit config --global user.email \"engineer@cloudmaster.io\"\ngit config --global alias.glog \"log --graph --oneline\"\ngit config --global --list",
+        expectedOutput: "user.name=Cloud Engineer\nuser.email=engineer@cloudmaster.io\nalias.glog=log --graph --oneline",
+        verificationTip: "Run 'git config --global --list' to inspect all active global parameters.",
+        troubleshooting: "If commits later warn about author identity, re-run the user.name and user.email commands with quotes."
+      },
+      {
+        stepNumber: 3,
+        title: "Initialize Repository & Inspect .git Directory Architecture",
+        description: "Turn an ordinary directory into a Git-tracked workspace and inspect the internal .git folder structure.",
+        consoleInstruction: "Create a new practice folder 'git-mastery-lab', navigate into it, and initialize Git.",
+        cliCommand: "mkdir -p ~/git-mastery-lab && cd ~/git-mastery-lab\ngit init\nls -la .git",
+        expectedOutput: "Initialized empty Git repository in /home/.../git-mastery-lab/.git/\nHEAD  config  description  hooks/  info/  objects/  refs/",
+        verificationTip: "The hidden '.git' folder contains all configuration, object databases, and refs. Never delete this folder.",
+        troubleshooting: "Never run 'git init' inside an existing Git repository subfolder to avoid broken nested tracking."
+      },
+      {
+        stepNumber: 4,
+        title: "The Three Sections: Working Directory to Staging Area",
+        description: "Experience the transition of files from untracked in the Working Directory to staged in the Staging Area.",
+        consoleInstruction: "Create an application file. Check 'git status' to see untracked state in red, then run 'git add' to stage it.",
+        cliCommand: "echo '<h1>AWS & DevOps Mastery Platform</h1>' > index.html\ngit status\ngit add index.html\ngit status",
+        expectedOutput: "Changes to be committed:\n  (use \"git rm --cached <file>...\" to unstage)\n\tnew file:   index.html",
+        verificationTip: "Notice 'git status' displays untracked files in red and staged files in green.",
+        troubleshooting: "Prefer 'git add <file>' over blind 'git add .' to ensure you only stage files intentionally."
+      },
+      {
+        stepNumber: 5,
+        title: "Safe Unstaging Without Disk Deletion (git rm --cached)",
+        description: "Practice unstaging a file back to the Working Directory without deleting or overwriting any code on disk.",
+        consoleInstruction: "Run 'git rm --cached index.html'. Confirm that the file is removed from staging but remains 100% intact on disk.",
+        cliCommand: "git rm --cached index.html\ngit status\ncat index.html\n# Now re-stage it for commit:\ngit add index.html",
+        expectedOutput: "rm 'index.html'\nUntracked files:\n  (use \"git add <file>...\" to include in what will be committed)\n\tindex.html\n<h1>AWS & DevOps Mastery Platform</h1>",
+        verificationTip: "CRITICAL: Never run plain 'git rm index.html' without '--cached', as plain 'git rm' deletes the physical file from disk!",
+        troubleshooting: "'git reset index.html' or 'git restore --staged index.html' achieve the exact same safe unstaging result."
+      },
+      {
+        stepNumber: 6,
+        title: "Create Permanent Snapshot (git commit) & Amend Message",
+        description: "Permanently record staged files into the Local Repository DAG and edit the commit using --amend.",
+        consoleInstruction: "Commit staged files with a clear conventional message, view it with 'git log', and practice 'git commit --amend'.",
+        cliCommand: "git commit -m \"feat: create initial application landing page\"\ngit log --oneline\ngit commit --amend -m \"feat(web): create initial application landing page structure\"",
+        expectedOutput: "[main (root-commit) 4a9bc12] feat(web): create initial application landing page structure\n 1 file changed, 1 insertion(+)",
+        verificationTip: "Run 'git log --oneline' to confirm the commit hash and updated message.",
+        troubleshooting: "Never amend commits that have already been pushed to a shared public remote branch."
+      },
+      {
+        stepNumber: 7,
+        title: "Inspect Diffs (HEAD vs Cached) & Visualize Commit Graphs",
+        description: "Modify your code to practice diffing unstaged changes vs staged changes vs the last commit.",
+        consoleInstruction: "Append new lines to index.html. Compare 'git diff' (unstaged) against 'git diff HEAD' and 'git diff --cached'.",
+        cliCommand: "echo '<p>Production Kubernetes & Terraform</p>' >> index.html\ngit diff\ngit diff HEAD\ngit add index.html\ngit diff --cached\ngit commit -m \"feat(web): add microservices description\"\ngit glog",
+        expectedOutput: "+<p>Production Kubernetes & Terraform</p>\n* 7c3d2e1 (HEAD -> main) feat(web): add microservices description\n* 4a9bc12 feat(web): create initial application landing page structure",
+        verificationTip: "Use your custom alias 'git glog' or 'git log --graph --decorate --oneline' for clear visual history.",
+        troubleshooting: "Remember: 'git diff' shows unstaged edits, while 'git diff --cached' shows what is queued in staging."
+      },
+      {
+        stepNumber: 8,
+        title: "Workspace Hygiene: Dry-Run Preview (git clean -n) & Cleanup",
+        description: "Clean up untracked temporary files and build artifacts safely using dry-run preview before force execution.",
+        consoleInstruction: "Create temporary test files. Run 'git clean -n' to preview what would be deleted, then execute with '-f'.",
+        cliCommand: "touch temp_debug.log test_artifact.tmp\ngit status -s\ngit clean -n\ngit clean -f\ngit status",
+        expectedOutput: "Would remove temp_debug.log\nWould remove test_artifact.tmp\nRemoving temp_debug.log\nRemoving test_artifact.tmp\nnothing to commit, working tree clean",
+        verificationTip: "ALWAYS run 'git clean -n' (dry run) before 'git clean -f' to guarantee you do not delete legitimate uncommitted files.",
+        troubleshooting: "Add '-d' flag ('git clean -nd') if you need to preview and clean untracked directories as well."
+      }
+    ]
+  },
+  'git-command-suite-cheat-sheet-mastery': {
+    title: "Lab 16B: Production Incident Response & Git Disaster Recovery Masterclass",
+    level: "Intermediate",
+    estimatedMinutes: 40,
+    freeTierEligible: true,
+    costRiskLevel: "LOW",
+    paidAlternativeWarning: null,
+    prerequisites: "Basic Git terminal proficiency (completion of Lab 16A).",
+    requiredPermissions: "Local terminal environment (Linux Ubuntu, macOS, or Git Bash).",
+    cleanupGuide: "All drills are contained inside a local temporary folder. To clean up completely, delete the practice folder: rm -rf ~/git-incident-lab.",
+    safeSimulationScript: `#!/bin/bash
+# Production Git Disaster Recovery & Incident Response Simulator
+echo "=== Git Production Incident Response & Disaster Recovery Simulator ==="
+DIR="/tmp/git-incident-sim"
+rm -rf "$DIR" && mkdir -p "$DIR" && cd "$DIR"
+git init
+git config user.name "SRE Lead"
+git config user.email "sre@cloudmaster.io"
+
+echo "--- Drill 1: Simulating Accidental 'git reset --hard' & Reflog Recovery ---"
+echo "v1" > app.js && git add app.js && git commit -m "feat: core v1"
+echo "v2" >> app.js && git add app.js && git commit -m "feat: core v2"
+echo "v3" >> app.js && git add app.js && git commit -m "feat: core v3 (CRITICAL WORK)"
+LOST_SHA=$(git rev-parse HEAD)
+echo "Executing accidental hard reset: git reset --hard HEAD~2..."
+git reset --hard HEAD~2
+echo "Current HEAD is now at: $(git rev-parse --short HEAD) - Work appears lost!"
+echo "Recovering via reflog: checking out lost commit $LOST_SHA..."
+git checkout -b recovery-branch "$LOST_SHA"
+echo "SUCCESS: 100% of lost work restored on recovery-branch! File content:"
+cat app.js
+
+echo "--- Drill 2: Simulating Automated 'git bisect' Regression Hunting ---"
+cd "$DIR"
+cat << 'EOF' > test_payment.sh
+#!/bin/bash
+grep -q "BROKEN_PAYMENT" app.js && exit 1 || exit 0
+EOF
+chmod +x test_payment.sh
+echo "v4 - stable" >> app.js && git commit -am "feat: stable v4"
+GOOD_SHA=$(git rev-parse HEAD)
+echo "v5 - BROKEN_PAYMENT" >> app.js && git commit -am "feat: faulty payment serialization"
+BAD_SHA=$(git rev-parse HEAD)
+echo "v6 - downstream" >> app.js && git commit -am "feat: downstream analytics"
+echo "Starting automated bisect with test_payment.sh..."
+git bisect start "$BAD_SHA" "$GOOD_SHA"
+git bisect run ./test_payment.sh
+echo "Bisect identified first bad commit successfully!"
+git bisect reset
+
+echo "--- Drill 3: Simulating Surgical Cherry-Pick with -x Traceability ---"
+git checkout -b hotfix-target HEAD~2
+git cherry-pick -x "$BAD_SHA"~1 # Cherry pick previous stable commit
+git log -n 1 --pretty=format:"%h - %s (%b)"
+echo ""
+echo "=== All Incident Recovery Simulations PASSED with Zero Data Loss ==="
+cd / && rm -rf "$DIR"`,
+    steps: [
+      {
+        stepNumber: 1,
+        title: "Disaster Recovery: Restore Lost Commits after 'git reset --hard' via Reflog",
+        description: "Simulate an accidental hard reset that dropped unpushed commits, and use the reflog to resurrect 100% of the lost work.",
+        consoleInstruction: "Create a drill repo. Commit 3 milestones, execute an accidental 'git reset --hard HEAD~2', and inspect the reflog.",
+        cliCommand: "mkdir -p ~/git-incident-lab && cd ~/git-incident-lab && git init\necho 'feature 1' > app.js && git add . && git commit -m 'feat: step 1'\necho 'feature 2' >> app.js && git commit -am 'feat: step 2'\necho 'feature 3' >> app.js && git commit -am 'feat: step 3 (CRITICAL)'\ngit reset --hard HEAD~2\ngit reflog\ngit checkout -b recovery-branch HEAD@{1}",
+        expectedOutput: "HEAD is now at ... feat: step 1\nHEAD@{0}: reset: moving to HEAD~2\nHEAD@{1}: commit: feat: step 3 (CRITICAL)\nSwitched to a new branch 'recovery-branch'",
+        verificationTip: "Run 'cat app.js' to confirm all 3 features are fully restored on 'recovery-branch'.",
+        troubleshooting: "If HEAD index differs in your terminal, check the reflog output line showing 'commit: feat: step 3'."
+      },
+      {
+        stepNumber: 2,
+        title: "Surgical Release Management: Git Cherry-Pick with Traceability (-x)",
+        description: "Extract an isolated hotfix commit from an unmerged experimental branch into a stable production branch without pulling in unreviewed code.",
+        consoleInstruction: "Switch to a production branch. Use 'git cherry-pick -x <commit-sha>' to apply only the isolated bugfix.",
+        cliCommand: "git checkout -b v2.0-stable main\ngit log --oneline recovery-branch\n# Extract the specific commit SHA with -x provenance tracking:\ngit cherry-pick -x recovery-branch\ngit log -n 1",
+        expectedOutput: "[v2.0-stable ...] feat: step 2\n(cherry picked from commit ...)",
+        verificationTip: "The '-x' flag automatically appends the source commit hash for audit and traceability compliance.",
+        troubleshooting: "If merge conflicts appear during cherry-pick, resolve them in app.js, stage with 'git add app.js', and run 'git cherry-pick --continue'."
+      },
+      {
+        stepNumber: 3,
+        title: "Automated Bug Hunting: Binary Search via 'git bisect run'",
+        description: "Write an automated test assertion script and let Git execute binary search across history to locate a regression commit in seconds.",
+        consoleInstruction: "Create a test script that validates code. Start bisect and run 'git bisect run ./test.sh'.",
+        cliCommand: "cat << 'EOF' > test_assertion.sh\n#!/bin/bash\n# Fails (exit 1) if step 3 exists, passes (exit 0) otherwise:\ngrep -q 'step 3' app.js && exit 1 || exit 0\nEOF\nchmod +x test_assertion.sh\ngit checkout recovery-branch\ngit bisect start HEAD v2.0-stable\ngit bisect run ./test_assertion.sh\ngit bisect reset",
+        expectedOutput: "... is the first bad commit\ncommit ...\nAuthor: ...\n    feat: step 3 (CRITICAL)\nBisect run success.",
+        verificationTip: "Notice how Git tests the middle commit automatically and halving the search space on each run.",
+        troubleshooting: "Always ensure the test script is executable ('chmod +x test_assertion.sh') and returns standard 0 on pass and 1 on fail."
+      },
+      {
+        stepNumber: 4,
+        title: "Triage & Resolve 3-Way Merge Conflicts with Conflict Markers",
+        description: "Simulate competing edits from two engineering squads on the same configuration lines and resolve conflict markers cleanly.",
+        consoleInstruction: "Create conflicting edits on two branches, trigger a merge conflict, and inspect conflict markers (<<<<<<< HEAD, =======, >>>>>>>).",
+        cliCommand: "git checkout -b squad-alpha recovery-branch\necho 'PORT=8080' > config.env && git add . && git commit -m 'config: port 8080'\ngit checkout -b squad-beta recovery-branch\necho 'PORT=9090' > config.env && git add . && git commit -m 'config: port 9090'\ngit merge squad-alpha",
+        expectedOutput: "CONFLICT (content): Merge conflict in config.env\nAutomatic merge failed; fix conflicts and then commit the result.",
+        verificationTip: "Open config.env. Notice '<<<<<<< HEAD' has 9090 and '>>>>>>> squad-alpha' has 8080. Edit to choose the agreed port.",
+        troubleshooting: "After editing and removing conflict markers, run 'git add config.env' and 'git commit' to complete the 3-way merge."
+      },
+      {
+        stepNumber: 5,
+        title: "Overcoming Push Rejections: Interactive Rebase to Excise Large Blobs",
+        description: "Simulate accidental commitment of an unwanted large file, and rewrite history using interactive rebase to remove it before pushing.",
+        consoleInstruction: "Commit a temporary dummy blob. Use 'git rebase -i' with the edit command to delete the file from history.",
+        cliCommand: "echo 'LARGE DATA PAYLOAD' > dummy_large.iso\ngit add dummy_large.iso && git commit -m 'temp: accidental large file commit'\necho 'legitimate feature' >> app.js && git commit -am 'feat: legitimate work'\ngit log --oneline -2\n# Rebase to remove the dummy file:\ngit rebase -i HEAD~2",
+        expectedOutput: "[detached HEAD ...] feat: legitimate work\nSuccessfully rebased and updated refs/heads/squad-beta.",
+        verificationTip: "In the rebase editor, change 'pick' to 'edit' next to the large file commit, run 'git rm dummy_large.iso && git commit --amend', then 'git rebase --continue'.",
+        troubleshooting: "Always add large file extensions (*.iso, *.tar.gz, *.mp4) to .gitignore to prevent accidental staging."
+      },
+      {
+        stepNumber: 6,
+        title: "Clean Remote Synchronization: Rebase Pull vs Force Pushing Safety",
+        description: "Practice updating feature branches using 'git pull --rebase' to preserve linear commit history and understand --force-with-lease.",
+        consoleInstruction: "Inspect the commit DAG with 'git log --graph --oneline'. Practice rebase integration instead of generating merge bubbles.",
+        cliCommand: "git checkout -b feature/clean-sync\necho 'update' >> app.js && git commit -am 'feat: linear local commit'\n# Rebase local commits cleanly on top of target branch:\ngit rebase v2.0-stable\ngit log --graph --decorate --oneline -5",
+        expectedOutput: "* ... (HEAD -> feature/clean-sync) feat: linear local commit\n* ... (v2.0-stable) feat: step 2\n* ... feat: step 1",
+        verificationTip: "Notice the commit history is a straight line with zero chaotic merge bubbles.",
+        troubleshooting: "When pushing a rebased branch to remote, always use '--force-with-lease' rather than plain '--force' to avoid clobbering teammates' work."
+      }
+    ]
+  },
+  'git-fundamentals-branching-merge-strategies': {
+    title: "Lab 16.1: Git Architecture, Three-Section Local Repository & Version Control Foundations",
+    level: "Beginner",
+    estimatedMinutes: 35,
+    freeTierEligible: true,
+    costRiskLevel: "LOW",
+    paidAlternativeWarning: null,
+    prerequisites: "A local terminal (Linux Ubuntu, macOS, or Git Bash on Windows).",
+    requiredPermissions: "Standard workstation terminal permissions (no cloud credentials or AWS billing required).",
+    cleanupGuide: "All files and repositories created during this lab are strictly local to your machine. To clean up completely: rm -rf ~/git-mastery-lab.",
+    safeSimulationScript: `#!/bin/bash
+# Comprehensive local simulation of the Git Local Repository Lifecycle & Foundations
+echo "=== Git Local Repository & Foundations Simulator ==="
+mkdir -p /tmp/git-vcs-sim && cd /tmp/git-vcs-sim
+echo "[1/7] Verifying Git installation: $(git --version)"
+git config user.name "Cloud Engineer"
+git config user.email "engineer@cloudmaster.io"
+git config alias.glog "log --graph --oneline"
+echo "[2/7] Initializing local repository..."
+git init
+echo "[3/7] Simulating Working Directory -> Staging Area with git add..."
+echo "<h1>Cloud Platform v1.0</h1>" > index.html
+git status -s
+git add index.html
+echo "[4/7] Demonstrating safe unstaging with git rm --cached..."
+git rm --cached index.html
+ls -la index.html # Confirmed: file remains safe on disk!
+git add index.html
+echo "[5/7] Creating permanent commit snapshot..."
+git commit -m "feat: initial landing page"
+echo "[6/7] Creating and merging feature branch..."
+git checkout -b feature/auth-guard
+echo "const auth = true;" > auth.js
+git add auth.js && git commit -m "feat(auth): add authentication guard"
+git checkout main
+git merge --ff-only feature/auth-guard
+echo "[7/7] Verifying commit DAG..."
+git log --graph --oneline
+echo "=== Verification SUCCESS: Topic 1 Architecture & Foundations Operational ==="
+cd / && rm -rf /tmp/git-vcs-sim`,
+    steps: [
+      {
+        stepNumber: 1,
+        title: "Verify Git Installation on Ubuntu/Linux & Windows",
+        description: "Ensure Git is installed on your workstation and verify the installed version against recent releases.",
+        consoleInstruction: "Open your terminal or Git Bash. On Ubuntu, refresh package indexes before installing.",
+        cliCommand: "git --version\n# If not installed on Ubuntu:\n# sudo apt-get update && sudo apt-get install -y git",
+        expectedOutput: "git version 2.43.0 (or newer)",
+        verificationTip: "Always run 'git --version' after installation to confirm your shell locates the binary in your PATH.",
+        troubleshooting: "If 'command not found', run 'sudo apt-get update && sudo apt-get install -y git' on Ubuntu or install Git Bash on Windows."
+      },
+      {
+        stepNumber: 2,
+        title: "Configure Global Identity & Git Command Aliases",
+        description: "Set your global author name and email attached to all commits, and configure productive command aliases.",
+        consoleInstruction: "Run git config commands with the --global flag to write settings to ~/.gitconfig.",
+        cliCommand: "git config --global user.name \"Cloud Engineer\"\ngit config --global user.email \"engineer@cloudmaster.io\"\ngit config --global alias.glog \"log --graph --oneline\"\ngit config --global --list",
+        expectedOutput: "user.name=Cloud Engineer\nuser.email=engineer@cloudmaster.io\nalias.glog=log --graph --oneline",
+        verificationTip: "Run 'git config --global --list' to inspect all active global parameters.",
+        troubleshooting: "If commits later warn about author identity, re-run the user.name and user.email commands with quotes."
+      },
+      {
+        stepNumber: 3,
+        title: "Initialize Repository & Inspect .git Directory Architecture",
+        description: "Turn an ordinary directory into a Git-tracked workspace and inspect the internal .git folder structure.",
+        consoleInstruction: "Create a new practice folder 'git-mastery-lab', navigate into it, and initialize Git.",
+        cliCommand: "mkdir -p ~/git-mastery-lab && cd ~/git-mastery-lab\ngit init\nls -la .git",
+        expectedOutput: "Initialized empty Git repository in /home/.../git-mastery-lab/.git/\nHEAD  config  description  hooks/  info/  objects/  refs/",
+        verificationTip: "The hidden '.git' folder contains all configuration, object databases, and refs. Never delete this folder.",
+        troubleshooting: "Never run 'git init' inside an existing Git repository subfolder to avoid broken nested tracking."
+      },
+      {
+        stepNumber: 4,
+        title: "The Three Sections: Working Directory to Staging Area",
+        description: "Experience the transition of files from untracked in the Working Directory to staged in the Staging Area.",
+        consoleInstruction: "Create an application file. Check 'git status' to see untracked state in red, then run 'git add' to stage it.",
+        cliCommand: "echo '<h1>AWS & DevOps Mastery Platform</h1>' > index.html\ngit status\ngit add index.html\ngit status",
+        expectedOutput: "Changes to be committed:\n  (use \"git rm --cached <file>...\" to unstage)\n\tnew file:   index.html",
+        verificationTip: "Notice 'git status' displays untracked files in red and staged files in green.",
+        troubleshooting: "Prefer 'git add <file>' over blind 'git add .' to ensure you only stage files intentionally."
+      },
+      {
+        stepNumber: 5,
+        title: "Safe Unstaging Without Disk Deletion (git rm --cached)",
+        description: "Practice unstaging a file back to the Working Directory without deleting or overwriting any code on disk.",
+        consoleInstruction: "Run 'git rm --cached index.html'. Confirm that the file is removed from staging but remains 100% intact on disk.",
+        cliCommand: "git rm --cached index.html\ngit status\ncat index.html\n# Now re-stage it for commit:\ngit add index.html",
+        expectedOutput: "rm 'index.html'\nUntracked files:\n  (use \"git add <file>...\" to include in what will be committed)\n\tindex.html\n<h1>AWS & DevOps Mastery Platform</h1>",
+        verificationTip: "CRITICAL: Never run plain 'git rm index.html' without '--cached', as plain 'git rm' deletes the physical file from disk!",
+        troubleshooting: "'git reset index.html' or 'git restore --staged index.html' achieve the exact same safe unstaging result."
+      },
+      {
+        stepNumber: 6,
+        title: "Create Permanent Snapshot (git commit) & Inspect Log",
+        description: "Permanently record staged files into the Local Repository DAG with a conventional commit message.",
+        consoleInstruction: "Commit staged files with a clear message and view the resulting commit object.",
+        cliCommand: "git commit -m \"feat: create initial application landing page\"\ngit log --oneline\ngit show HEAD",
+        expectedOutput: "[main (root-commit) 4a9bc12] feat: create initial application landing page\n 1 file changed, 1 insertion(+)",
+        verificationTip: "Run 'git log --oneline' to confirm the commit hash and updated message.",
+        troubleshooting: "Never commit credentials or debug secrets into the local repository."
+      },
+      {
+        stepNumber: 7,
+        title: "Create Feature Branch & Fast-Forward Integration",
+        description: "Practice creating lightweight movable branch pointers and merging cleanly with fast-forward mechanics.",
+        consoleInstruction: "Create a feature branch, author a new module, commit, switch back to main, and merge.",
+        cliCommand: "git checkout -b feature/auth-guard\necho 'const auth = true;' > auth.js\ngit add auth.js && git commit -m \"feat(auth): implement auth guard module\"\ngit checkout main\ngit merge --ff-only feature/auth-guard\ngit log --graph --oneline",
+        expectedOutput: "Updating ...\nFast-forward\n auth.js | 1 +\n 1 file changed, 1 insertion(+)",
+        verificationTip: "Notice that fast-forward merges simply move the main pointer forward without creating extra merge commits.",
+        troubleshooting: "Use 'git branch -d feature/auth-guard' after merging to keep local branch lists clean."
+      }
+    ]
+  },
+  'github-actions-cicd-matrix-secrets': {
+    title: "Lab 16.3: GitHub Actions Enterprise CI/CD Pipeline, Matrix Testing & Secret Management",
+    level: "Intermediate",
+    estimatedMinutes: 35,
+    freeTierEligible: true,
+    costRiskLevel: "LOW",
+    paidAlternativeWarning: null,
+    prerequisites: "A GitHub account and Git installed locally.",
+    requiredPermissions: "GitHub repository write / admin permissions.",
+    cleanupGuide: "Repository and workflow files reside in your personal GitHub account. No cloud resources created; zero cost cleanup.",
+    safeSimulationScript: `#!/bin/bash
+# Local simulation of GitHub Actions runner & matrix CI workflow
+echo "=== GitHub Actions Enterprise CI/CD Simulator ==="
+echo "Event: push to branch 'main' triggered workflow '.github/workflows/ci.yml'"
+echo "[Runner: ubuntu-latest | Node: 18.x] Setting up Node.js 18.x..."
+echo "[Runner: ubuntu-latest | Node: 18.x] Running 'npm ci' -> 42 packages installed in 2.1s"
+echo "[Runner: ubuntu-latest | Node: 18.x] Running 'npm test' -> 24/24 tests passed (100% coverage)"
+echo "[Runner: ubuntu-latest | Node: 20.x] Setting up Node.js 20.x..."
+echo "[Runner: ubuntu-latest | Node: 20.x] Running 'npm ci' -> 42 packages installed in 1.9s"
+echo "[Runner: ubuntu-latest | Node: 20.x] Running 'npm test' -> 24/24 tests passed (100% coverage)"
+echo "[Secrets] Masking AWS_ACCESS_KEY_ID: ***"
+echo "[Branch Protection] Status checks validated: PASS"
+echo "Status: SUCCESS (exit code 0). Pull request ready for automated deployment!"`,
+    steps: [
+      {
+        stepNumber: 1,
+        title: "Scaffold GitHub Actions Directory & Workflow YAML",
+        description: "Create the standard .github/workflows directory and author an enterprise continuous integration pipeline definition.",
+        consoleInstruction: "Create .github/workflows/ci.yml specifying triggers on push and pull_request.",
+        cliCommand: "mkdir -p .github/workflows && cat << 'EOF' > .github/workflows/ci.yml\nname: Enterprise CI Matrix\non:\n  push:\n    branches: [ main, develop ]\n  pull_request:\n    branches: [ main ]\njobs:\n  test:\n    name: Test on Node ${{ matrix.node-version }} - ${{ matrix.os }}\n    runs-on: ${{ matrix.os }}\n    strategy:\n      matrix:\n        os: [ubuntu-latest]\n        node-version: [18.x, 20.x]\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: ${{ matrix.node-version }}\n          cache: 'npm'\n      - run: npm ci\n      - run: npm test --if-present\nEOF",
+        expectedOutput: "Created .github/workflows/ci.yml with multi-OS and multi-version matrix strategy.",
+        verificationTip: "Verify that YAML files use strictly 2 spaces for indentation; never use tab characters.",
+        troubleshooting: "Run a YAML validator to ensure triggers and job mappings conform to GitHub Actions syntax."
+      },
+      {
+        stepNumber: 2,
+        title: "Configure Encrypted Repository Secrets & Environment Variables",
+        description: "Store sensitive API tokens securely in GitHub Repository Secrets and inject them safely into workflow steps.",
+        consoleInstruction: "Use GitHub CLI or web UI (Settings -> Secrets and variables -> Actions) to store encrypted credentials.",
+        cliCommand: "# Using GitHub CLI to set encrypted secrets from terminal:\ngh secret set AWS_ACCESS_KEY_ID --body 'AKIAIOSFODNN7EXAMPLE'\ngh secret set AWS_SECRET_ACCESS_KEY --body 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'",
+        expectedOutput: "✓ Set Actions secret AWS_ACCESS_KEY_ID for org/repo\n✓ Set Actions secret AWS_SECRET_ACCESS_KEY for org/repo",
+        verificationTip: "GitHub automatically masks secret values in runner terminal execution logs as '***'.",
+        troubleshooting: "Never use 'echo $AWS_SECRET_ACCESS_KEY' in shell run steps to prevent accidental log exposure."
+      },
+      {
+        stepNumber: 3,
+        title: "Test Workflow Execution Locally Using Docker (act)",
+        description: "Run and validate your GitHub Actions workflows locally inside Docker containers without pushing to remote.",
+        consoleInstruction: "Use the open-source 'act' tool to execute GitHub Actions workflows on your workstation.",
+        cliCommand: "# List workflows in repository:\nact -l\n# Simulate pull_request event execution locally:\nact pull_request -s AWS_ACCESS_KEY_ID=mock_key",
+        expectedOutput: "[Enterprise CI Matrix/Test] ⭐ Run actions/checkout@v4\n[Enterprise CI Matrix/Test] ⭐ Run npm test\n[Enterprise CI Matrix/Test] 🏁 Job succeeded",
+        verificationTip: "'act' spins up local Docker containers mimicking GitHub's ubuntu-latest runner image.",
+        troubleshooting: "Ensure Docker daemon is running locally before executing 'act'."
+      },
+      {
+        stepNumber: 4,
+        title: "Commit Workflow & Enforce Branch Protection Rules",
+        description: "Commit the workflow to your repository and configure Branch Protection Rules on the 'main' branch.",
+        consoleInstruction: "Stage the workflow file, commit, and push. Enable Branch Protection requiring passing CI checks.",
+        cliCommand: "git add .github/workflows/ci.yml\ngit commit -m \"ci: add enterprise matrix testing workflow\"\ngit push origin main",
+        expectedOutput: "Branch 'main' set up to track remote branch 'main' from 'origin'.\nWorkflow queued and running in GitHub Actions tab.",
+        verificationTip: "In GitHub: Settings -> Branches -> Add branch protection rule for 'main' -> Require status checks to pass before merging.",
+        troubleshooting: "If CI fails on remote, inspect the Actions tab log output to locate failing unit tests or missing dependencies."
+      }
+    ]
+  },
+  "jenkins-architecture-master-agents": {
+    title: "Lab 17.1: Jenkins RHEL Setup, Unlock Wizard, Global Security & Role Strategy RBAC",
+    level: "Intermediate",
+    estimatedMinutes: 35,
+    freeTierEligible: true,
+    costRiskLevel: "LOW",
+    paidAlternativeWarning: null,
+    prerequisites: "Linux terminal (RHEL/CentOS or Ubuntu/Debian) or Docker installed.",
+    requiredPermissions: "Root/sudo privileges on Linux host or local Docker daemon permissions.",
+    cleanupGuide: "Stop and disable Jenkins service: sudo systemctl stop jenkins && sudo systemctl disable jenkins. (If Docker: docker stop jenkins-lab && docker rm jenkins-lab).",
+    safeSimulationScript: `#!/bin/bash
+# Local simulation of Jenkins Enterprise Setup and Security Configuration
+echo "=== 1. Checking Java 17 Prerequisite ==="
+java -version 2>&1 | head -n 1
+echo "=== 2. Starting Jenkins Systemd Service ==="
+echo "Active: active (running) since Wed 2026-11-04 10:00:00 UTC; 5s ago"
+echo "Main PID: 1420 (java) | Listening on port 8080"
+echo "=== 3. Retrieving Initial Admin Password ==="
+echo "e4b2a8d39f7c4618a510e193bd85f67a"
+echo "=== 4. Configuring Global Security: Role Strategy Plugin ==="
+echo "Roles defined: Admin (Full), Developer (Job/Build, Job/Read), QA (Job/Read only)"
+echo "=== 5. Controller-Agent Topology ==="
+echo "Controller executors set to: 0 (No build execution on Master)"
+echo "Connected Agent: linux-builder-1 (label: 'linux-builder') -> ONLINE"`,
+    steps: [
+      {
+        stepNumber: 1,
+        title: "Install OpenJDK 17 and Add Jenkins YUM Repository",
+        description: "Jenkins is a Java application and strictly requires Java 17. Add the official Red Hat repository and import the signing key.",
+        consoleInstruction: "Update package manager, install Java 17, download repo definition, and import signing key.",
+        cliCommand: "sudo yum update -y\nsudo yum install fontconfig java-17-openjdk -y\nsudo curl -o /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo\nsudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key",
+        expectedOutput: "java-17-openjdk installed successfully.\nImported GPG key from https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key",
+        verificationTip: "Verify Java version: java -version (must output openjdk version '17.x.x').",
+        troubleshooting: "If GPG import fails with network error, verify outbound HTTPS access to pkg.jenkins.io."
+      },
+      {
+        stepNumber: 2,
+        title: "Install Jenkins Package and Enable Systemd Service",
+        description: "Install the Jenkins package via YUM and configure systemd to start and survive system reboots.",
+        consoleInstruction: "Install Jenkins, reload systemd daemon, start service, and enable on boot.",
+        cliCommand: "sudo yum install jenkins -y\nsudo systemctl daemon-reload\nsudo systemctl start jenkins\nsudo systemctl enable jenkins",
+        expectedOutput: "Created symlink /etc/systemd/system/multi-user.target.wants/jenkins.service -> /usr/lib/systemd/system/jenkins.service.",
+        verificationTip: "Run: sudo systemctl status jenkins (verify 'active (running)' and port 8080 binding).",
+        troubleshooting: "If port 8080 conflicts with another service, edit /usr/lib/systemd/system/jenkins.service and change JENKINS_PORT=8081."
+      },
+      {
+        stepNumber: 3,
+        title: "Retrieve Initial Admin Password and Complete Unlock Wizard",
+        description: "Retrieve the auto-generated cryptographic password from disk and unlock the browser setup wizard.",
+        consoleInstruction: "Display initial password file and open http://<server-ip>:8080 in browser.",
+        cliCommand: "sudo cat /var/lib/jenkins/secrets/initialAdminPassword",
+        expectedOutput: "32-character hexadecimal string printed to console (e.g., 7a8f9c2d1e4b5038f6a9e102bc45d781).",
+        verificationTip: "Navigate to http://localhost:8080, paste password into 'Administrator password', and select 'Install suggested plugins'.",
+        troubleshooting: "Do not delete initialAdminPassword until you create your primary named admin user account in the setup wizard."
+      },
+      {
+        stepNumber: 4,
+        title: "Install Role-based Authorization Strategy Plugin",
+        description: "Install the Role Strategy plugin to replace the dangerous default 'logged-in users can do anything' setting.",
+        consoleInstruction: "In Jenkins web console: Manage Jenkins -> Manage Plugins -> Available tab -> search 'Role-based Authorization Strategy' -> Install without restart.",
+        cliCommand: "# Via Jenkins CLI (or Web UI):\njava -jar jenkins-cli.jar -s http://localhost:8080/ -auth admin:<token> install-plugin role-strategy -restart",
+        expectedOutput: "Installing Role-based Authorization Strategy plugin... Success. Restarted Jenkins.",
+        verificationTip: "Confirm plugin is listed under Manage Jenkins -> Manage Plugins -> Installed tab.",
+        troubleshooting: "If plugin installation times out, check proxy settings under Manage Plugins -> Advanced."
+      },
+      {
+        stepNumber: 5,
+        title: "Configure Global Security Realms & Role-Based Permissions",
+        description: "Enforce least-privilege RBAC: define 'Developer' and 'QA' roles with tailored permissions.",
+        consoleInstruction: "Navigate to Manage Jenkins -> Configure Global Security -> Authorization -> Select 'Role-Based Strategy' -> Save. Then Manage Jenkins -> Manage and Assign Roles.",
+        cliCommand: "# Verification: Confirm authorization strategy is active\ncurl -s -u admin:token http://localhost:8080/manage | grep -i 'role-strategy'",
+        expectedOutput: "Role Strategy active. Roles defined: Developer (Job/Build, Job/Read, Job/Workspace), QA (Job/Read only).",
+        verificationTip: "Log in as a QA user: verify they cannot see 'Configure' button on jobs or access Manage Jenkins.",
+        troubleshooting: "Always ensure your admin user is assigned to the 'admin' role with Administer permission before saving, to prevent locking yourself out."
+      },
+      {
+        stepNumber: 6,
+        title: "Configure Distributed Controller-Agent Architecture",
+        description: "Set Controller executors to 0 to prevent build tasks from crashing the UI, and register a dedicated build agent node.",
+        consoleInstruction: "Navigate to Manage Jenkins -> Manage Nodes -> Built-In Node -> Configure -> Set '# of executors' to 0. Then click 'New Node' -> name 'linux-builder-1' -> label 'linux-builder'.",
+        cliCommand: "# Verify controller executors via groovy script\ncurl -d \"script=println Jenkins.instance.numExecutors\" -u admin:token http://localhost:8080/scriptText",
+        expectedOutput: "0\nlinux-builder-1 node registered with label 'linux-builder'. Status: Online.",
+        verificationTip: "Jobs pinned with 'agent { label 'linux-builder' }' will schedule strictly to the dedicated worker agent.",
+        troubleshooting: "If agent fails to connect, verify Agent TCP port (default 50000) is open between agent and controller."
+      }
+    ]
+  },
+  "declarative-jenkinsfile-production-pipelines": {
+    title: "Lab 17.2: Git Webhooks, Cron Triggers & Multi-Stage Declarative Pipelines",
+    level: "Advanced",
+    estimatedMinutes: 40,
+    freeTierEligible: true,
+    costRiskLevel: "LOW",
+    paidAlternativeWarning: null,
+    prerequisites: "Jenkins server running with Git and Pipeline plugins installed, and a GitHub account.",
+    requiredPermissions: "Jenkins job creation rights and GitHub repository admin rights (for webhooks).",
+    cleanupGuide: "Delete created Jenkins pipeline job and remove webhook from GitHub repository settings.",
+    safeSimulationScript: `#!/bin/bash
+# Local simulation of Declarative Pipeline with Webhook & Cron Triggers
+echo "=== 1. GitHub Webhook Payload Received ==="
+echo "POST /github-webhook/ -> Matching job 'production-pipeline' for branch 'main'"
+echo "=== 2. Starting Declarative Pipeline Build #42 ==="
+echo "[Pipeline] { (Declarative: Checkout SCM)"
+echo "[Pipeline] git https://github.com/org/app.git -> commit b7a10f3"
+echo "[Pipeline] } (Stage: Build) -> 'mvn compile' SUCCESS"
+echo "[Pipeline] } (Stage: Test) -> 'mvn test' 18/18 passed"
+echo "[Pipeline] } (Stage: Production Approval Gate)"
+echo "[Input] Deploy to Production? [Waiting for user approval] -> Approved by Lead DevOps"
+echo "[Pipeline] } (Stage: Deploy) -> Artifact deployed to AWS production"
+echo "[Pipeline] } (Declarative: Post Actions)"
+echo "[Post] Pipeline succeeded! Workspace cleaned via cleanWs()."
+echo "[Pipeline] Finished: SUCCESS"`,
+    steps: [
+      {
+        stepNumber: 1,
+        title: "Configure GitHub Webhook for Instant Event-Driven Builds",
+        description: "Configure GitHub to notify Jenkins instantly on code push events, eliminating manual polling.",
+        consoleInstruction: "In your GitHub repository: Settings -> Webhooks -> Add webhook. Set Payload URL to http://<your-jenkins-url>/github-webhook/, content type application/json, and select 'Just the push event'.",
+        cliCommand: "# Test connectivity from GitHub host or local curl:\ncurl -X POST -H \"Content-Type: application/json\" http://<jenkins-url>:8080/github-webhook/ -d '{\"repository\":{\"name\":\"demo\"}}'",
+        expectedOutput: "HTTP 200 OK or Webhook delivered successfully with green checkmark in GitHub Webhook dashboard.",
+        verificationTip: "Ensure the URL ends strictly in '/github-webhook/'.",
+        troubleshooting: "If GitHub reports HTTP 403 or connection timeout, ensure Jenkins port 8080 is accessible from the internet (use ngrok for local testing)."
+      },
+      {
+        stepNumber: 2,
+        title: "Configure Pipeline Job with GitHub Webhook and Cron Triggers",
+        description: "Create a Pipeline job in Jenkins and enable automatic triggers in job configuration.",
+        consoleInstruction: "Jenkins dashboard -> New Item -> Enter 'microservice-cicd' -> Select 'Pipeline' -> OK. Under Build Triggers, check 'GitHub hook trigger for GITScm polling' and 'Build periodically'.",
+        cliCommand: "# Cron schedule to run nightly at 2 AM Mon-Fri:\n# H 2 * * 1-5\n# Or every 5 minutes for automated testing:\n# */5 * * * *",
+        expectedOutput: "Job configuration saved with GitHub hook trigger and cron schedule active.",
+        verificationTip: "Verify trigger description shows: 'Build periodically: H 2 * * 1-5'.",
+        troubleshooting: "Remember the 5 cron fields: Minute (0-59), Hour (0-23), Day-of-month (1-31), Month (1-12), Day-of-week (0-6 Sun-Sat)."
+      },
+      {
+        stepNumber: 3,
+        title: "Author Production Declarative Jenkinsfile",
+        description: "Create a version-controlled Jenkinsfile defining Checkout, Build, Test, and Artifact stages.",
+        consoleInstruction: "Create a Jenkinsfile in the root of your Git repository.",
+        cliCommand: "cat << 'EOF' > Jenkinsfile\npipeline {\n  agent any\n  stages {\n    stage('Checkout') {\n      steps {\n        checkout scm\n      }\n    }\n    stage('Compile & Build') {\n      steps {\n        sh 'mvn clean compile'\n      }\n    }\n    stage('Unit & Integration Tests') {\n      steps {\n        sh 'mvn test'\n      }\n    }\n  }\n}\nEOF",
+        expectedOutput: "Jenkinsfile created with valid Declarative syntax (pipeline { agent { } stages { } }).",
+        verificationTip: "Validate syntax using Jenkins CLI: java -jar jenkins-cli.jar -s http://localhost:8080/ declarative-linter < Jenkinsfile.",
+        troubleshooting: "Declarative pipelines require strict enclosing 'pipeline' block; never mix top-level node { } blocks with pipeline { }."
+      },
+      {
+        stepNumber: 4,
+        title: "Add Interactive Production Approval Gate with 'input' Step",
+        description: "Enforce human change management before deploying to production environments.",
+        consoleInstruction: "Add an 'Approval' stage before the deploy stage in your Jenkinsfile.",
+        cliCommand: "cat << 'EOF' >> Jenkinsfile\n    stage('Production Gate') {\n      steps {\n        input message: 'Promote build to AWS Production environment?', ok: 'Approve Deployment'\n      }\n    }\n    stage('Deploy to Production') {\n      steps {\n        echo 'Deploying release artifact to production cluster...'\n      }\n    }\nEOF",
+        expectedOutput: "Pipeline execution pauses at 'Production Gate' stage with interactive 'Proceed' and 'Abort' prompt.",
+        verificationTip: "In Jenkins UI, click 'microservice-cicd' build in progress: confirm prompt appears in Stage View.",
+        troubleshooting: "Configure timeout(time: 1, unit: 'HOURS') around the input step to prevent pipelines from hanging indefinitely if unattended."
+      },
+      {
+        stepNumber: 5,
+        title: "Implement Email-ext SMTP Notifications inside post { failure }",
+        description: "Configure post-build actions to alert engineering teams immediately when a build fails, avoiding alert fatigue on success.",
+        consoleInstruction: "Add a post block to your Jenkinsfile referencing email recipients.",
+        cliCommand: "cat << 'EOF' >> Jenkinsfile\n  post {\n    always {\n      cleanWs()\n    }\n    failure {\n      mail to: 'devs@example.com',\n           subject: \"[ALERT] Pipeline Failure: \${currentBuild.fullDisplayName}\",\n           body: \"Build failed at stage! Please review console logs at: \${env.BUILD_URL}\"\n    }\n  }\n}\nEOF",
+        expectedOutput: "post block appended to Jenkinsfile with always and failure condition handlers.",
+        verificationTip: "Trigger an intentional syntax error in a test commit: verify pipeline enters failure block and triggers SMTP mail.",
+        troubleshooting: "Configure SMTP server settings under Manage Jenkins -> Configure System -> Extended E-mail Notification (use an App Password for Gmail)."
+      },
+      {
+        stepNumber: 6,
+        title: "Trigger End-to-End Pipeline Execution via Git Push",
+        description: "Push changes to your GitHub repository and watch Jenkins trigger, build, pause for approval, and complete automatically.",
+        consoleInstruction: "Commit and push the Jenkinsfile to GitHub. Monitor Jenkins build dashboard.",
+        cliCommand: "git add Jenkinsfile\ngit commit -m \"ci: add complete declarative pipeline with approval gate and email alerts\"\ngit push origin main",
+        expectedOutput: "GitHub webhook fires -> Jenkins starts Build #1 immediately -> Stages pass -> Click 'Approve' -> Build SUCCESS.",
+        verificationTip: "Inspect Blue Ocean or Classic Stage View to confirm all green stages and duration metrics.",
+        troubleshooting: "If build does not start, inspect Jenkins system log: Manage Jenkins -> System Log -> All Jenkins Logs to check for incoming webhook events."
+      }
+    ]
+  },
+  "jenkins-selenium-maven-headless-testing": {
+    title: "Lab 17.3: Automated Headless Selenium Testing in Jenkins with Maven & JUnit Reports",
+    level: "Intermediate",
+    estimatedMinutes: 40,
+    freeTierEligible: true,
+    costRiskLevel: "LOW",
+    paidAlternativeWarning: null,
+    prerequisites: "Java 17, Maven 3.8+, Google Chrome or Chromium, and ChromeDriver installed on the Jenkins host or agent.",
+    requiredPermissions: "Local command line execution rights and Jenkins pipeline creation rights.",
+    cleanupGuide: "Kill any leftover chrome processes and clean Maven build target: pkill -f chrome || true && mvn clean.",
+    safeSimulationScript: `#!/bin/bash
+# Local simulation of Maven Headless Selenium Test Suite with JUnit Reporting
+echo "=== 1. Validating Chrome & ChromeDriver on Linux CI Host ==="
+google-chrome --version || echo "Google Chrome 124.0.6367.60"
+chromedriver --version || echo "ChromeDriver 124.0.6367.60"
+echo "=== 2. Running Maven Headless Selenium Test Suite ==="
+echo "[INFO] Scanning for projects..."
+echo "[INFO] Running com.example.SeleniumWebTest"
+echo "[INFO] Starting ChromeDriver in headless mode (--headless=new, --no-sandbox)..."
+echo "[INFO] Navigating to https://example.com"
+echo "[INFO] Asserting page title: 'Example Domain' -> PASSED"
+echo "[INFO] Executing driver.quit() -> Browser closed, memory freed."
+echo "[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0"
+echo "=== 3. Publishing JUnit Test Result Report ==="
+echo "Recording test results: target/surefire-reports/*.xml"
+echo "JUnit Test Report: 5 tests passed in 4.2 seconds. Test trend graph updated in Jenkins."`,
+    steps: [
+      {
+        stepNumber: 1,
+        title: "Create Maven Project with Selenium & JUnit Dependencies",
+        description: "Manage test dependencies using Maven's pom.xml rather than manually downloading JAR files in Eclipse.",
+        consoleInstruction: "Create a pom.xml with selenium-java and junit in <scope>test</scope>.",
+        cliCommand: "cat << 'EOF' > pom.xml\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n  xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n  <modelVersion>4.0.0</modelVersion>\n  <groupId>com.example</groupId>\n  <artifactId>selenium-ci-tests</artifactId>\n  <version>1.0-SNAPSHOT</version>\n  <properties>\n    <maven.compiler.source>17</maven.compiler.source>\n    <maven.compiler.target>17</maven.compiler.target>\n  </properties>\n  <dependencies>\n    <dependency>\n      <groupId>org.seleniumhq.selenium</groupId>\n      <artifactId>selenium-java</artifactId>\n      <version>4.21.0</version>\n      <scope>test</scope>\n    </dependency>\n    <dependency>\n      <groupId>junit</groupId>\n      <artifactId>junit</artifactId>\n      <version>4.13.2</version>\n      <scope>test</scope>\n    </dependency>\n  </dependencies>\n</project>\nEOF",
+        expectedOutput: "pom.xml configured with Selenium 4.21.0 and JUnit 4.13.2 test-scoped dependencies.",
+        verificationTip: "Verify dependencies resolve: mvn dependency:resolve (downloads JARs to ~/.m2/repository).",
+        troubleshooting: "Always ensure <scope>test</scope> is specified so test libraries are never bundled into production artifacts."
+      },
+      {
+        stepNumber: 2,
+        title: "Write Robust Headless Selenium WebDriver Test Case",
+        description: "Author a Java Selenium test case configured for headless execution on Linux CI agents, with driver.quit() teardown.",
+        consoleInstruction: "Create test directory structure and SimpleWebTest.java.",
+        cliCommand: "mkdir -p src/test/java/com/example\ncat << 'EOF' > src/test/java/com/example/SimpleWebTest.java\npackage com.example;\nimport org.junit.Test;\nimport org.junit.After;\nimport org.junit.Before;\nimport static org.junit.Assert.assertEquals;\nimport org.openqa.selenium.WebDriver;\nimport org.openqa.selenium.chrome.ChromeDriver;\nimport org.openqa.selenium.chrome.ChromeOptions;\n\npublic class SimpleWebTest {\n    private WebDriver driver;\n\n    @Before\n    public void setUp() {\n        ChromeOptions options = new ChromeOptions();\n        options.addArguments(\"--headless=new\");\n        options.addArguments(\"--no-sandbox\");\n        options.addArguments(\"--disable-dev-shm-usage\");\n        driver = new ChromeDriver(options);\n    }\n\n    @Test\n    public void testPageTitle() {\n        driver.get(\"https://example.com\");\n        assertEquals(\"Example Domain\", driver.getTitle());\n    }\n\n    @After\n    public void tearDown() {\n        if (driver != null) {\n            driver.quit();\n        }\n    }\n}\nEOF",
+        expectedOutput: "SimpleWebTest.java created with headless ChromeOptions and @After driver.quit().",
+        verificationTip: "Notice driver.quit() in @After ensures browser processes terminate even if assertions fail.",
+        troubleshooting: "Missing '--no-sandbox' or '--disable-dev-shm-usage' causes Chrome to crash inside Linux containers due to shared memory limits."
+      },
+      {
+        stepNumber: 3,
+        title: "Execute Test Suite Locally via Maven Surefire",
+        description: "Run the test suite using 'mvn test' to verify test execution and Surefire XML report generation.",
+        consoleInstruction: "Run mvn test and inspect the target/surefire-reports directory.",
+        cliCommand: "mvn test\nls -la target/surefire-reports/",
+        expectedOutput: "[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0\nTEST-com.example.SimpleWebTest.xml generated.",
+        verificationTip: "Check target/surefire-reports/TEST-com.example.SimpleWebTest.xml (contains test duration, assertions, and outcomes).",
+        troubleshooting: "If tests fail with 'ChromeDriver executable needs to be in PATH', install chromedriver via package manager or add it to system PATH."
+      },
+      {
+        stepNumber: 4,
+        title: "Create Jenkins Freestyle Job with Top-Level Maven Target",
+        description: "Configure a traditional Jenkins Freestyle job to execute Maven tests and archive JUnit reports.",
+        consoleInstruction: "Jenkins dashboard -> New Item -> 'selenium-freestyle-job' -> Freestyle project -> OK. In Source Code Management, set Git repo. In Build, add 'Invoke top-level Maven targets' with Goal: 'test'. In Post-build Actions, add 'Publish JUnit test result report' with Test report XMLs: '**/target/surefire-reports/*.xml'.",
+        cliCommand: "# Equivalent command executed by Jenkins agent:\nmvn test -Dtest=SimpleWebTest",
+        expectedOutput: "Build succeeds; Jenkins reports: 'Test Result: 1 test, 0 failures'.",
+        verificationTip: "Click 'Test Result' link on the build page to view per-test execution duration and stack traces.",
+        troubleshooting: "Ensure the path pattern in Publish JUnit report is '**/target/surefire-reports/*.xml' with double asterisks to handle sub-modules."
+      },
+      {
+        stepNumber: 5,
+        title: "Author Declarative Jenkinsfile with Automated JUnit Publishing",
+        description: "Migrate the build to Pipeline-as-Code by defining the test stage and JUnit post block in a Jenkinsfile.",
+        consoleInstruction: "Create a Jenkinsfile implementing checkout, mvn test, and junit XML report publishing.",
+        cliCommand: "cat << 'EOF' > Jenkinsfile\npipeline {\n  agent any\n  stages {\n    stage('Checkout') {\n      steps {\n        checkout scm\n      }\n    }\n    stage('Run Selenium Tests') {\n      steps {\n        sh 'mvn test'\n      }\n    }\n  }\n  post {\n    always {\n      junit '**/target/surefire-reports/*.xml'\n    }\n    failure {\n      echo 'Selenium tests failed! Investigating failure report...'\n    }\n  }\n}\nEOF",
+        expectedOutput: "Jenkinsfile created with post { always { junit '**/target/surefire-reports/*.xml' } }.",
+        verificationTip: "Using 'always' ensures JUnit XML reports are parsed and published even when individual tests fail.",
+        troubleshooting: "If you place junit under 'success', test reports won't publish when tests fail, which defeats the purpose of test reporting."
+      },
+      {
+        stepNumber: 6,
+        title: "Analyze Test Result Trends and Failure Diagnostics in Jenkins",
+        description: "Review interactive test charts in Jenkins dashboard: pass/fail rates, execution duration trends, and failure root causes.",
+        consoleInstruction: "Trigger the pipeline in Jenkins. Click on 'Test Result Trend' graph in project dashboard.",
+        cliCommand: "# View summary from CLI\ncurl -s -u admin:token http://localhost:8080/job/selenium-pipeline/lastBuild/testReport/api/json | grep -o '\"totalCount\":[0-9]*'",
+        expectedOutput: "Total test count and failure count displayed. Trend graph shows green pass history over successive builds.",
+        verificationTip: "If a test fails, click into the test method name to view the exact JUnit assertion error and Selenium stack trace.",
+        troubleshooting: "To eliminate flaky tests, replace any remaining Thread.sleep() calls with explicit WebDriverWait expected conditions."
       }
     ]
   },
   17: {
-    title: "Lab 17: Jenkins Declarative Pipeline with Docker Agent Sandbox",
+    title: "Lab 17: Enterprise Jenkins CI/CD & Automated Selenium Testing Masterclass",
     level: "Intermediate",
-    estimatedMinutes: 30,
+    estimatedMinutes: 40,
     freeTierEligible: true,
     costRiskLevel: "LOW",
     paidAlternativeWarning: null,
     prerequisites: "Docker installed locally or Jenkins running on a local port.",
-    requiredPermissions: "Local Docker execution rights.",
+    requiredPermissions: "Local Docker execution rights or Linux host sudo permissions.",
     cleanupGuide: "Stop and remove the local test container: docker stop jenkins-lab && docker rm jenkins-lab.",
     safeSimulationScript: `#!/bin/bash
 # Local simulation of Jenkins Declarative Pipeline execution
 echo "=== Jenkins Declarative Pipeline Execution ==="
 echo "[Pipeline] Start of Pipeline"
 echo "[Stage: Checkout] Pulling from git https://github.com/org/app.git (commit: 8f3c21a)"
-echo "[Stage: Unit Test] Executing 'npm test' -> 24 passed in 3.1s"
-echo "[Stage: Code Quality] SonarQube quality gate: PASSED (Bugs: 0, Vulnerabilities: 0)"
-echo "[Stage: Docker Build] Building image 'app:build-42'..."
+echo "[Stage: Unit Test] Executing 'mvn test' -> 18 passed in 3.1s"
+echo "[Stage: Selenium Tests] Headless Chrome running 5 browser scenarios -> 5/5 PASSED"
+echo "[Stage: Post] Publishing JUnit XML reports: target/surefire-reports/*.xml"
 echo "[Stage: Post] Success! Sending notification to Slack #devops-deployments"
 echo "[Pipeline] Finished: SUCCESS"`,
     steps: [
@@ -849,9 +1497,9 @@ echo "[Pipeline] Finished: SUCCESS"`,
       {
         stepNumber: 2,
         title: "Create Declarative Jenkinsfile with Multi-Stage Execution",
-        description: "Write a Jenkinsfile implementing Build, Test, and Artifact Archive stages.",
+        description: "Write a Jenkinsfile implementing Build, Selenium Test, and JUnit Archive stages.",
         consoleInstruction: "Create a file named 'Jenkinsfile' in the root directory.",
-        cliCommand: "cat << 'EOF' > Jenkinsfile\npipeline {\n  agent any\n  stages {\n    stage('Build') {\n      steps { echo 'Compiling application...' }\n    }\n    stage('Test') {\n      steps { echo 'Running automated test suites...' }\n    }\n  }\n  post {\n    always { echo 'Pipeline finished. Cleaning workspace.' }\n  }\n}\nEOF",
+        cliCommand: "cat << 'EOF' > Jenkinsfile\npipeline {\n  agent any\n  stages {\n    stage('Build') {\n      steps { echo 'Compiling application via Maven...' }\n    }\n    stage('Selenium Headless Test') {\n      steps { echo 'Running automated browser test suites...' }\n    }\n  }\n  post {\n    always {\n      echo 'Archiving test results...'\n    }\n  }\n}\nEOF",
         expectedOutput: "Jenkinsfile created with declarative pipeline structure.",
         verificationTip: "Verify pipeline syntax using the Jenkins Pipeline Syntax Generator in the web console.",
         troubleshooting: "Ensure 'pipeline' is all lowercase."
@@ -1009,3 +1657,11 @@ echo "Pipeline execution finished successfully in 48 seconds with ZERO downtime!
     ]
   }
 };
+
+const dockerLabsData = require('./dockerLabsData.js');
+Object.assign(module.exports, dockerLabsData);
+
+const kubernetesLabsData = require('./kubernetesLabsData.js');
+Object.assign(module.exports, kubernetesLabsData);
+
+

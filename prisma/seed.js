@@ -90,9 +90,11 @@ async function main() {
       });
 
       topicMap[mod.moduleNumber] = topic.id;
+      topicMap[t.slug] = topic.id;
+      topicMap[`${mod.moduleNumber}-${t.topicNumber}`] = topic.id;
 
       // Seed TopicNote
-      const note = notesData[mod.moduleNumber];
+      const note = notesData[t.slug] || notesData[`${mod.moduleNumber}-${t.topicNumber}`] || notesData[mod.moduleNumber];
       if (note) {
         await prisma.topicNote.upsert({
           where: { topicId: topic.id },
@@ -125,7 +127,7 @@ async function main() {
       }
 
       // Seed Lab
-      const lab = labsData[mod.moduleNumber];
+      const lab = labsData[t.slug] || labsData[`${mod.moduleNumber}-${t.topicNumber}`] || labsData[mod.moduleNumber];
       if (lab) {
         const existingLab = await prisma.lab.findFirst({ where: { topicId: topic.id } });
         let createdLab = existingLab;
@@ -178,7 +180,7 @@ async function main() {
 
   // 4. Seed Scenarios
   for (const s of scenariosData) {
-    const topicId = topicMap[s.moduleNumber];
+    const topicId = (s.topicSlug && topicMap[s.topicSlug]) || (s.topicNumber && topicMap[`${s.moduleNumber}-${s.topicNumber}`]) || topicMap[s.moduleNumber];
     if (topicId) {
       const existing = await prisma.question.findFirst({
         where: { topicId, title: s.title }
@@ -204,7 +206,7 @@ async function main() {
 
   // 5. Seed Interview Questions
   for (const i of interviewsData) {
-    const topicId = topicMap[i.moduleNumber];
+    const topicId = (i.topicSlug && topicMap[i.topicSlug]) || (i.topicNumber && topicMap[`${i.moduleNumber}-${i.topicNumber}`]) || topicMap[i.moduleNumber];
     if (topicId) {
       const existing = await prisma.question.findFirst({
         where: { topicId, title: i.title }
@@ -231,7 +233,7 @@ async function main() {
 
   // 6. Seed Quiz Assessments
   for (const q of quizzesData) {
-    const topicId = topicMap[q.moduleNumber];
+    const topicId = (q.topicSlug && topicMap[q.topicSlug]) || (q.topicNumber && topicMap[`${q.moduleNumber}-${q.topicNumber}`]) || topicMap[q.moduleNumber];
     if (topicId) {
       const existing = await prisma.question.findFirst({
         where: { topicId, title: q.title }

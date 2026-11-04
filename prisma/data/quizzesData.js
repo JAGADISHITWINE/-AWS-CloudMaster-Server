@@ -237,6 +237,8 @@ module.exports = [
   },
   {
     moduleNumber: 16,
+    topicSlug: "git-command-suite-cheat-sheet-mastery",
+    topicNumber: 2,
     type: "MCQ",
     difficulty: "Beginner",
     title: "Git Internal Architecture & Rebase Mechanics",
@@ -251,7 +253,264 @@ module.exports = [
     ]
   },
   {
+    moduleNumber: 16,
+    topicSlug: "git-fundamentals-branching-merge-strategies",
+    topicNumber: 1,
+    type: "MCQ",
+    difficulty: "Beginner",
+    title: "Why Git Outperforms Older VCS Tools",
+    prompt: "According to the Git Concept Guide, what single core trait best describes why Git dramatically outperforms older centralized tools like SVN or CVS for everyday development?",
+    explanation: "Flexibility — Git's cheap local branching, staging area, and support for multiple offline workflows let developers work faster and more independently than centralized, network-dependent tools.",
+    hintsJson: JSON.stringify(["Think of offline work, local branching, and independent staging."]),
+    options: [
+      { optionKey: "A", optionText: "Rigidity — Git forces every developer to follow the exact same monolithic release branch.", isCorrect: false },
+      { optionKey: "B", optionText: "Flexibility — Git's cheap local branching, staging area, and support for offline workflows allow fast, independent development.", isCorrect: true },
+      { optionKey: "C", optionText: "Centralization — Git requires all commits to be approved live by an SVN central server.", isCorrect: false },
+      { optionKey: "D", optionText: "Compression — Git only allows committing zip archives.", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 16,
+    topicSlug: "git-fundamentals-branching-merge-strategies",
+    topicNumber: 1,
+    type: "MCQ",
+    difficulty: "Beginner",
+    title: "Two Core Version Control Actions",
+    prompt: "In foundational Version Control System (VCS) terminology, what are the two core fundamental actions every software engineer performs against a repository?",
+    explanation: "Uploading code into a VCS is called a 'check-in', and downloading code from a VCS is called a 'checkout'.",
+    hintsJson: JSON.stringify(["Think of checking in changes and checking out files."]),
+    options: [
+      { optionKey: "A", optionText: "Check-in (uploading code to the VCS) and Checkout (downloading code from the VCS).", isCorrect: true },
+      { optionKey: "B", optionText: "Compile and Link.", isCorrect: false },
+      { optionKey: "C", optionText: "Encrypt and Decrypt.", isCorrect: false },
+      { optionKey: "D", optionText: "Upload to S3 and Download from CloudFront.", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 16,
+    topicSlug: "git-fundamentals-branching-merge-strategies",
+    topicNumber: 1,
+    type: "MCQ",
+    difficulty: "Beginner",
+    title: "Git Identity Configuration Requirement",
+    prompt: "Why does Git strictly require 'user.name' and 'user.email' to be configured before allowing a developer to make commits?",
+    explanation: "Every commit permanently records who created it — Git attaches this identity into the commit metadata so the project's history accurately attributes who changed what.",
+    hintsJson: JSON.stringify(["Think about historical accountability and team collaboration."]),
+    options: [
+      { optionKey: "A", optionText: "To bill the developer's credit card per commit made.", isCorrect: false },
+      { optionKey: "B", optionText: "Every commit permanently attaches author identity into the snapshot metadata, ensuring clear historical attribution and accountability.", isCorrect: true },
+      { optionKey: "C", optionText: "Because Git cannot run without connecting to Google OAuth.", isCorrect: false },
+      { optionKey: "D", optionText: "To send an SMS text message to the developer on each commit.", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 16,
+    topicSlug: "git-fundamentals-branching-merge-strategies",
+    topicNumber: 1,
+    type: "MCQ",
+    difficulty: "Beginner",
+    title: "Safe Unstaging Without Disk Deletion",
+    prompt: "If you accidentally staged a file using 'git add sensitive.env', how do you undo the staging without deleting the file or any of your work from disk?",
+    explanation: "Running 'git rm --cached sensitive.env' or 'git reset sensitive.env' unstages the file (moves it back to untracked/modified) while leaving the actual file on disk untouched. Plain 'git rm' would delete it from disk.",
+    hintsJson: JSON.stringify(["Look for the command that targets only the cache/staging area."]),
+    options: [
+      { optionKey: "A", optionText: "Run 'rm sensitive.env' in bash.", isCorrect: false },
+      { optionKey: "B", optionText: "Run 'git rm sensitive.env' (without flags).", isCorrect: false },
+      { optionKey: "C", optionText: "Run 'git rm --cached sensitive.env' or 'git reset sensitive.env'.", isCorrect: true },
+      { optionKey: "D", optionText: "Run 'git clean -f sensitive.env'.", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 16,
+    topicSlug: "git-fundamentals-branching-merge-strategies",
+    topicNumber: 1,
+    type: "MCQ",
+    difficulty: "Beginner",
+    title: "The Hidden Directory Created by git init",
+    prompt: "When you run 'git init' inside an empty directory, what does Git create to turn it into a version-controlled repository?",
+    explanation: "'git init' creates a hidden directory called '.git' where Git stores configuration files, the object database (blobs, trees, commits), refs, and HEAD pointers.",
+    hintsJson: JSON.stringify(["It is a hidden folder with a dot prefix."]),
+    options: [
+      { optionKey: "A", optionText: "A hidden folder called '.git' that maintains the local repository database and configuration.", isCorrect: true },
+      { optionKey: "B", optionText: "A file named 'repository.json' in the root directory.", isCorrect: false },
+      { optionKey: "C", optionText: "A zip archive called 'git.zip'.", isCorrect: false },
+      { optionKey: "D", optionText: "A MySQL database called 'git_master'.", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 16,
+    topicSlug: "git-command-suite-cheat-sheet-mastery",
+    topicNumber: 2,
+    type: "MCQ",
+    difficulty: "Intermediate",
+    title: "Untracked Cleanup: Dry Run vs Force Execution",
+    prompt: "You want to remove untracked build artifacts from your working directory. What command previews which files will be removed without actually deleting them?",
+    explanation: "'git clean -n' shows which files would be removed (dry run); you use the '-f' flag in place of '-n' to actually execute the clean.",
+    hintsJson: JSON.stringify(["The '-n' flag stands for dry run."]),
+    options: [
+      { optionKey: "A", optionText: "git clean -f", isCorrect: false },
+      { optionKey: "B", optionText: "git clean -n (dry run)", isCorrect: true },
+      { optionKey: "C", optionText: "git status --clean", isCorrect: false },
+      { optionKey: "D", optionText: "git reset --all", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 16,
+    topicSlug: "git-command-suite-cheat-sheet-mastery",
+    topicNumber: 2,
+    type: "MCQ",
+    difficulty: "Intermediate",
+    title: "Diff Inspection: git diff HEAD vs git diff --cached",
+    prompt: "What is the difference between running 'git diff HEAD' and running 'git diff --cached'?",
+    explanation: "'git diff HEAD' shows differences between your current working directory and the last commit, whereas 'git diff --cached' shows differences between staged changes (the index) and the last commit.",
+    hintsJson: JSON.stringify(["Remember: cached/staged refers strictly to what has been 'git add'-ed."]),
+    options: [
+      { optionKey: "A", optionText: "'git diff HEAD' shows differences between working directory and last commit; 'git diff --cached' shows difference between staged changes and last commit.", isCorrect: true },
+      { optionKey: "B", optionText: "'git diff HEAD' deletes files; 'git diff --cached' restores files.", isCorrect: false },
+      { optionKey: "C", optionText: "'git diff --cached' only works on Windows; 'git diff HEAD' only works on Linux.", isCorrect: false },
+      { optionKey: "D", optionText: "Both commands produce identical output under all circumstances.", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 16,
+    topicSlug: "git-command-suite-cheat-sheet-mastery",
+    topicNumber: 2,
+    type: "MCQ",
+    difficulty: "Intermediate",
+    title: "Log Visualization and Decoration",
+    prompt: "Which flags added to 'git log' draw a text-based branch graph on the left and display the names of branches or tags of commits shown?",
+    explanation: "'--graph' flag draws a text based graph of commits on the left side of commit messages, and '--decorate' adds names of branches or tags of commits shown.",
+    hintsJson: JSON.stringify(["Look for graph and decorate."]),
+    options: [
+      { optionKey: "A", optionText: "--graph --decorate", isCorrect: true },
+      { optionKey: "B", optionText: "--tree --visualize", isCorrect: false },
+      { optionKey: "C", optionText: "--ascii --branches", isCorrect: false },
+      { optionKey: "D", optionText: "--color --all", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 16,
+    topicSlug: "git-command-suite-cheat-sheet-mastery",
+    topicNumber: 2,
+    type: "MCQ",
+    difficulty: "Intermediate",
+    title: "Linear Remote Sync with git pull --rebase",
+    prompt: "What is the primary advantage of executing 'git pull --rebase <remote>' instead of a default 'git pull <remote>'?",
+    explanation: "'git pull --rebase' fetches the remote's copy of the current branch and rebases local commits on top of it, creating a clean linear history and avoiding unnecessary merge bubbles.",
+    hintsJson: JSON.stringify(["Think of rebase vs 3-way merge commit during sync."]),
+    options: [
+      { optionKey: "A", optionText: "It avoids creating unnecessary 3-way merge commits by replaying local commits on top of upstream changes for a clean linear history.", isCorrect: true },
+      { optionKey: "B", optionText: "It automatically creates a release tag on GitHub.", isCorrect: false },
+      { optionKey: "C", optionText: "It deletes the remote repository to save bandwidth.", isCorrect: false },
+      { optionKey: "D", optionText: "It compresses git history into a single zip file.", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 16,
+    topicSlug: "github-actions-cicd-matrix-secrets",
+    topicNumber: 3,
+    type: "MCQ",
+    difficulty: "Beginner",
+    title: "GitHub Actions Workflow Configuration Directory",
+    prompt: "Where must YAML workflow definition files be placed in a Git repository for GitHub Actions to automatically recognize and execute them?",
+    explanation: "GitHub Actions requires all workflow definitions to be stored in the root directory path '.github/workflows/' using the '.yml' or '.yaml' extension.",
+    hintsJson: JSON.stringify(["It is an exact hidden path starting with .github."]),
+    options: [
+      { optionKey: "A", optionText: ".github/workflows/*.yml (or .yaml)", isCorrect: true },
+      { optionKey: "B", optionText: ".ci/pipelines/*.json", isCorrect: false },
+      { optionKey: "C", optionText: "build/workflows/*.xml", isCorrect: false },
+      { optionKey: "D", optionText: "root directory in a file called Dockerfile", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 16,
+    topicSlug: "github-actions-cicd-matrix-secrets",
+    topicNumber: 3,
+    type: "MCQ",
+    difficulty: "Intermediate",
+    title: "Matrix Testing Strategies in GitHub Actions",
+    prompt: "In a GitHub Actions workflow, what is the primary purpose of defining a 'strategy.matrix' configuration for a job?",
+    explanation: "A matrix strategy automatically generates multiple parallel job runs across combinations of variables (e.g. OS versions, Node.js versions, database engines) without duplicating workflow YAML code.",
+    hintsJson: JSON.stringify(["Think about testing combinations in parallel without repetitive code."]),
+    options: [
+      { optionKey: "A", optionText: "To render an HTML table in the pull request comment.", isCorrect: false },
+      { optionKey: "B", optionText: "To spawn parallel isolated runner jobs across combinations of variables (e.g. multiple operating systems and runtime versions) simultaneously.", isCorrect: true },
+      { optionKey: "C", optionText: "To convert GitHub Actions YAML into Jenkins pipelines.", isCorrect: false },
+      { optionKey: "D", optionText: "To enforce biometric authentication for GitHub commits.", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 16,
+    topicSlug: "github-actions-cicd-matrix-secrets",
+    topicNumber: 3,
+    type: "MCQ",
+    difficulty: "Intermediate",
+    title: "Encrypted Secrets & Runner Log Masking",
+    prompt: "How does GitHub Actions protect sensitive credentials stored under Repository Secrets when referenced in a workflow step?",
+    explanation: "GitHub encrypts secrets at rest using Libsodium sealed boxes and automatically masks secret values in the runner console logs with asterisks (***).",
+    hintsJson: JSON.stringify(["Think of encryption at rest and asterisk masking in console output."]),
+    options: [
+      { optionKey: "A", optionText: "GitHub sends secrets via unencrypted HTTP to all pull request authors.", isCorrect: false },
+      { optionKey: "B", optionText: "GitHub encrypts secrets at rest and automatically redacts/masks matching secret values with '***' in runner console output logs.", isCorrect: true },
+      { optionKey: "C", optionText: "Secrets can only be read if the runner is running Windows XP.", isCorrect: false },
+      { optionKey: "D", optionText: "Secrets are converted into public environment variables visible to anyone viewing the repository.", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 16,
+    topicSlug: "github-actions-cicd-matrix-secrets",
+    topicNumber: 3,
+    type: "MCQ",
+    difficulty: "Advanced",
+    title: "GitHub Branch Protection & Required Status Checks",
+    prompt: "In an enterprise GitHub repository, how do you prevent developers from merging broken code into the 'main' branch even if their pull request has been approved by a peer?",
+    explanation: "By configuring Branch Protection Rules with 'Require status checks to pass before merging' enabled, binding the GitHub Actions CI workflow job name as a mandatory blocking check.",
+    hintsJson: JSON.stringify(["Think about Required Status Checks in branch protection settings."]),
+    options: [
+      { optionKey: "A", optionText: "Disable Git commit capabilities across all developer laptops.", isCorrect: false },
+      { optionKey: "B", optionText: "Enable Branch Protection Rules with 'Require status checks to pass before merging' selected, making the CI workflow a mandatory blocker.", isCorrect: true },
+      { optionKey: "C", optionText: "Delete the main branch so merges cannot occur.", isCorrect: false },
+      { optionKey: "D", optionText: "Rebase the repository once per hour manually.", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 16,
+    topicSlug: "github-actions-cicd-matrix-secrets",
+    topicNumber: 3,
+    type: "MCQ",
+    difficulty: "Intermediate",
+    title: "Dependency Caching in GitHub Actions Workflows",
+    prompt: "A GitHub Actions workflow spends 4 minutes downloading npm dependencies on every pull request. Which standard action and mechanism should be used to cache dependencies between workflow runs based on the lockfile hash?",
+    explanation: "The actions/cache action caches dependencies based on a key (e.g. hashFiles('**/package-lock.json')). Subsequent runs restore the cache in seconds if the lockfile hasn't changed, dramatically speeding up CI execution.",
+    hintsJson: JSON.stringify(["Look into 'actions/cache' and package-lock hash keys."]),
+    options: [
+      { optionKey: "A", optionText: "Commit the entire node_modules folder directly into Git version control.", isCorrect: false },
+      { optionKey: "B", optionText: "Use the 'actions/cache' action with a key derived from hashFiles('**/package-lock.json') to store and restore dependencies across workflow runs.", isCorrect: true },
+      { optionKey: "C", optionText: "Upgrade the GitHub subscription to Enterprise Diamond tier.", isCorrect: false },
+      { optionKey: "D", optionText: "Disable npm package verification and run offline mode.", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 16,
+    topicSlug: "github-actions-cicd-matrix-secrets",
+    topicNumber: 3,
+    type: "MCQ",
+    difficulty: "Advanced",
+    title: "GitHub Actions Runners: GitHub-Hosted vs Self-Hosted Security",
+    prompt: "An organization needs a CI/CD runner that can deploy directly into a private AWS VPC without exposing endpoints to the public internet. What is the recommended runner architecture and security guideline for public repositories?",
+    explanation: "Self-hosted runners can be placed directly inside a private AWS VPC subnet with direct access to private resources. However, self-hosted runners should NEVER be used for public open-source repositories because pull requests from untrusted forks can execute arbitrary malicious code on the host machine.",
+    hintsJson: JSON.stringify(["Consider private VPC network access vs public fork pull request risks."]),
+    options: [
+      { optionKey: "A", optionText: "Deploy a self-hosted runner inside the private VPC, but ensure self-hosted runners are never used on public repositories where untrusted fork PRs could compromise internal infrastructure.", isCorrect: true },
+      { optionKey: "B", optionText: "Use GitHub-hosted runners and assign public elastic IP addresses to all private database instances.", isCorrect: false },
+      { optionKey: "C", optionText: "Store AWS root access credentials in public commit messages.", isCorrect: false },
+      { optionKey: "D", optionText: "Self-hosted runners cannot run Docker or communicate with AWS APIs.", isCorrect: false }
+    ]
+  },
+  {
     moduleNumber: 17,
+    topicSlug: "jenkins-architecture-master-agents",
+    topicNumber: 1,
     type: "MCQ",
     difficulty: "Intermediate",
     title: "Jenkins Enterprise Controller-Agent Architecture",
@@ -266,7 +525,281 @@ module.exports = [
     ]
   },
   {
+    moduleNumber: 17,
+    topicSlug: "jenkins-architecture-master-agents",
+    topicNumber: 1,
+    type: "MCQ",
+    difficulty: "Beginner",
+    title: "Core Role of Jenkins in Modern CI/CD",
+    prompt: "According to Jenkins fundamentals, what does Jenkins actually do when automating continuous integration?",
+    explanation: "Jenkins is an automation orchestrator; it does not build or test code itself. It triggers and orchestrates external build tools (compilers, test runners, deployment scripts) in repeatable automated sequences.",
+    hintsJson: JSON.stringify(["Jenkins is an orchestrator, not a compiler."]),
+    options: [
+      { optionKey: "A", optionText: "It compiles Java and C++ source code into binary files using its internal native compiler.", isCorrect: false },
+      { optionKey: "B", optionText: "It orchestrates external build tools, test frameworks, and deployment scripts in repeatable automated sequences.", isCorrect: true },
+      { optionKey: "C", optionText: "It replaces Git by acting as a centralized version control repository.", isCorrect: false },
+      { optionKey: "D", optionText: "It operates as a database server storing application transaction logs.", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 17,
+    topicSlug: "jenkins-architecture-master-agents",
+    topicNumber: 1,
+    type: "MCQ",
+    difficulty: "Beginner",
+    title: "Java Runtime Prerequisite for Jenkins",
+    prompt: "Why must a compatible Java Development Kit (JDK/JRE) such as OpenJDK 17 be installed on Linux before installing Jenkins?",
+    explanation: "Jenkins itself is a Java web application that runs on top of the Java Virtual Machine (JVM). Without a compatible JDK/JRE runtime present, the Jenkins service process cannot start.",
+    hintsJson: JSON.stringify(["Jenkins runs on the Java Virtual Machine."]),
+    options: [
+      { optionKey: "A", optionText: "Because Jenkins is a Java application that executes on the JVM.", isCorrect: true },
+      { optionKey: "B", optionText: "Java is only required if building Android mobile applications.", isCorrect: false },
+      { optionKey: "C", optionText: "To allow developers to connect via JavaScript in browser consoles.", isCorrect: false },
+      { optionKey: "D", optionText: "Java provides the Linux kernel network drivers for port 8080.", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 17,
+    topicSlug: "jenkins-architecture-master-agents",
+    topicNumber: 1,
+    type: "MCQ",
+    difficulty: "Beginner",
+    title: "Jenkins First-Run Unlock Password Location",
+    prompt: "On a fresh Linux installation, where does Jenkins store the auto-generated initial administrator password required to unlock the setup wizard?",
+    explanation: "Jenkins writes the one-time unlock password to /var/lib/jenkins/secrets/initialAdminPassword on disk.",
+    hintsJson: JSON.stringify(["Look for the secrets folder in /var/lib/jenkins."]),
+    options: [
+      { optionKey: "A", optionText: "/var/lib/jenkins/secrets/initialAdminPassword", isCorrect: true },
+      { optionKey: "B", optionText: "/etc/jenkins/admin.password", isCorrect: false },
+      { optionKey: "C", optionText: "/home/jenkins/.ssh/id_rsa", isCorrect: false },
+      { optionKey: "D", optionText: "/usr/share/jenkins/password.txt", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 17,
+    topicSlug: "jenkins-architecture-master-agents",
+    topicNumber: 1,
+    type: "MCQ",
+    difficulty: "Intermediate",
+    title: "Role-Based Access Control in Jenkins",
+    prompt: "Which plugin is the enterprise standard for implementing fine-grained, role-based authorization in Jenkins instead of 'logged-in users can do anything'?",
+    explanation: "The Role-based Authorization Strategy (Role Strategy) plugin allows administrators to define reusable roles (e.g. Developer, QA) with tailored permissions and assign users to those roles.",
+    hintsJson: JSON.stringify(["Look for the plugin that manages roles."]),
+    options: [
+      { optionKey: "A", optionText: "Role-based Authorization Strategy (Role Strategy plugin)", isCorrect: true },
+      { optionKey: "B", optionText: "Ant Plugin", isCorrect: false },
+      { optionKey: "C", optionText: "Blue Ocean Plugin", isCorrect: false },
+      { optionKey: "D", optionText: "Timestamper Plugin", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 17,
+    topicSlug: "jenkins-architecture-master-agents",
+    topicNumber: 1,
+    type: "MCQ",
+    difficulty: "Beginner",
+    title: "Systemd Service Startup vs Boot Enablement",
+    prompt: "When managing the Jenkins Linux service with systemd, what is the critical difference between 'systemctl start jenkins' and 'systemctl enable jenkins'?",
+    explanation: "'systemctl start' runs the service immediately for the current session, while 'systemctl enable' configures the service to start automatically upon every future system reboot.",
+    hintsJson: JSON.stringify(["One runs it now, the other configures it to start on server reboot."]),
+    options: [
+      { optionKey: "A", optionText: "'start' runs Jenkins immediately for current session; 'enable' ensures Jenkins automatically restarts after system reboots.", isCorrect: true },
+      { optionKey: "B", optionText: "'enable' compiles Jenkins; 'start' deploys Jenkins to AWS.", isCorrect: false },
+      { optionKey: "C", optionText: "'start' is for Ubuntu; 'enable' is for Red Hat only.", isCorrect: false },
+      { optionKey: "D", optionText: "Both commands perform the exact identical action.", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 17,
+    topicSlug: "declarative-jenkinsfile-production-pipelines",
+    topicNumber: 2,
+    type: "MCQ",
+    difficulty: "Beginner",
+    title: "Freestyle Jobs vs Pipeline-as-Code",
+    prompt: "What is the primary architectural advantage of defining a Jenkins pipeline as a 'Jenkinsfile' in source control compared to a UI-configured Freestyle job?",
+    explanation: "A Jenkinsfile is version-controlled, reviewable via pull requests, and travels with the application code it builds, making the build process traceable and recoverable from Git history.",
+    hintsJson: JSON.stringify(["Think of Pipeline-as-Code and Git version control."]),
+    options: [
+      { optionKey: "A", optionText: "The build process is version-controlled, reviewable via PRs, and evolves in Git alongside the code it builds.", isCorrect: true },
+      { optionKey: "B", optionText: "Freestyle jobs can only compile Python code, while Jenkinsfiles compile Java.", isCorrect: false },
+      { optionKey: "C", optionText: "Freestyle jobs do not support plugins.", isCorrect: false },
+      { optionKey: "D", optionText: "Jenkinsfiles run 50 times faster because they bypass Java.", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 17,
+    topicSlug: "declarative-jenkinsfile-production-pipelines",
+    topicNumber: 2,
+    type: "MCQ",
+    difficulty: "Intermediate",
+    title: "GitHub Webhook Event Trigger Activation",
+    prompt: "A GitHub webhook is configured correctly, and GitHub shows green checkmarks (200 OK) on delivery, but Jenkins never triggers the build. What job setting was most likely omitted?",
+    explanation: "The job's Build Triggers section must have 'GitHub hook trigger for GITScm polling' checked for Jenkins to match incoming webhook payloads to that specific job.",
+    hintsJson: JSON.stringify(["Check Build Triggers in the job configuration."]),
+    options: [
+      { optionKey: "A", optionText: "The 'GitHub hook trigger for GITScm polling' checkbox under Build Triggers was not enabled.", isCorrect: true },
+      { optionKey: "B", optionText: "Jenkins was not restarted after pushing code.", isCorrect: false },
+      { optionKey: "C", optionText: "The developer did not sign the commit with a PGP key.", isCorrect: false },
+      { optionKey: "D", optionText: "The repository must be renamed to 'jenkins-repo'.", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 17,
+    topicSlug: "declarative-jenkinsfile-production-pipelines",
+    topicNumber: 2,
+    type: "MCQ",
+    difficulty: "Intermediate",
+    title: "Build Periodically vs Poll SCM Mechanics",
+    prompt: "What is the practical behavioral difference between the 'Build periodically' trigger and the 'Poll SCM' trigger in Jenkins?",
+    explanation: "'Build periodically' triggers a build on a clock schedule regardless of changes, whereas 'Poll SCM' checks the repository on schedule and only triggers a build if new commits exist.",
+    hintsJson: JSON.stringify(["One always builds; the other checks for new commits first."]),
+    options: [
+      { optionKey: "A", optionText: "Build periodically always builds on schedule even with no code changes; Poll SCM checks the repository and only builds if new commits exist.", isCorrect: true },
+      { optionKey: "B", optionText: "Poll SCM deletes files; Build periodically creates files.", isCorrect: false },
+      { optionKey: "C", optionText: "Build periodically only works on Linux; Poll SCM only works on Windows.", isCorrect: false },
+      { optionKey: "D", optionText: "There is no difference; they are aliases for the same trigger.", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 17,
+    topicSlug: "declarative-jenkinsfile-production-pipelines",
+    topicNumber: 2,
+    type: "MCQ",
+    difficulty: "Intermediate",
+    title: "Jenkins 5-Field Cron Syntax Sequence",
+    prompt: "In Jenkins scheduled triggers, what is the exact chronological sequence of the five fields in a cron expression?",
+    explanation: "The 5 fields are: minute (0-59), hour (0-23), day of month (1-31), month (1-12), and day of week (0-7, where 0 and 7 represent Sunday).",
+    hintsJson: JSON.stringify(["Starts with minute, then hour, day, month, day of week."]),
+    options: [
+      { optionKey: "A", optionText: "Minute, Hour, Day of Month, Month, Day of Week", isCorrect: true },
+      { optionKey: "B", optionText: "Hour, Minute, Day of Month, Month, Day of Week", isCorrect: false },
+      { optionKey: "C", optionText: "Day of Week, Month, Day of Month, Hour, Minute", isCorrect: false },
+      { optionKey: "D", optionText: "Second, Minute, Hour, Day, Month", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 17,
+    topicSlug: "declarative-jenkinsfile-production-pipelines",
+    topicNumber: 2,
+    type: "MCQ",
+    difficulty: "Intermediate",
+    title: "High-Signal Alerting with post { failure }",
+    prompt: "Why is placing email alerts inside a 'post { failure { mail ... } }' block considered superior to sending notifications on every single build?",
+    explanation: "Notifying only on failure keeps alerts meaningful and actionable, preventing teams from developing alert fatigue and ignoring critical broken build notifications.",
+    hintsJson: JSON.stringify(["Think about alert fatigue from 100 successful build emails a day."]),
+    options: [
+      { optionKey: "A", optionText: "Because email servers charge $10 per sent email.", isCorrect: false },
+      { optionKey: "B", optionText: "It prevents alert fatigue, ensuring notifications remain high-signal so developers don't ignore alerts when a real failure occurs.", isCorrect: true },
+      { optionKey: "C", optionText: "Jenkins does not support sending emails on successful builds.", isCorrect: false },
+      { optionKey: "D", optionText: "The failure block is the only block where mail syntax is valid.", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 17,
+    topicSlug: "declarative-jenkinsfile-production-pipelines",
+    topicNumber: 2,
+    type: "MCQ",
+    difficulty: "Advanced",
+    title: "Gating Production Deployments in Declarative Pipelines",
+    prompt: "How do you pause a Declarative Jenkinsfile pipeline before a production deployment stage to wait for explicit human approval?",
+    explanation: "By including an 'input' step inside the deployment stage (e.g. input message: 'Deploy to production?'), which pauses execution waiting for an interactive human decision.",
+    hintsJson: JSON.stringify(["Look for the step that accepts user input."]),
+    options: [
+      { optionKey: "A", optionText: "Insert an 'input' step inside the deploy stage.", isCorrect: true },
+      { optionKey: "B", optionText: "Add 'sleep 86400' in a shell step.", isCorrect: false },
+      { optionKey: "C", optionText: "Shut down the Jenkins agent until someone turns it on.", isCorrect: false },
+      { optionKey: "D", optionText: "Set 'agent none' on the deploy stage.", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 17,
+    topicSlug: "jenkins-selenium-maven-headless-testing",
+    topicNumber: 3,
+    type: "MCQ",
+    difficulty: "Beginner",
+    title: "Purpose of Selenium in Continuous Integration",
+    prompt: "What is the primary role of Selenium WebDriver when integrated into a continuous integration pipeline?",
+    explanation: "Selenium is a browser automation framework used to run automated end-to-end user journey tests against real web applications in browser environments.",
+    hintsJson: JSON.stringify(["Automates real web browser interactions."]),
+    options: [
+      { optionKey: "A", optionText: "To automate real browser interactions and assert web application functionality from an end-user perspective.", isCorrect: true },
+      { optionKey: "B", optionText: "To compile Java source code into bytecode.", isCorrect: false },
+      { optionKey: "C", optionText: "To manage Docker container registries.", isCorrect: false },
+      { optionKey: "D", optionText: "To encrypt passwords stored in GitHub secrets.", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 17,
+    topicSlug: "jenkins-selenium-maven-headless-testing",
+    topicNumber: 3,
+    type: "MCQ",
+    difficulty: "Beginner",
+    title: "Maven Dependency Management for Selenium",
+    prompt: "What is the primary advantage of declaring Selenium dependencies in Maven's pom.xml instead of manually adding JAR files in Eclipse?",
+    explanation: "Maven automatically downloads and resolves the exact declared library versions and transitive dependencies consistently on any machine (including Jenkins CI servers), eliminating 'works on my machine' drift.",
+    hintsJson: JSON.stringify(["Consistency across development laptops and CI servers."]),
+    options: [
+      { optionKey: "A", optionText: "Maven guarantees identical dependency resolution across all machines, eliminating the 'works on my machine because of manual JARs' problem.", isCorrect: true },
+      { optionKey: "B", optionText: "Maven makes Selenium tests run 10 times faster by skipping assertions.", isCorrect: false },
+      { optionKey: "C", optionText: "JAR files cannot be executed on Linux operating systems.", isCorrect: false },
+      { optionKey: "D", optionText: "Maven allows running Selenium tests without installing a browser.", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 17,
+    topicSlug: "jenkins-selenium-maven-headless-testing",
+    topicNumber: 3,
+    type: "MCQ",
+    difficulty: "Intermediate",
+    title: "Mandatory WebDriver Teardown via driver.quit()",
+    prompt: "Why is executing 'driver.quit()' in an @After teardown method or finally block mandatory at the end of every Selenium test?",
+    explanation: "'driver.quit()' closes the browser window and cleanly terminates the underlying WebDriver process. Without it, orphan browser processes accumulate on the CI agent, exhausting system memory and crashing subsequent builds.",
+    hintsJson: JSON.stringify(["Prevents orphan browser processes and memory leaks."]),
+    options: [
+      { optionKey: "A", optionText: "It terminates the WebDriver process and closes browser instances, preventing orphan processes from exhausting CI server memory.", isCorrect: true },
+      { optionKey: "B", optionText: "It commits changes to the Git repository.", isCorrect: false },
+      { optionKey: "C", optionText: "It is optional and has no effect on system resources.", isCorrect: false },
+      { optionKey: "D", optionText: "It restarts the Jenkins Controller.", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 17,
+    topicSlug: "jenkins-selenium-maven-headless-testing",
+    topicNumber: 3,
+    type: "MCQ",
+    difficulty: "Intermediate",
+    title: "Headless Browser Requirement on Linux CI Agents",
+    prompt: "Why must Selenium browser tests execute in Headless mode (e.g. '--headless=new') on Linux Jenkins worker agents?",
+    explanation: "Linux servers in CI/CD environments operate without physical monitors or an active graphical X11 display server. Standard headed browsers fail to initialize unless headless mode or Xvfb is configured.",
+    hintsJson: JSON.stringify(["Linux CI servers lack physical display monitors."]),
+    options: [
+      { optionKey: "A", optionText: "Linux CI servers lack physical monitors and active X11 display servers; running headed tests causes immediate browser startup crashes.", isCorrect: true },
+      { optionKey: "B", optionText: "Headless mode is required because Google Chrome does not support Linux.", isCorrect: false },
+      { optionKey: "C", optionText: "Headless mode encrypts the browser traffic using SHA-512.", isCorrect: false },
+      { optionKey: "D", optionText: "Headless mode disables JavaScript in web pages.", isCorrect: false }
+    ]
+  },
+  {
+    moduleNumber: 17,
+    topicSlug: "jenkins-selenium-maven-headless-testing",
+    topicNumber: 3,
+    type: "MCQ",
+    difficulty: "Intermediate",
+    title: "Publishing JUnit Surefire XML Reports in Jenkins",
+    prompt: "Where does the Maven Surefire plugin output test results, and what Jenkins post-build step parses them to visualize pass/fail trends over time?",
+    explanation: "Maven Surefire writes test reports to '**/target/surefire-reports/*.xml', which are published in Declarative Pipelines via 'post { always { junit '**/target/surefire-reports/*.xml' } }'.",
+    hintsJson: JSON.stringify(["Look for target/surefire-reports and the junit step."]),
+    options: [
+      { optionKey: "A", optionText: "Reports are output to 'target/surefire-reports/*.xml' and published via 'post { always { junit '...' } }'.", isCorrect: true },
+      { optionKey: "B", optionText: "Reports are stored in /tmp/test.log and published via 'git push'.", isCorrect: false },
+      { optionKey: "C", optionText: "Reports are written to pom.xml directly.", isCorrect: false },
+      { optionKey: "D", optionText: "Reports are emailed directly to GitHub.", isCorrect: false }
+    ]
+  },
+  {
     moduleNumber: 18,
+    topicSlug: "docker-internals-container-architecture",
+    topicNumber: 1,
     type: "MCQ",
     difficulty: "Beginner",
     title: "Linux Kernel Primitives Powering Docker",
@@ -282,6 +815,8 @@ module.exports = [
   },
   {
     moduleNumber: 19,
+    topicNumber: 1,
+    topicSlug: "kubernetes-architecture-control-plane-nodes",
     type: "MCQ",
     difficulty: "Intermediate",
     title: "Kubernetes Control Plane Component Roles",
@@ -311,3 +846,11 @@ module.exports = [
     ]
   }
 ];
+
+const dockerQuizzes = require('./dockerQuizzesData.js');
+module.exports.push(...dockerQuizzes);
+
+const kubernetesQuizzes = require('./kubernetesQuizzesData.js');
+module.exports.push(...kubernetesQuizzes);
+
+

@@ -288,21 +288,30 @@ module.exports = [
     moduleNumber: 16,
     title: "Git & GitHub – Enterprise Source Control & GitOps",
     slug: "git-and-github-enterprise-source-control",
-    description: "Master distributed version control, advanced branching strategies, pull request workflows, branch protection rules, GitHub Actions CI/CD automation, matrix testing, and GitOps fundamentals.",
+    description: "Master distributed version control, the three-section local repository architecture, Atlassian command cheat sheet workflows, advanced branching, pull request reviews, and GitHub Actions CI/CD automation.",
     icon: "git-branch",
     level: "Beginner",
     topics: [
       {
         topicNumber: 1,
-        title: "Git Fundamentals, Branching & Merge Strategies",
+        title: "Git Architecture, Version Control Fundamentals & Three-Section Local Repository",
         slug: "git-fundamentals-branching-merge-strategies",
-        summary: "Understand the three-tree architecture (Working Dir, Staging Index, Commit History), branching models (GitFlow vs Trunk-Based), Fast-Forward vs Three-Way merges, and Rebase vs Merge.",
+        summary: "Understand Version Control System (VCS) fundamentals, Centralized vs Distributed architectures (SVN vs Git), Ubuntu/Windows setup, global identity configuration, and the three local sections: Working Directory (untracked), Staging Area (Index/staged), and Local Repository (committed snapshots), plus safe unstaging with 'git rm --cached'.",
         difficulty: "Beginner",
         estimatedMinutes: 35,
-        keyTakeaway: "Commits are immutable snapshots of the repository DAG. Use feature branches, interactive rebasing for clean history, and never rebase public shared branches."
+        keyTakeaway: "Every Git clone is a complete backup of project history (no single point of failure). Files transition: Working Directory -> git add -> Staging Area -> git commit -> Local Repository. Unstage safely with 'git rm --cached <file>' without losing disk changes."
       },
       {
         topicNumber: 2,
+        title: "Git Command Suite & Cheat Sheet Mastery (History, Diffs, Undoing & Remote Sync)",
+        slug: "git-command-suite-cheat-sheet-mastery",
+        summary: "Master the complete Atlassian Git Cheat Sheet: git init, git clone, config aliases/editor, git status, git log options (--oneline, -p, --stat, --graph --decorate, --author, --grep), git diff (HEAD, --cached), git reset (soft, hard, pointers), git revert, git clean -n/-f, branching, interactive rebasing (git rebase -i), reflog, and remote sync (fetch, pull --rebase, push --force/--tags/--all).",
+        difficulty: "Intermediate",
+        estimatedMinutes: 40,
+        keyTakeaway: "Run 'git status' constantly to eliminate guesswork. Inspect with 'git log --graph --oneline', undo safely with 'git revert' or soft reset, dry-run with 'git clean -n', and sync remotes using 'git pull --rebase'."
+      },
+      {
+        topicNumber: 3,
         title: "GitHub Actions CI/CD, Secrets & Enterprise Workflows",
         slug: "github-actions-cicd-matrix-secrets",
         summary: "Automate builds and deployments using YAML workflows: triggers (push, pull_request, schedule), runner environments, matrix builds across OS/Node versions, encrypted secrets, and environment protection rules.",
@@ -316,27 +325,36 @@ module.exports = [
     moduleNumber: 17,
     title: "Jenkins – Enterprise CI/CD Pipeline Automation",
     slug: "jenkins-enterprise-cicd-pipeline-automation",
-    description: "Enterprise continuous integration and delivery with Jenkins: Controller-Agent distributed architecture, Declarative Jenkinsfile syntax, plugins, GitHub webhooks, multi-branch pipelines, and artifact deployment.",
+    description: "Master enterprise continuous integration and delivery with Jenkins: RHEL/CentOS setup, initial unlock, Global Security & Role Strategy RBAC, Controller-Agent distributed architecture, GitHub webhooks, multi-stage Declarative Pipelines, Cron build triggers, email alerts, and automated headless Selenium browser testing with Maven and JUnit XML reports.",
     icon: "play-circle",
     level: "Intermediate",
     topics: [
       {
         topicNumber: 1,
-        title: "Jenkins Controller-Agent Architecture & Setup",
+        title: "Jenkins Controller-Agent Architecture, Linux Setup & Global Security (RBAC)",
         slug: "jenkins-architecture-master-agents",
-        summary: "Understand Jenkins master/controller orchestration, static vs dynamic ephemeral agents (Docker/K8s), plugin ecosystem, security realms, and credentials management.",
+        summary: "Master Jenkins core architecture: Java 17 prerequisite, RHEL/CentOS YUM installation, systemctl service daemon, initialAdminPassword unlock wizard, Global Security Realm vs Authorization Strategy (Matrix-based and Role Strategy plugin for least-privilege), and Controller-Agent distributed builds with 'agent any' vs 'agent { label }' and 0 executors on Controller.",
         difficulty: "Intermediate",
         estimatedMinutes: 35,
-        keyTakeaway: "Never execute build workloads on the Jenkins controller. Delegate jobs to ephemeral agent nodes using SSH or Docker agents to ensure security and isolation."
+        keyTakeaway: "Jenkins orchestrates build tools; it does not compile code itself. Never run heavy build workloads on the Controller—set Controller executors to 0 and delegate to dedicated labeled agents. Secure user access using the Role Strategy plugin instead of 'logged-in users can do anything'."
       },
       {
         topicNumber: 2,
-        title: "Declarative Pipelines & Production Jenkinsfile Mastery",
+        title: "Build Triggers, SCM Integration & Declarative Pipelines (Jenkinsfile & Cron Scheduling)",
         slug: "declarative-jenkinsfile-production-pipelines",
-        summary: "Author production-grade Declarative Jenkinsfiles: pipeline directives (stages, steps, post actions), environment variables, credential binding, parallel execution, SonarQube code scanning, and automated notifications.",
+        summary: "Master Jenkins automation workflows: Freestyle vs Pipeline jobs, GitHub webhooks (/github-webhook/ with 'GitHub hook trigger for GITScm polling'), Build Triggers (Manual, Remote token, Build periodically vs Poll SCM, Upstream dependencies), 5-field Cron syntax, Declarative Jenkinsfiles (agent, stages, steps, post failure email notifications), and interactive human approval gates.",
         difficulty: "Advanced",
-        estimatedMinutes: 45,
-        keyTakeaway: "Store your Jenkinsfile in source control next to application code (Pipeline-as-Code). Use post-build conditions (always, success, failure) for automated rollbacks and alerts."
+        estimatedMinutes: 40,
+        keyTakeaway: "Prefer GitHub webhooks over Poll SCM for instant event-driven builds. Define all pipelines as version-controlled Declarative Jenkinsfiles in SCM. Use post { failure { mail ... } } to eliminate noisy success alert fatigue, and input steps for production deployment gates."
+      },
+      {
+        topicNumber: 3,
+        title: "Automated Testing & Continuous Integration: Selenium, Maven & Headless Test Automation",
+        slug: "jenkins-selenium-maven-headless-testing",
+        summary: "Automate browser testing in CI/CD: Selenium WebDriver setup in Eclipse/Maven, pom.xml dependencies with test scope, writing robust web tests with explicit waits and driver.quit(), running headless browser tests on Linux CI agents (ChromeDriver/Xvfb), Jenkins Maven Freestyle/Declarative integration, and publishing JUnit XML test reports (**/target/surefire-reports/*.xml) for trend analysis.",
+        difficulty: "Intermediate",
+        estimatedMinutes: 40,
+        keyTakeaway: "Automated Selenium testing in Jenkins eliminates 'works on my machine' flakiness. Run browser tests headlessly on Linux CI agents, always close WebDriver sessions with driver.quit(), and publish JUnit XML reports to track test pass/fail trends over time."
       }
     ]
   },
@@ -352,19 +370,28 @@ module.exports = [
         topicNumber: 1,
         title: "Container Internals, Namespaces & Docker Architecture",
         slug: "docker-internals-container-architecture",
-        summary: "Deconstruct how containers work: Linux cgroups for resource quotas, namespaces for process isolation, Union File Systems (OverlayFS), and the Docker engine lifecycle (Client, dockerd, containerd, runc).",
+        summary: "Deconstruct container virtualization: Type 1 vs Type 2 hypervisors, Linux kernel namespaces (PID, NET, MNT, IPC, UTS, USER), Control Groups (cgroups v1/v2), OverlayFS union filesystems, Docker client-server architecture (CLI, REST API, dockerd, containerd, runc), Docker group security risks, and container lifecycle states.",
         difficulty: "Beginner",
-        estimatedMinutes: 35,
-        keyTakeaway: "Containers are isolated Linux processes sharing the host kernel, not full-blown virtual machines. They start in milliseconds with minimal memory overhead."
+        estimatedMinutes: 40,
+        keyTakeaway: "Containers are isolated Linux processes sharing the host kernel, not full-blown VMs. The Docker CLI speaks REST over a Unix socket to dockerd, which delegates execution to containerd and the runc OCI runtime."
       },
       {
         topicNumber: 2,
-        title: "Dockerfile Multi-Stage Builds, Compose & Networking",
-        slug: "dockerfile-multistage-compose-networking",
-        summary: "Craft hardened, lightweight production images with multi-stage builds, non-root USER directives, .dockerignore, bridge/host/overlay networks, named volume persistence, and multi-container Docker Compose definitions.",
+        title: "Docker Images, Dockerfile Engineering & Registry Distribution",
+        slug: "docker-images-dockerfile-registries",
+        summary: "Master Docker image engineering: read-only immutable layers, content-addressable SHA256 hashes, Dockerfile directives (ARG vs ENV, COPY vs ADD, RUN chaining, WORKDIR, EXPOSE), CMD vs ENTRYPOINT matrix, build context optimization, layer cache invalidation rules, base image selection (Alpine musl vs Debian glibc, Distroless, Scratch), multi-stage builds, and image registries (Docker Hub, Harbor, private registry:2).",
         difficulty: "Intermediate",
         estimatedMinutes: 45,
-        keyTakeaway: "Use multi-stage builds to discard build tools and compilers from the final runtime image. Run as a non-root user and never store sensitive secrets in image layers."
+        keyTakeaway: "Order Dockerfile instructions from least-frequently to most-frequently changing to maximize layer cache hits. Use multi-stage builds to discard build tools and compilers from production runtime containers."
+      },
+      {
+        topicNumber: 3,
+        title: "Docker Networking, Storage Volumes & Multi-Container Docker Compose Stacks",
+        slug: "dockerfile-multistage-compose-networking",
+        summary: "Architect connected container systems: default bridge vs user-defined bridge networks with automatic DNS service discovery, host and none drivers, storage persistence (named volumes vs bind mounts vs tmpfs), multi-container orchestration with Docker Compose (docker-compose.yml), service dependencies and healthchecks, container resource quotas, and production incident troubleshooting.",
+        difficulty: "Intermediate",
+        estimatedMinutes: 45,
+        keyTakeaway: "User-defined bridge networks provide automatic DNS resolution between containers by service name. Docker Compose depends_on only checks container process start, not application readiness — always combine with healthcheck condition."
       }
     ]
   },
@@ -378,21 +405,30 @@ module.exports = [
     topics: [
       {
         topicNumber: 1,
-        title: "Kubernetes Architecture, Control Plane & Core Primitives",
+        title: "Kubernetes Architecture, Control Plane & Cluster Bootstrapping",
         slug: "kubernetes-architecture-control-plane-nodes",
-        summary: "Master the K8s distributed architecture: kube-apiserver, etcd key-value store, kube-scheduler, kube-controller-manager, Kubelet node agent, kube-proxy routing, and the fundamental Pod lifecycle.",
+        summary: "Deconstruct the distributed K8s control plane: kube-apiserver REST gateway, etcd distributed consensus, kube-scheduler placement, kube-controller-manager loops, cloud-controller-manager, Kubelet node agents, kube-proxy iptables/IPVS routing, Container Runtime Interface (CRI: containerd, CRI-O), CoreDNS, CNI plugins (Flannel, Calico), cluster bootstrapping (kind, kubeadm), and manifest anatomy (apiVersion, kind, metadata, spec, status, requests vs limits).",
         difficulty: "Intermediate",
         estimatedMinutes: 45,
-        keyTakeaway: "Kubernetes operates via declarative state: you define the desired state in YAML, and controllers continuously reconcile the actual state to match."
+        keyTakeaway: "Only kube-apiserver talks to etcd directly. The scheduler decides WHICH node runs a Pod; the kubelet on that node actually starts it. Use declarative 'kubectl apply -f' over imperative commands."
       },
       {
         topicNumber: 2,
-        title: "Workloads, Services, Ingress, Helm & Troubleshooting",
+        title: "Kubernetes Workloads, Core Objects, Networking & Storage Abstractions",
+        slug: "kubernetes-objects-workloads-networking-storage",
+        summary: "Master core Kubernetes abstractions: Pods, Deployments, ReplicaSets, Namespaces, Service types (ClusterIP, NodePort, LoadBalancer, ExternalName), ConfigMaps & Secrets (base64 vs etcd encryption at rest), PersistentVolumes (PV) & PersistentVolumeClaims (PVC), Reclaim Policies, DaemonSets (per-node agents) vs StatefulSets (ordered names & per-pod PVCs), Jobs & CronJobs, and Ingress routing.",
+        difficulty: "Intermediate",
+        estimatedMinutes: 50,
+        keyTakeaway: "Deployments manage stateless Pods; StatefulSets manage stateful databases with stable identities and persistent PVCs. Services select Pods via label selectors, and Ingress requires an active Ingress Controller."
+      },
+      {
+        topicNumber: 3,
+        title: "Zero-Downtime Rollouts, Autoscaling (HPA), Helm Packaging & Production Operations",
         slug: "k8s-workloads-services-networking-helm",
-        summary: "Deploy resilient microservices using Deployments, ReplicaSets, Services, Nginx Ingress Controllers, ConfigMaps, Secrets, PersistentVolumes, Helm charts, and diagnose CrashLoopBackOff & OOMKilled pods.",
+        summary: "Operate production Kubernetes clusters: Deployment rollout upgrades (kubectl set image, rollout status/history/undo), RollingUpdate (maxUnavailable, maxSurge) vs Recreate strategies, Horizontal Pod Autoscaler (HPA) with Metrics Server and CPU thresholds, Helm package manager (Chart.yaml, values.yaml, templates/, install, upgrade, rollback), and incident troubleshooting (Pending, CrashLoopBackOff).",
         difficulty: "Advanced",
         estimatedMinutes: 50,
-        keyTakeaway: "Decouple pods using Services and Ingress. Always set CPU/memory requests and limits, configure Liveness and Readiness probes, and manage releases with Helm."
+        keyTakeaway: "RollingUpdate scales the new ReplicaSet up while scaling the old one down, keeping the old ReplicaSet at 0 replicas for instant rollback. HPA strictly requires container resource requests to calculate utilization percentages."
       }
     ]
   },

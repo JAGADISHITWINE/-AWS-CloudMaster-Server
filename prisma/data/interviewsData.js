@@ -184,6 +184,8 @@ Only after steps 1-3 complete does the actual event handler execute. Subsequent 
   },
   {
     moduleNumber: 16,
+    topicSlug: "git-command-suite-cheat-sheet-mastery",
+    topicNumber: 2,
     title: "Explain Git Rebase vs Git Merge, and what is the Golden Rule of Rebasing?",
     difficulty: "Intermediate",
     prompt: "In a technical interview, the lead architect asks: 'Explain the internal mechanical difference between git merge and git rebase. When should an engineering team use merge versus rebase, and what is the cardinal Golden Rule of Rebasing?' How do you answer?",
@@ -222,7 +224,497 @@ Use \`git rebase -i\` (interactive rebase) locally on your private feature branc
     tagsJson: JSON.stringify(["Git", "GitHub", "Rebase", "Merge", "Version Control", "Interview"])
   },
   {
+    moduleNumber: 16,
+    topicSlug: "git-fundamentals-branching-merge-strategies",
+    topicNumber: 1,
+    title: "Why is Git Considered Safer Against Data Loss Than Centralized Systems Like SVN?",
+    difficulty: "Beginner",
+    prompt: "In a DevOps engineering interview, the interviewer asks: 'Why is Git's Distributed Version Control (DVCS) model considered substantially safer against data loss and catastrophic outages compared to centralized systems like SVN or CVS?' How do you explain the architectural difference?",
+    explanation: "Tests understanding of Centralized vs Distributed VCS architecture, single points of failure, full clone backups, and disaster recovery.",
+    hintsJson: JSON.stringify([
+      "Discuss where the repository history resides in CVCS vs DVCS.",
+      "Explain the consequence if a central SVN server crashes or suffers disk corruption.",
+      "Explain what every 'git clone' contains: a 100% full mirror of all commits, tags, and branches."
+    ]),
+    recommendedSolution: `**Model Answer:**
+
+**1. Centralized Version Control (CVCS - e.g., SVN):**
+- In a centralized system, the entire project revision history, branch database, and commit logs reside **exclusively on a single central remote server**.
+- Developers only check out a lightweight snapshot of the latest working files.
+- **The Single Point of Failure (SPOF):** If that central SVN server goes offline, no developer can commit, branch, or view history. If the central disk suffers fatal corruption without a verified offsite backup, the entire project's historical evolution is permanently lost.
+
+**2. Distributed Version Control (DVCS - Git):**
+- In Git, every single developer who executes \`git clone\` downloads a **complete, standalone replica of the entire repository history**—including all past commits, every branch, every tag, and all cryptographic snapshots.
+- **Resilience Against Data Loss:** Every developer's local machine acts as a full off-site backup. If GitHub, GitLab, or the central hosting server were completely destroyed tomorrow, **any single developer's local clone** can be pushed to a new server to fully restore the complete project history without losing a single commit or author attribution.
+- Furthermore, because Git uses cryptographic SHA-1/SHA-256 hashes to link parent commits, any corruption in data is immediately detected by Git's content-addressable hash validation.`,
+    rubricJson: JSON.stringify({
+      criteria: [
+        { name: "Architectural Comparison", weight: 30, description: "Contrasts central server dependency (SVN) with distributed local clones (Git)." },
+        { name: "Single Point of Failure Analysis", weight: 30, description: "Identifies central server outage/corruption risk in CVCS." },
+        { name: "Full Clone Disaster Recovery", weight: 25, description: "Explains how any developer clone can restore 100% of repository history." },
+        { name: "Cryptographic Integrity", weight: 15, description: "Mentions content-addressable SHA hashing preventing silent bit-rot." }
+      ]
+    }),
+    tagsJson: JSON.stringify(["Git", "DVCS", "SVN", "Architecture", "Data Safety", "Disaster Recovery"])
+  },
+  {
+    moduleNumber: 16,
+    topicSlug: "git-fundamentals-branching-merge-strategies",
+    topicNumber: 1,
+    title: "Give Practical Reasons Why a Developer Prefers Git's Distributed Model Day-to-Day",
+    difficulty: "Beginner",
+    prompt: "An interviewer asks: 'Aside from disaster recovery, give practical, real-world reasons why a software or DevOps engineer would prefer Git's distributed model over a centralized system in their daily work.' What practical advantages do you highlight?",
+    explanation: "Focuses on daily developer productivity: offline work, instant local commit speed, cheap branching, and local staging flexibility.",
+    hintsJson: JSON.stringify([
+      "Mention working without network access (e.g., flights, commute, outages).",
+      "Explain the speed difference between local file system operations vs network socket roundtrips.",
+      "Discuss cheap local feature branching and atomic local commits."
+    ]),
+    recommendedSolution: `**Model Answer:**
+
+**1. 100% Offline Productivity:**
+- In Git, version control happens at the individual workstation level first. A developer can commit, branch, view historical logs, inspect diffs, and switch branches completely offline (e.g. while traveling on an airplane, during internet outages, or behind strict firewalls).
+- Centralized tools like SVN require an active network connection to the central server for every commit, diff, or branch creation.
+
+**2. Zero Network Latency & Blazing Fast Performance:**
+- Because operations execute against the local \`.git\` folder on local NVMe/SSD storage, commands like \`git commit\`, \`git status\`, \`git diff\`, and \`git log\` execute in milliseconds.
+- In CVCS, every commit involves network handshake, remote locking, and wire serialization.
+
+**3. Frictionless, Cheap Local Branching:**
+- A Git branch is merely a lightweight 41-byte movable pointer to a commit hash. Creating a branch (\`git checkout -b feature\`) is instantaneous and consumes almost zero disk space.
+- Engineers can experiment freely, create throwaway spike branches, and delete them locally without polluting the remote team repository.
+
+**4. Granular, Atomic Staging with Staging Area (Index):**
+- Developers can stage and commit small, logical units of work locally without bothering teammates or triggering premature CI pipeline builds until they are ready to \`git push\`.`,
+    rubricJson: JSON.stringify({
+      criteria: [
+        { name: "Offline Work Capabilities", weight: 30, description: "Explains committing and reviewing history without internet connectivity." },
+        { name: "Local NVMe Speed vs Network Roundtrips", weight: 25, description: "Contrasts local millisecond commands with remote network latency." },
+        { name: "Cheap Branching Economics", weight: 25, description: "Explains lightweight 41-byte branch pointers vs heavy server branches." },
+        { name: "Granular Local Staging", weight: 20, description: "Discusses grouping atomic commits locally before pushing to remote." }
+      ]
+    }),
+    tagsJson: JSON.stringify(["Git", "Developer Experience", "Productivity", "Branching", "DVCS"])
+  },
+  {
+    moduleNumber: 16,
+    topicSlug: "git-fundamentals-branching-merge-strategies",
+    topicNumber: 1,
+    title: "Walk Through the Three Sections of Git and Why Git Uses a Separate Staging Area",
+    difficulty: "Beginner",
+    prompt: "During a technical screening: 'Explain the three sections a file moves through on a local machine before becoming part of Git's history. Why does Git bother with a separate Staging Area instead of committing the working directory directly like SVN?'",
+    explanation: "Evaluates understanding of Git's three-tree architecture (Working Directory, Staging Area/Index, Local Repository) and the intentional purpose of selective staging.",
+    hintsJson: JSON.stringify([
+      "Name the 3 sections: Working Directory, Staging Area (Index), and Local Repository.",
+      "Explain the state of files in each section: untracked, staged, and committed.",
+      "Explain why committing directly would lead to messy, cluttered commits."
+    ]),
+    recommendedSolution: `**Model Answer:**
+
+**The Three Sections of Git:**
+1. **Working Directory (Workspace):**
+   - The actual folder on disk where you create, modify, and delete files.
+   - Files here are **untracked** (Git knows they exist on disk but has not started tracking their history) or **modified** (tracked files with unstaged edits).
+   - Moving to next section: \`git add <file>\`.
+
+2. **Staging Area (Index / Cache):**
+   - An intermediate memory area (\`.git/index\`) that acts as a staging dock or preview zone for the next commit snapshot.
+   - Files here are **staged**—marked as 'ready to be permanently recorded' in the project ledger.
+   - Moving backward: \`git rm --cached <file>\` or \`git reset <file>\` moves files back to Working Directory without losing disk edits.
+   - Moving forward: \`git commit -m "<msg>"\`.
+
+3. **Local Repository (.git DAG):**
+   - Where actual version controlling happens.
+   - Contains immutable, cryptographically hashed commit snapshots, trees, blobs, and branches.
+   - Files here are **committed**—permanently retrievable milestones in the repository history.
+
+**Why Git Uses a Separate Staging Area Instead of Committing Directly:**
+- **Intentional, Atomic Commits:** In real-world software engineering, developers often edit multiple files simultaneously (e.g. implementing Feature A, fixing a bug in Feature B, and leaving temporary debug logs in Config C).
+- Without a staging area, you would be forced to commit all changes together in one massive, noisy commit.
+- The Staging Area allows you to selectively choose exactly which files and line changes belong together (\`git add -p\`), crafting clean, atomic, easily auditable commits with focused messages.`,
+    rubricJson: JSON.stringify({
+      criteria: [
+        { name: "Three Sections Identification", weight: 35, description: "Accurately describes Working Directory, Staging Area, and Local Repo." },
+        { name: "State Transitions & Commands", weight: 25, description: "Explains git add, git commit, and unstaging with git rm --cached." },
+        { name: "Rationale for Staging Area", weight: 30, description: "Explains atomic commit grouping vs dumping all edits blindly." },
+        { name: "Clarity & Professional Terminology", weight: 10, description: "Uses precise Git terms (Index, DAG, untracked, staged)." }
+      ]
+    }),
+    tagsJson: JSON.stringify(["Git", "Three Sections", "Staging Area", "Index", "Core Concepts"])
+  },
+  {
+    moduleNumber: 16,
+    topicSlug: "git-fundamentals-branching-merge-strategies",
+    topicNumber: 1,
+    title: "Accidental 'git add' on Wrong File: Safest Recovery and Why 'git status' is Vital",
+    difficulty: "Beginner",
+    prompt: "An interviewer asks: 'Suppose you accidentally ran git add on a sensitive file (.env containing API tokens) or an unintended file. What is the safest way to undo this before committing? Why is git status considered the single most important command in Git?'",
+    explanation: "Tests knowledge of safe unstaging commands (git rm --cached vs git reset) and the critical role of git status in preventing mistakes.",
+    hintsJson: JSON.stringify([
+      "Distinguish between 'git rm --cached' and destructive 'git rm'.",
+      "Mention 'git reset <file>' as an equivalent alternative.",
+      "Explain the 3 status states reported by 'git status': Untracked (red), Staged (green), and Unmodified/Committed."
+    ]),
+    recommendedSolution: `**Model Answer:**
+
+**1. The Safest Way to Undo an Accidental 'git add':**
+- Run:
+  \`\`\`bash
+  git rm --cached <filename>
+  # OR equivalently:
+  git reset <filename>
+  # OR modern Git:
+  git restore --staged <filename>
+  \`\`\`
+- **Why this is safe:** \`git rm --cached\` removes the file from the Staging Area (index) while leaving the physical file on your disk completely intact and unchanged. It safely transitions the file from "staged for commit" back to "untracked" or "modified".
+- **CRITICAL WARNING:** Never run plain \`git rm <filename>\` without the \`--cached\` flag! Plain \`git rm\` physically deletes the file from disk, causing permanent data loss for uncommitted files.
+
+**2. Why 'git status' is Considered the Most Important Git Command:**
+- \`git status\` provides an **instant, unambiguous radiographic scan** of the entire three-section repository state:
+  - **Red text:** Untracked new files or modified files in the Working Directory.
+  - **Green text:** Files currently staged in the Index ready to be committed.
+  - **Branch state:** Which branch HEAD points to and whether local is ahead/behind remote.
+- Running \`git status\` constantly—before staging, immediately after staging, and right before running \`git commit\`—completely eliminates guesswork and prevents accidental commits of secrets, debug code, or broken files.`,
+    rubricJson: JSON.stringify({
+      criteria: [
+        { name: "Safe Unstaging Syntax", weight: 35, description: "Names 'git rm --cached' or 'git reset' to unstage without deleting disk files." },
+        { name: "Caution Against Plain 'git rm'", weight: 25, description: "Explicitly warns that plain 'git rm' destroys the file on disk." },
+        { name: "Role of 'git status'", weight: 30, description: "Explains how git status eliminates guesswork across all three sections." },
+        { name: "Engineering Discipline", weight: 10, description: "Recommends checking status before and after every staging action." }
+      ]
+    }),
+    tagsJson: JSON.stringify(["Git", "Unstaging", "git status", "Safety", "Common Mistakes"])
+  },
+  {
+    moduleNumber: 16,
+    topicSlug: "git-command-suite-cheat-sheet-mastery",
+    topicNumber: 2,
+    title: "Emergency Response: AWS Credentials Leaked in Git History — Complete DAG Purging",
+    difficulty: "Advanced",
+    prompt: "During an emergency security incident, a developer committed and pushed an AWS IAM Secret Access Key to a public GitHub repository 20 commits ago. Automated bots crawled the repository within 90 seconds. As the Lead DevOps/SecOps Engineer: What is your immediate incident response sequence? Explain why running 'git rm' in a new commit fails to resolve the security breach, and detail the exact architectural procedure to purge the credential from the Git DAG across all branches, tags, and reflogs.",
+    explanation: "Tests enterprise security incident response, Git content-addressable storage mechanics (blobs, trees, commits), and irreversible history rewriting using modern tools like git-filter-repo.",
+    hintsJson: JSON.stringify([
+      "First priority: Credential revocation and IAM rotation in AWS (never assume the secret is safe).",
+      "Explain why 'git rm' leaves blobs in historical commit trees and git reflog.",
+      "Detail 'git-filter-repo' (recommended by Git core team over legacy git filter-branch or BFG).",
+      "Explain expiring reflogs and forcing aggressive garbage collection: 'git reflog expire' and 'git gc --prune=now'.",
+      "Mention force pushing with '--force-with-lease' and invalidating GitHub's cache."
+    ]),
+    recommendedSolution: `**Model Answer & Production Incident Response Runbook:**
+
+### Phase 1: Immediate Containment (AWS Cloud Level - T+0 to T+5 mins)
+*Crucial Principle: Assume the credential is fully compromised the instant it reached the remote.*
+1. **Immediate Revocation in AWS IAM:**
+   - Log into AWS Console / CLI with root/admin credentials.
+   - Deactivate or delete the compromised Access Key ID immediately:
+     \`\`\`bash
+     aws iam update-access-key --access-key-id AKIAEXAMPLE --status Inactive --user-name compromised-user
+     aws iam delete-access-key --access-key-id AKIAEXAMPLE --user-name compromised-user
+     \`\`\`
+2. **Audit AWS CloudTrail:**
+   - Query CloudTrail logs for all API calls made with the compromised \`accessKeyId\` over the last 24 hours to check for unauthorized resource provisioning (e.g. rogue EC2 crypto-mining instances, IAM backdoor role creation, or S3 bucket data exfiltration).
+
+---
+
+### Phase 2: Why 'git rm' in a New Commit Fails
+Running \`git rm secret.json && git commit -m "delete secret"\` only removes the file from the **new HEAD snapshot**.
+- The secret **still resides permanently** in the previous 20 commit objects, in the tree objects referencing the blob hash, in the repository packfiles, and in \`git reflog\`.
+- Anyone who runs \`git clone\` or \`git checkout <commit-sha>\` can read the secret in plain text.
+
+---
+
+### Phase 3: Total DAG History Eradication (Git Repository Level)
+To permanently expunge the secret from all commits, branches, and tags, we rewrite the repository history using \`git-filter-repo\` (the official tool recommended by the Git core team):
+
+1. **Install and Run git-filter-repo:**
+   \`\`\`bash
+   # Create a fresh mirror clone to avoid reference corruption
+   git clone --mirror https://github.com/organization/production-app.git repo-purge
+   cd repo-purge
+
+   # Completely strip the sensitive file across every historical commit:
+   git filter-repo --invert-paths --path server/config/secrets.json
+   # OR replace the secret string itself across all files:
+   # git filter-repo --replace-text expressions.txt
+   \`\`\`
+
+2. **Purge Reflogs & Execute Aggressive Garbage Collection:**
+   \`\`\`bash
+   git reflog expire --expire=now --all
+   git gc --prune=now --aggressive
+   \`\`\`
+
+3. **Force Push the Sanitized History:**
+   \`\`\`bash
+   git remote add origin https://github.com/organization/production-app.git
+   git push origin --force --all
+   git push origin --force --tags
+   \`\`\`
+
+4. **Contact GitHub Support:**
+   - GitHub retains orphaned cached commit SHAs in pull requests and view views on their backend for up to 90 days. Contact GitHub Support to request an immediate **ref cache purge** for the repository.
+
+---
+
+### Phase 4: Long-Term Prevention Guardrails
+- **Pre-commit Hooks:** Enforce automated secrets scanning on developer laptops using \`gitleaks\` or \`trufflehog\`.
+- **GitHub Push Protection:** Enable Secret Scanning with automatic Push Protection in GitHub Repository Settings to block commits containing cloud tokens before they ever leave the workstation.`,
+    rubricJson: JSON.stringify({
+      criteria: [
+        { name: "Immediate Cloud Containment", weight: 25, description: "Prioritizes immediate IAM key deactivation and CloudTrail blast radius audit." },
+        { name: "Git DAG Blob Understanding", weight: 25, description: "Explains why git rm fails to remove blobs from parent commit trees." },
+        { name: "History Rewriting Execution", weight: 30, description: "Provides precise steps for git-filter-repo, reflog expiration, and aggressive gc." },
+        { name: "Enterprise Prevention & Guardrails", weight: 20, description: "Recommends pre-commit hooks, GitHub push protection, and backend cache purge." }
+      ]
+    }),
+    tagsJson: JSON.stringify(["Git", "Security", "AWS IAM", "Incident Response", "git-filter-repo", "Advanced"])
+  },
+  {
+    moduleNumber: 16,
+    topicSlug: "git-command-suite-cheat-sheet-mastery",
+    topicNumber: 2,
+    title: "High-Severity Outage: Automated Bug Hunting in 1,000 Commits via 'git bisect run'",
+    difficulty: "Intermediate",
+    prompt: "Following a release containing 600 merged commits across 30 engineers, checkout conversions abruptly drop by 25% due to a silent JSON payload serialization bug. The bug is deterministic and reproducible via a terminal curl command or automated test script. Nobody knows which commit introduced the regression. Explain the mathematical mechanics of 'git bisect', how to automate the diagnosis in under 60 seconds using 'git bisect run', and how to handle commits that fail to compile due to unrelated syntax errors.",
+    explanation: "Evaluates knowledge of Git's binary search diagnostics, test automation integration with exit codes, and operational edge cases (git bisect skip).",
+    hintsJson: JSON.stringify([
+      "Explain binary search complexity: O(log2 N). 600 commits takes only ~9 to 10 checks.",
+      "Explain exit code protocol: 0 = good, 1-127 (except 125) = bad, 125 = untestable/skip.",
+      "Detail 'git bisect start', 'git bisect bad', 'git bisect good', and 'git bisect run'.",
+      "Mention 'git bisect reset' to restore the working directory after finding the culprit."
+    ]),
+    recommendedSolution: `**Model Answer:**
+
+### 1. Mathematical Mechanics of 'git bisect'
+- In a release with $N = 600$ commits, testing each commit manually in linear order requires $O(N) = 600$ test executions.
+- \`git bisect\` uses **Binary Search** across the repository commit Directed Acyclic Graph (DAG):
+  $$\\text{Steps} = \\lceil \\log_2(600) \\rceil = 10 \\text{ iterations}$$
+- Git checks out the exact middle commit between the known 'good' commit and the 'bad' commit. Depending on the test result, it halves the search space until only the culprit commit remains.
+
+---
+
+### 2. Full Automation via 'git bisect run'
+Instead of manually compiling and testing 10 times, you can delegate the entire diagnostic search to a shell script:
+
+**Step 1: Write an automated test script (\`test-runner.sh\`):**
+\`\`\`bash
+#!/bin/bash
+# test-runner.sh
+# 1. Build the microservice
+npm run build --silent || exit 125   # Code 125 signals Git to SKIP unbuildable commits!
+
+# 2. Run the specific regression unit test
+npm test -- -t "serializes checkout payload correctly"
+# The test command automatically returns exit code 0 on PASS, or non-zero on FAIL.
+\`\`\`
+\`\`\`bash
+chmod +x test-runner.sh
+\`\`\`
+
+**Step 2: Initialize the Bisect Session:**
+\`\`\`bash
+git bisect start
+git bisect bad HEAD                  # Current broken release tag / commit
+git bisect good v2.4.0               # Last known good release tag where checkout worked
+\`\`\`
+
+**Step 3: Launch the Automated Binary Search:**
+\`\`\`bash
+git bisect run ./test-runner.sh
+\`\`\`
+Git will automatically check out commits, execute \`./test-runner.sh\`, read the exit code, and converge on the broken commit in seconds. Output:
+\`\`\`
+7a8b9c0d1e2f is the first bad commit
+Author: engineer@company.com
+Date:   Tue Nov 3 14:22:10 2026
+    fix(order): refactor payment serialization format
+\`\`\`
+
+**Step 4: Conclude and Reset:**
+\`\`\`bash
+git bisect reset                     # Returns HEAD back to where you started
+\`\`\`
+
+---
+
+### 3. Handling Unrelated Compilation Failures (Exit Code 125)
+If intermediate commits cannot be tested because a broken asset or syntax error prevents the application from building:
+- In manual mode: run \`git bisect skip\`. Git will pick a neighboring commit.
+- In automated script mode: exit with **code 125** (\`exit 125\`). Git specifically reserves code 125 to mean *"this commit is untestable; skip it and pick another candidate"*.`,
+    rubricJson: JSON.stringify({
+      criteria: [
+        { name: "Binary Search Algorithmic Foundation", weight: 25, description: "Explains O(log2 N) efficiency vs O(N) linear manual auditing." },
+        { name: "Automated Bisect Execution", weight: 35, description: "Details git bisect start, good/bad markers, and git bisect run with test scripts." },
+        { name: "Exit Code Protocol (0 vs 125)", weight: 25, description: "Explains return codes and specifically exit code 125 for skipped/untestable commits." },
+        { name: "Session Cleanup", weight: 15, description: "Mentions running git bisect reset to restore developer workspace." }
+      ]
+    }),
+    tagsJson: JSON.stringify(["Git", "Debugging", "git bisect", "Automation", "Performance", "Intermediate"])
+  },
+  {
+    moduleNumber: 16,
+    topicSlug: "git-command-suite-cheat-sheet-mastery",
+    topicNumber: 2,
+    title: "Surgical Release Management: Git Cherry-Pick vs Merge for Zero-Downtime Hotfixes",
+    difficulty: "Intermediate",
+    prompt: "A critical zero-day remote code execution vulnerability is identified in production ('v2.4-stable'). A senior developer already committed the fix on an active, fast-moving feature branch ('feature/order-v3'), but that feature branch contains 42 other unreviewed commits that cannot be deployed to production under any circumstances. Walk through how you surgically extract only the security fix into production using 'git cherry-pick'. What are the operational risks of cherry-picking, and how does the '-x' flag maintain traceability?",
+    explanation: "Tests enterprise release engineering, surgical commit extraction, handling cherry-pick conflicts, and commit provenance tracking.",
+    hintsJson: JSON.stringify([
+      "Explain the purpose of git cherry-pick: applying the diff patch of a single specific commit SHA.",
+      "Explain the '-x' flag: appends '(cherry picked from commit ...)' to preserve traceability.",
+      "Explain why merging the entire branch is unacceptable in high-stakes production deployments.",
+      "Discuss the risk of duplicate commits and future merge reconciliation."
+    ]),
+    recommendedSolution: `**Model Answer:**
+
+### 1. Why Git Merge is Inappropriate Here
+- Running \`git merge feature/order-v3\` into \`v2.4-stable\` would integrate all 42 incomplete, unverified feature commits into production, introducing massive risk and violating release change controls.
+- What is needed is **surgical isolation**: applying strictly the single commit containing the security patch without pulling in any adjacent work.
+
+---
+
+### 2. Step-by-Step Surgical Cherry-Pick Workflow
+
+**Step 1: Locate the Security Patch Commit Hash:**
+\`\`\`bash
+git log --oneline feature/order-v3 -n 10
+# Output: 4f2c1a8 fix(security): sanitize user inputs against CVE-2026-4421
+\`\`\`
+
+**Step 2: Create a Dedicated Hotfix Branch from Production:**
+\`\`\`bash
+git checkout -b hotfix/cve-2026-4421 v2.4-stable
+\`\`\`
+
+**Step 3: Execute the Cherry-Pick with Provenance Tracking:**
+\`\`\`bash
+git cherry-pick -x 4f2c1a8
+\`\`\`
+- **Why the '-x' flag is essential:** It automatically appends a standardized metadata line to the commit message:
+  \`(cherry picked from commit 4f2c1a8b9c0d1e2f...)\`
+  This provides immutable traceability for security auditors and prevents confusion during future merge reconciliation.
+
+**Step 4: Resolving Potential Cherry-Pick Conflicts:**
+If the cherry-picked patch conflicts with older code in \`v2.4-stable\`:
+\`\`\`bash
+# 1. Check conflicted files
+git status
+# 2. Resolve conflict markers in code editor
+# 3. Stage resolved file:
+git add src/middleware/sanitizer.js
+# 4. Conclude cherry-pick without creating extra commit:
+git cherry-pick --continue
+\`\`\`
+
+**Step 5: Verify, Tag, and Deploy:**
+\`\`\`bash
+# Verify the patch is atomic and isolated:
+git show HEAD
+# Run test suite and merge into production:
+git checkout v2.4-stable
+git merge --ff-only hotfix/cve-2026-4421
+git tag -a v2.4.1 -m "release: patch CVE-2026-4421"
+git push origin v2.4-stable --tags
+\`\`\`
+
+---
+
+### 3. Operational Risks of Cherry-Picking
+1. **Duplicate Commits (Different SHAs):** Because cherry-pick calculates a new patch on a different parent, the new commit receives a brand-new SHA hash. Later, when \`feature/order-v3\` is merged into main, Git must reconcile two commits containing the same logical changes.
+2. **Missing Dependencies:** If the hotfix commit depended on utility functions introduced 2 commits prior on the feature branch, the cherry-picked code will fail to compile unless those dependencies are also identified and backported.`,
+    rubricJson: JSON.stringify({
+      criteria: [
+        { name: "Surgical Isolation Rationale", weight: 25, description: "Explains why merging the feature branch violates production release controls." },
+        { name: "Step-by-Step CLI Execution", weight: 35, description: "Details branch creation from production tag, cherry-pick with -x, and conflict resolution." },
+        { name: "Traceability with '-x' Flag", weight: 20, description: "Explains how -x maintains provenance back to the original source commit SHA." },
+        { name: "Operational Risk Analysis", weight: 20, description: "Discusses duplicate commit SHAs and uncarried code dependencies." }
+      ]
+    }),
+    tagsJson: JSON.stringify(["Git", "Release Engineering", "git cherry-pick", "Hotfix", "Zero Downtime", "Intermediate"])
+  },
+  {
+    moduleNumber: 16,
+    topicSlug: "git-command-suite-cheat-sheet-mastery",
+    topicNumber: 2,
+    title: "Scaling Enterprise Git Monorepos: Git LFS, Shallow Clones & Sparse Checkout",
+    difficulty: "Advanced",
+    prompt: "Your enterprise engineering organization maintains a 25 GB monolithic Git repository containing web services, Docker base images, and machine learning model weights (.onnx, .bin). CI/CD pipeline checkout times take 18 minutes, and developers run out of laptop storage. How do you re-architect this repository? Contrast Git LFS with Git Blobs, explain shallow vs blobless clones, and detail how Sparse Checkout allows developers to work on a single microservice folder.",
+    explanation: "Evaluates enterprise repository scaling, large binary handling, Git LFS pointer mechanics, and modern clone optimization flags.",
+    hintsJson: JSON.stringify([
+      "Explain Git LFS: stores tiny text pointer files in Git; stores heavy binaries in object storage (S3).",
+      "Explain Shallow Clone ('--depth 1') vs Partial/Blobless Clone ('--filter=blob:none').",
+      "Explain Sparse Checkout ('git sparse-checkout set <folder>') for downloading only relevant directories.",
+      "Discuss CI/CD pipeline acceleration from 18 minutes down to 30 seconds."
+    ]),
+    recommendedSolution: `**Model Architecture & Scaling Strategy:**
+
+### 1. The Monorepo Storage Problem
+Standard Git stores all file revisions as complete compressed zlib **blobs** in \`.git/objects/\`. When binary files (weights, video assets, container archives) are updated repeatedly, the \`.git\` folder balloons exponentially because binaries cannot be delta-compressed efficiently.
+
+---
+
+### 2. Architectural Solution 1: Git LFS (Large File Storage)
+- **Mechanics:** Instead of committing raw 500 MB binary files into the Git commit tree, Git LFS commits a tiny **130-byte pointer file** containing the SHA-256 hash and file size.
+- The actual binary payloads are uploaded via HTTP to external cloud object storage (e.g. AWS S3 / GitHub LFS storage).
+- **Implementation:**
+  \`\`\`bash
+  # Install and track binary patterns:
+  git lfs install
+  git lfs track "*.onnx" "*.tar.gz" "*.mp4"
+  git add .gitattributes
+  git commit -m "chore: track large models with Git LFS"
+  \`\`\`
+- **Developer Benefit:** Clones only download pointer files; binary files are fetched lazily on-demand.
+
+---
+
+### 3. Architectural Solution 2: Sparse Checkout (Local Workspace Optimization)
+In a monorepo with 100 microservices, an engineer working on the \`payment-service\` should never have to download or mount the remaining 99 services:
+\`\`\`bash
+# 1. Initialize clone with sparse checkout disabled:
+git clone --no-checkout https://github.com/org/enterprise-monorepo.git
+cd enterprise-monorepo
+
+# 2. Enable sparse-checkout in cone mode:
+git sparse-checkout init --cone
+
+# 3. Specify only the target microservice folder:
+git sparse-checkout set services/payment-service shared/libs
+
+# 4. Checkout working tree:
+git checkout main
+\`\`\`
+**Result:** The engineer's disk only populates \`services/payment-service\` and \`shared/libs\`. The other 20+ GB of files remain unpopulated on disk!
+
+---
+
+### 4. Architectural Solution 3: CI/CD Pipeline Acceleration
+In Jenkins or GitHub Actions runners, downloading the full 10-year commit history on every build is wasteful:
+1. **Shallow Clone (\`--depth 1\`):**
+   \`\`\`bash
+   git clone --depth 1 -b main https://github.com/org/repo.git
+   \`\`\`
+   Downloads strictly the latest commit snapshot without historical parents.
+2. **Blobless Clone (\`--filter=blob:none\`):**
+   \`\`\`bash
+   git clone --filter=blob:none https://github.com/org/repo.git
+   \`\`\`
+   Downloads all commit metadata and tree structures for all branches (so \`git log\` and \`git merge\` work instantaneously), but downloads file blobs only when a file is actively checked out.
+- **Outcome:** CI checkout latency drops from **18 minutes to ~15 seconds**, saving gigabytes of runner network bandwidth.`,
+    rubricJson: JSON.stringify({
+      criteria: [
+        { name: "Git LFS Architecture & Pointer Mechanics", weight: 30, description: "Explains pointer text files in Git DAG vs external object storage (S3)." },
+        { name: "Sparse Checkout Workflow", weight: 25, description: "Details sparse-checkout cone mode for isolating specific microservice directories." },
+        { name: "Shallow vs Blobless Clone Optimization", weight: 25, description: "Contrasts --depth 1 with --filter=blob:none for CI/CD acceleration." },
+        { name: "Enterprise Performance Impact", weight: 20, description: "Quantifies checkout latency reduction from 18 minutes to seconds." }
+      ]
+    }),
+    tagsJson: JSON.stringify(["Git", "Monorepo", "Git LFS", "Sparse Checkout", "Performance", "CI/CD", "Advanced"])
+  },
+  {
     moduleNumber: 17,
+    topicSlug: "jenkins-architecture-master-agents",
+    topicNumber: 1,
     title: "Declarative vs Scripted Jenkinsfile & Controller-Agent Security Best Practices",
     difficulty: "Intermediate",
     prompt: "Compare Declarative Pipelines with legacy Scripted Pipelines in Jenkins. Furthermore, why is running build workloads on the Jenkins Controller considered a critical operational and security anti-pattern?",
@@ -261,6 +753,8 @@ Running build scripts directly on the Jenkins Controller is a critical vulnerabi
   },
   {
     moduleNumber: 18,
+    topicSlug: "docker-internals-container-architecture",
+    topicNumber: 1,
     title: "Docker Container vs Virtual Machine & Multi-Stage Build Optimization",
     difficulty: "Intermediate",
     prompt: "An interviewer asks: 'Explain precisely how a Docker container differs from a Virtual Machine at the Linux OS kernel level. How do namespaces and cgroups facilitate this, and how do multi-stage Dockerfiles optimize production images?'",
@@ -304,6 +798,8 @@ Multi-Stage builds allow you to use a heavy builder image in Stage 1 to compile 
   },
   {
     moduleNumber: 19,
+    topicNumber: 1,
+    topicSlug: "kubernetes-architecture-control-plane-nodes",
     title: "Kubernetes Pod Scheduling Lifecycle from 'kubectl apply' to 'Running'",
     difficulty: "Advanced",
     prompt: "Walk through the entire step-by-step lifecycle when an engineer executes 'kubectl apply -f deployment.yaml'. Detail the exact interactions between kube-apiserver, etcd, kube-scheduler, kube-controller-manager, and kubelet on worker nodes.",
@@ -415,6 +911,8 @@ Here is the exact internal sequence when \`kubectl apply -f deployment.yaml\` is
   },
   {
     moduleNumber: 16,
+    topicSlug: "github-actions-cicd-matrix-secrets",
+    topicNumber: 3,
     title: "Explain GitFlow vs Trunk-Based Development for High-Velocity DevOps Teams",
     difficulty: "Intermediate",
     prompt: "In a technical interview for a Senior DevOps / Cloud Engineer, you are asked: 'Our engineering organization currently uses GitFlow with develop, release, and feature branches, but deployments take 2 weeks to reach production. How does Trunk-Based Development work, why are high-performing DevOps teams adopting it, and how do feature flags fit in?' How would you answer?",
@@ -458,6 +956,8 @@ To merge incomplete features into trunk without exposing half-built code to end 
   },
   {
     moduleNumber: 16,
+    topicSlug: "git-command-suite-cheat-sheet-mastery",
+    topicNumber: 2,
     title: "How Does Git Internally Store Data? (Blobs, Trees, Commits & Object Hashes)",
     difficulty: "Advanced",
     prompt: "An interviewer asks: 'People often say Git is just a content-addressable key-value store with a VCS interface on top. Explain the internal object model of Git: what happens inside the .git/objects directory when you commit a file?'",
@@ -509,7 +1009,164 @@ Git is fundamentally a **content-addressable filesystem**. Every piece of data s
     tagsJson: JSON.stringify(["Git Internals", "DAG", "Blobs", "Trees", "Architecture", "Interview"])
   },
   {
+    moduleNumber: 16,
+    topicSlug: "github-actions-cicd-matrix-secrets",
+    topicNumber: 3,
+    title: "Architecting Zero-Trust AWS Authentication in GitHub Actions with OpenID Connect (OIDC)",
+    difficulty: "Advanced",
+    prompt: "In an enterprise Cloud & DevOps security interview: 'Why is storing long-lived AWS IAM Access Keys and Secret Keys inside GitHub Actions Secrets considered an unacceptable security risk in production? Detail how to implement OpenID Connect (OIDC) between GitHub Actions and AWS IAM, how token exchange works cryptographically, and how IAM trust policies prevent unauthorized repositories from assuming privileged roles.'",
+    explanation: "Evaluates zero-trust cloud security, credential lifecycle, temporary STS credentials via OIDC federation, and least-privilege IAM trust policy condition keys.",
+    hintsJson: JSON.stringify([
+      "Explain the risk of static long-lived IAM keys (leakage, rotation overhead, lack of scoping).",
+      "Explain OIDC federation: GitHub's OIDC IdP issues a signed JWT with claims (repo, branch, environment).",
+      "Detail 'aws-actions/configure-aws-credentials' requesting temporary STS AssumeRoleWithWebIdentity credentials.",
+      "Detail IAM Trust Policy conditions: StringEquals on 'token.actions.githubusercontent.com:sub' and 'aud: sts.amazonaws.com'."
+    ]),
+    recommendedSolution: `**Model Answer:**
+
+**The Danger of Long-Lived Static AWS Credentials:**
+1. **Blast Radius & Leakage:** Long-lived IAM keys (\`AKIA...\`) stored in GitHub Secrets never expire automatically. If printed in debugging logs, cloned by untrusted forks, or compromised via a supply-chain dependency attack, attackers gain permanent cloud access.
+2. **Rotation Overhead:** Rotating keys across dozens of repositories and microservices is manual, error-prone, and frequently skipped.
+
+**The Modern Enterprise Solution: OpenID Connect (OIDC) Federation:**
+OIDC allows GitHub Actions workflows to authenticate directly with AWS IAM using short-lived (default 1 hour) temporary credentials issued by AWS STS, eliminating long-lived secrets completely.
+
+**Cryptographic Token Exchange Workflow:**
+1. **GitHub Runner requests a JWT:** When a workflow step runs \`aws-actions/configure-aws-credentials\`, GitHub's OIDC provider issues a cryptographically signed JSON Web Token (JWT) containing verifiable claims (\`sub\`, \`aud\`, \`repository\`, \`ref\`).
+2. **Workflow calls AWS STS:** The action calls \`sts:AssumeRoleWithWebIdentity\`, sending the JWT and target IAM Role ARN to AWS.
+3. **AWS IAM validates the Token:** AWS verifies GitHub's public OIDC keys (\`https://token.actions.githubusercontent.com\`) and evaluates the IAM Role's **Trust Relationship Policy**.
+4. **STS returns Temporary Credentials:** AWS STS generates temporary credentials (\`AccessKeyId\`, \`SecretAccessKey\`, \`SessionToken\`) with least-privilege permissions that automatically expire in 60 minutes.
+
+**Configuring the IAM Role Trust Policy (Least-Privilege Scoping):**
+\`\`\`json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "arn:aws:iam::123456789012:oidc-provider/token.actions.githubusercontent.com"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": {
+          "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
+        },
+        "StringLike": {
+          "token.actions.githubusercontent.com:sub": "repo:my-org/my-production-app:ref:refs/heads/main"
+        }
+      }
+    }
+  ]
+}
+\`\`\`
+*Critical Security Note:* Always constrain the \`sub\` (subject) claim to the exact organization, repository, and branch to prevent other GitHub users or untrusted feature branches from assuming your role.
+
+**GitHub Actions Workflow Configuration:**
+\`\`\`yaml
+permissions:
+  id-token: write   # Required to request the GitHub OIDC JWT
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure AWS Credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::123456789012:role/GitHubActionsDeploymentRole
+          aws-region: us-east-1
+      - run: aws s3 sync dist/ s3://prod-static-assets/
+\`\`\``,
+    rubricJson: JSON.stringify({
+      criteria: [
+        { name: "Static Key Vulnerabilities", weight: 20, description: "Identifies risks of static IAM credentials and lack of automatic rotation." },
+        { name: "OIDC Handshake Mechanics", weight: 30, description: "Explains signed JWT exchange with AWS STS AssumeRoleWithWebIdentity." },
+        { name: "Trust Policy Condition Keys", weight: 30, description: "Specifies strict condition checks for 'sub' and 'aud' claims." },
+        { name: "Workflow Implementation", weight: 20, description: "Includes 'id-token: write' permission and aws-actions configuration." }
+      ]
+    }),
+    tagsJson: JSON.stringify(["GitHub Actions", "AWS IAM", "OIDC", "Security", "STS", "Zero Trust", "Interview"])
+  },
+  {
+    moduleNumber: 16,
+    topicSlug: "github-actions-cicd-matrix-secrets",
+    topicNumber: 3,
+    title: "Designing Resilient CI/CD Pipelines: GitHub Actions Matrix Builds, Concurrency & Environment Protection",
+    difficulty: "Intermediate",
+    prompt: "A SaaS company runs a polyglot microservice backend and cross-platform CLI tool. How do you design a GitHub Actions workflow that: (1) runs unit tests across multiple Node.js versions (18, 20) and Operating Systems (ubuntu-latest, windows-latest) in parallel without duplicating YAML, (2) automatically cancels redundant in-flight builds when a developer pushes subsequent commits to an open PR, and (3) enforces human peer approval before deploying to the 'production' cloud environment?",
+    explanation: "Tests practical mastery of GitHub Actions matrix strategies, concurrency group cancellation, and GitHub Environments with deployment protection rules.",
+    hintsJson: JSON.stringify([
+      "Explain 'strategy.matrix' with combinations of os and node-version.",
+      "Explain 'concurrency' with group keys and 'cancel-in-progress: true'.",
+      "Explain GitHub Environments, environment secrets, and Required Reviewers protection gates."
+    ]),
+    recommendedSolution: `**Model Answer:**
+
+**1. Parallel Multi-Dimensional Testing via Strategy Matrix:**
+Instead of copying and pasting separate workflow files, define a \`strategy.matrix\`. GitHub Actions multiplies the matrix dimensions, running 4 isolated parallel runner jobs simultaneously:
+\`\`\`yaml
+jobs:
+  test:
+    runs-on: \${{ matrix.os }}
+    strategy:
+      fail-fast: false  # Don't cancel other jobs if one OS fails
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node-version: [18, 20]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: \${{ matrix.node-version }}
+      - run: npm ci
+      - run: npm test
+\`\`\`
+
+**2. Eliminating Wasted Compute with Concurrency Groups:**
+When developers push 3 rapid commits to an active Pull Request, 3 separate CI pipelines trigger. To prevent queue congestion and cut GitHub Actions billing costs, define a \`concurrency\` block with \`cancel-in-progress: true\`:
+\`\`\`yaml
+concurrency:
+  group: \${{ github.workflow }}-\${{ github.ref }}
+  cancel-in-progress: true
+\`\`\`
+*Mechanics:* Any newly pushed commit immediately terminates all executing jobs from the prior commit on that PR branch, ensuring only the latest commit consumes runner minutes.
+
+**3. Enterprise Deployment Gates with GitHub Environments:**
+To ensure zero unauthorized deployments to production:
+- Create a GitHub **Environment** named \`production\` under Repository Settings -> Environments.
+- Enable **Required Reviewers**: Specify the DevOps Lead or SRE team. Deployment automatically pauses until an authorized reviewer clicks "Review deployments -> Approve".
+- Bind Production Secrets (e.g. database credentials) strictly to the \`production\` environment, keeping them completely inaccessible to feature branch PRs.
+\`\`\`yaml
+jobs:
+  deploy-prod:
+    needs: test
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://app.example.com
+    steps:
+      - uses: actions/checkout@v4
+      - run: ./deploy.sh
+        env:
+          PROD_DB_HOST: \${{ secrets.PROD_DB_HOST }}
+\`\`\``,
+    rubricJson: JSON.stringify({
+      criteria: [
+        { name: "Matrix Strategy Definition", weight: 35, description: "Demonstrates strategy.matrix syntax across multiple OS and runtime versions." },
+        { name: "Concurrency Group Optimization", weight: 30, description: "Explains cancel-in-progress to save runner compute on rapid commits." },
+        { name: "Environment Protection Gates", weight: 35, description: "Explains GitHub Environments, required approvers, and environment secret scoping." }
+      ]
+    }),
+    tagsJson: JSON.stringify(["GitHub Actions", "CI/CD", "Matrix Builds", "Concurrency", "Environments", "DevOps", "Interview"])
+  },
+  {
     moduleNumber: 17,
+    topicSlug: "jenkins-architecture-master-agents",
+    topicNumber: 1,
     title: "Secure Enterprise Credential Management & Log Masking in Jenkins",
     difficulty: "Intermediate",
     prompt: "In an enterprise CI/CD pipeline, how do you inject production secrets (AWS IAM keys, SSH private keys, Docker registry passwords) into Jenkins pipeline jobs securely, ensure credentials are never leaked into console output logs, and restrict access based on least privilege?",
@@ -564,6 +1221,8 @@ Git is fundamentally a **content-addressable filesystem**. Every piece of data s
   },
   {
     moduleNumber: 17,
+    topicSlug: "declarative-jenkinsfile-production-pipelines",
+    topicNumber: 2,
     title: "Declarative Pipeline vs Scripted Pipeline in Jenkins: Deep Architectural Comparison",
     difficulty: "Intermediate",
     prompt: "An interviewer asks: 'What is the architectural difference between a Declarative Pipeline and a Scripted Pipeline in Jenkins? Which one should an enterprise standardize on, and in what rare scenarios would you still use Scripted syntax?'",
@@ -608,7 +1267,553 @@ Git is fundamentally a **content-addressable filesystem**. Every piece of data s
     tagsJson: JSON.stringify(["Jenkins", "Pipelines", "Declarative", "Scripted", "Groovy", "Interview"])
   },
   {
+    moduleNumber: 17,
+    topicSlug: "jenkins-architecture-master-agents",
+    topicNumber: 1,
+    title: "What Does Jenkins Actually Automate & What Is a Jenkins Plugin Conceptually?",
+    difficulty: "Beginner",
+    prompt: "In a fundamental DevOps engineering interview: 'In one sentence, what does Jenkins actually automate? What is a Jenkins plugin conceptually, and why does Jenkins rely on plugins instead of bundling everything natively?' How do you answer?",
+    explanation: "Tests foundational understanding of Jenkins as an automation orchestrator rather than a build tool, and its modular plugin architecture.",
+    hintsJson: JSON.stringify([
+      "State clearly that Jenkins orchestrates build/test/deploy tools in repeatable automated sequences.",
+      "Explain that a plugin extends Jenkins core functionality to integrate external tools (Git, Maven, Slack).",
+      "Mention that the plugin model keeps the core server lightweight while supporting infinite toolchains."
+    ]),
+    recommendedSolution: `**Model Answer:**
+
+**In One Sentence, What Jenkins Automates:**
+Jenkins automates the **end-to-end orchestration** of building, testing, and deploying software—triggering the right development tools in the correct sequence automatically whenever code changes, instead of an engineer executing manual commands by hand.
+
+**What is a Jenkins Plugin Conceptually?**
+A Jenkins plugin is an independently versioned software module that extends Jenkins' core capabilities to integrate with external tools, cloud providers, and services. 
+- *Examples:*
+  - **Git Plugin:** Enables Jenkins to poll repositories, clone branches, and checkout commits.
+  - **Maven Plugin:** Provides build step execution and automated POM parsing.
+  - **Email-ext Plugin:** Generates customizable HTML email notifications upon build failure.
+  - **Role Strategy Plugin:** Replaces basic permissions with enterprise Role-Based Access Control (RBAC).
+
+**Why Jenkins Relies on Plugins:**
+1. **Lightweight Core:** The Jenkins core remains compact, focused strictly on scheduling, user management, and execution queues.
+2. **Infinite Extensibility:** No single vendor can bundle every programming language, test framework, and cloud provider. Plugins allow the open-source community to support emerging technologies (Docker, Kubernetes, AWS, Terraform) without modifying core Jenkins code.
+3. **Decoupled Lifecycle:** Plugins can be patched and updated independently of the core Jenkins LTS release cycle.`,
+    rubricJson: JSON.stringify({
+      criteria: [
+        { name: "Core Orchestrator Definition", weight: 40, description: "Accurately identifies Jenkins as an orchestrator of external tools rather than a compiler." },
+        { name: "Plugin Conceptual Model", weight: 35, description: "Explains how plugins extend core functionality with external tool integrations." },
+        { name: "Architectural Rationale", weight: 25, description: "Explains lightweight core and decoupled update lifecycle benefits." }
+      ]
+    }),
+    tagsJson: JSON.stringify(["Jenkins", "Orchestration", "Plugins", "CI/CD", "Architecture", "Interview"])
+  },
+  {
+    moduleNumber: 17,
+    topicSlug: "jenkins-architecture-master-agents",
+    topicNumber: 1,
+    title: "Why Is 'Logged-In Users Can Do Anything' Dangerous & How Does the Role Strategy Plugin Enforce Least Privilege?",
+    difficulty: "Intermediate",
+    prompt: "During an enterprise security audit: 'Why is configuring 'Logged-in users can do anything' considered an unacceptable security risk in production? Detail how the Role Strategy plugin enables fine-grained authorization, and how you would design roles for Developers and QA engineers.'",
+    explanation: "Evaluates Jenkins authorization models, blast radius of compromised credentials, and role-based access control (RBAC) implementation.",
+    hintsJson: JSON.stringify([
+      "Explain that 'Logged-in users can do anything' grants full administrative control to any authenticated account.",
+      "Detail the Role Strategy plugin: Global Roles, Item (Project) Roles, and Node Roles.",
+      "Specify permissions for Developers (Job/Build, Job/Read, Job/Workspace) vs QA (Job/Read, Job/Build) vs Admins."
+    ]),
+    recommendedSolution: `**Model Answer:**
+
+**The Danger of 'Logged-in users can do anything':**
+1. **Violates Principle of Least Privilege:** Any authenticated user—regardless of role, seniority, or contractor status—receives complete administrative control.
+2. **Security Vulnerability:** Any user can modify global security realms, delete critical production pipelines, read plaintext secrets from the Credentials Store, or execute arbitrary Groovy scripts via the Script Console (Remote Code Execution on the host).
+3. **Operational Hazard:** An accidental configuration mistake by an inexperienced user can delete production deployment steps or alter release triggers.
+
+**How the Role Strategy Plugin Solves It:**
+The **Role-based Authorization Strategy** plugin replaces flat permissions with reusable, named roles categorized into three tiers:
+1. **Global Roles:** Govern overall instance access (Administer, Read).
+2. **Item Roles (Project Roles):** Governed by regex patterns (e.g. \`frontend-.*\`, \`payment-service-.*\`), defining what actions users can execute against specific jobs.
+3. **Node Roles:** Govern which worker agents users can configure or take offline.
+
+**Enterprise Role Architecture Example:**
+- **Administrator Role:**
+  - Permissions: Overall -> Administer (Full control).
+  - Assigned strictly to Senior DevOps / SRE engineers.
+- **Developer Role:**
+  - Global: Overall -> Read.
+  - Item Role (\`dev-.*\`): Job -> Read, Job -> Build, Job -> Workspace, Job -> Cancel.
+  - Excluded: Job -> Configure, Job -> Delete, Credentials.
+- **QA Automation Role:**
+  - Global: Overall -> Read.
+  - Item Role (\`qa-.*\`): Job -> Read, Job -> Build.
+  - Excluded: Job -> Configure, Job -> Workspace modification.
+
+**Outcome:** Users only possess the exact permissions required for their daily responsibilities, containing the blast radius of human error or compromised credentials.`,
+    rubricJson: JSON.stringify({
+      criteria: [
+        { name: "Risk Analysis of Flat Permissions", weight: 30, description: "Identifies RCE, credential tampering, and accidental job deletion risks." },
+        { name: "Role Strategy Mechanics", weight: 35, description: "Explains Global Roles and regex-based Item Roles." },
+        { name: "Practical Role Architecture", weight: 35, description: "Accurately scopes Developer and QA roles without Configure/Administer rights." }
+      ]
+    }),
+    tagsJson: JSON.stringify(["Jenkins", "Security", "RBAC", "Role Strategy", "Least Privilege", "Interview"])
+  },
+  {
+    moduleNumber: 17,
+    topicSlug: "jenkins-architecture-master-agents",
+    topicNumber: 1,
+    title: "Why Distribute Workloads Across Dedicated Agents Instead of the Controller, and Why Set Controller Executors to 0?",
+    difficulty: "Intermediate",
+    prompt: "In a CI/CD architecture interview: 'Why should build workloads never run directly on the Jenkins Controller? What happens when a build crashes or exhausts memory on the controller, and how does the 'agent' directive route workloads to specific labeled nodes?'",
+    explanation: "Tests distributed Jenkins architecture, executor starvation, UI responsiveness, and workload isolation via node labels.",
+    hintsJson: JSON.stringify([
+      "Explain Controller responsibilities: UI, scheduling, plugin orchestration, credentials.",
+      "Explain risks of build execution on Controller: JVM memory starvation, CPU spikes, UI crashes, security exposure.",
+      "Explain Controller executors = 0 best practice.",
+      "Explain agent directive: 'agent any' vs 'agent { label 'slave2' }'."
+    ]),
+    recommendedSolution: `**Model Answer:**
+
+**Why Never Run Builds on the Jenkins Controller:**
+1. **Resource Starvation & UI Freezes:** The Controller runs the Jenkins web interface, job scheduler, and webhook receiver. If a resource-intensive build (e.g. multi-threaded C++ compilation, large Docker image build) runs on the Controller, it can consume 100% CPU and exhaust JVM heap memory, causing the web UI to crash and dropping all active pipelines.
+2. **Security & Blast Radius:** The Controller hosts the master encryption key (\`secrets/master.key\`) and system credentials. Malicious or untrusted build scripts executing on the Controller can inspect Controller disk files and compromise enterprise credentials.
+3. **Horizontal Scalability:** A single Controller cannot scale vertically to support hundreds of concurrent builds. Distributing workloads across agents enables linear horizontal scaling.
+
+**Enterprise Best Practice: Setting Controller Executors to 0:**
+Under **Manage Jenkins -> Manage Nodes -> Built-In Node**, set **# of executors** to **0**.
+- This guarantees the Controller is dedicated purely to orchestration, scheduling, and UI management, and will never accept build workloads.
+
+**How Workloads Route to Specific Labeled Agents:**
+Agents (worker nodes) register with the Controller and carry descriptive labels (e.g. \`linux-builder\`, \`windows-net\`, \`docker-agent\`).
+In Declarative Pipelines, the \`agent\` directive dictates scheduling:
+- \`agent any\`: Jenkins assigns the build to any available online agent with spare executor capacity based on load balancing.
+- \`agent { label 'windows-net' }\`: Jenkins strictly pins the stage or entire pipeline to an agent labeled \`windows-net\`, ensuring tools specific to that OS (like MSBuild) are guaranteed to be present.`,
+    rubricJson: JSON.stringify({
+      criteria: [
+        { name: "Controller Isolation Rationale", weight: 35, description: "Explains memory starvation, UI crashes, and credential exposure." },
+        { name: "Controller Executors = 0", weight: 30, description: "Identifies setting built-in node executors to 0 as mandatory best practice." },
+        { name: "Agent Directive & Labeling", weight: 35, description: "Contrasts agent any with agent { label '...' } for environment pinning." }
+      ]
+    }),
+    tagsJson: JSON.stringify(["Jenkins", "Controller-Agent", "Master-Slave", "Architecture", "Distributed Builds", "Interview"])
+  },
+  {
+    moduleNumber: 17,
+    topicSlug: "declarative-jenkinsfile-production-pipelines",
+    topicNumber: 2,
+    title: "Walk Through the End-to-End GitHub Webhook CI Trigger Sequence & What to Verify When Builds Don't Fire",
+    difficulty: "Intermediate",
+    prompt: "An interviewer asks: 'Walk through what happens, end to end, from the moment a software developer runs 'git push' to GitHub, through webhook delivery, to Jenkins executing the build. If the webhook delivery in GitHub shows HTTP 200 OK with a green checkmark, but Jenkins never triggers the job, what is the exact misconfiguration?'",
+    explanation: "Tests deep operational knowledge of event-driven CI/CD integration, webhook payloads, and Jenkins build trigger bindings.",
+    hintsJson: JSON.stringify([
+      "Trace the flow: git push -> GitHub fires POST /github-webhook/ -> Jenkins GitHub plugin receives payload -> Matches SCM URL -> Checks 'GitHub hook trigger for GITScm polling' -> Enqueues build.",
+      "Identify the misconfiguration: Job is missing the 'GitHub hook trigger for GITScm polling' checkbox."
+    ]),
+    recommendedSolution: `**Model Answer:**
+
+**End-to-End Event Flow:**
+1. **Developer Push:** An engineer runs \`git push origin feature/auth\` to GitHub.
+2. **GitHub Webhook Trigger:** GitHub detects the push event and immediately issues an HTTP POST payload containing commit metadata, branch name, and repository URL to Jenkins' webhook endpoint:
+   \`http://<jenkins-url>:8080/github-webhook/\`
+3. **Jenkins Ingestion:** The Jenkins **GitHub plugin** receives the JSON payload, verifies optional HMAC-SHA256 signatures, and parses the repository URL (\`repository.url\` / \`clone_url\`).
+4. **Job Matching & Dispatch:** Jenkins scans all registered jobs whose Source Code Management (SCM) matches the Git repository URL.
+5. **Execution:** Jenkins checks if the matching job has webhook triggers enabled, enqueues the build in the scheduler queue, allocates an executor on a matching agent, checks out the commit, and begins stage execution.
+
+**Troubleshooting: GitHub Shows Green Check (200 OK), But Jenkins Never Triggers:**
+If GitHub shows **HTTP 200 OK**, the network routing, firewall, and Jenkins web server are 100% operational.
+The failure is inside Jenkins job configuration:
+1. **Missing Trigger Checkbox (Primary Root Cause):** Under the job's **Build Triggers**, the checkbox **'GitHub hook trigger for GITScm polling'** is unchecked! Jenkins receives the event successfully but was never instructed to act upon it for this job.
+2. **SCM URL Mismatch:** The repository URL in the job configuration differs slightly from the GitHub payload (e.g. \`https://github.com/org/repo.git\` vs \`git@github.com:org/repo.git\`, or case sensitivity differences).
+3. **Branch Specifier Mismatch:** The job is configured to build strictly \`refs/heads/main\`, but the push occurred on a feature branch without multibranch pipeline discovery.`,
+    rubricJson: JSON.stringify({
+      criteria: [
+        { name: "End-to-End Flow Sequence", weight: 40, description: "Traces push, HTTP POST payload, plugin receipt, and job matching." },
+        { name: "Root Cause Diagnosis", weight: 40, description: "Pinpoints missing 'GitHub hook trigger for GITScm polling' checkbox." },
+        { name: "Edge Case Awareness", weight: 20, description: "Mentions SCM URL mismatches or branch specifier filters." }
+      ]
+    }),
+    tagsJson: JSON.stringify(["Jenkins", "GitHub Webhooks", "CI/CD", "Build Triggers", "GITScm", "Interview"])
+  },
+  {
+    moduleNumber: 17,
+    topicSlug: "declarative-jenkinsfile-production-pipelines",
+    topicNumber: 2,
+    title: "Build Periodically vs Poll SCM: Architectural Differences, Resource Costs & 5-Field Cron Syntax",
+    difficulty: "Intermediate",
+    prompt: "A junior engineer asks: 'What is the practical difference between 'Build periodically' and 'Poll SCM'? When should each be used, what are the resource trade-offs against GitHub webhooks, and how is the 5-field cron syntax structured in Jenkins?' How do you explain this?",
+    explanation: "Evaluates understanding of scheduled triggers vs commit polling, Git server overhead, and cron scheduling syntax.",
+    hintsJson: JSON.stringify([
+      "Explain Build periodically: runs build unconditionally on a clock.",
+      "Explain Poll SCM: checks Git repo on schedule; runs build ONLY if new commits exist.",
+      "List the 5 fields: minute, hour, day-of-month, month, day-of-week.",
+      "Give cron examples: */5 * * * *, H 2 * * 1-5.",
+      "Contrast both with event-driven Webhooks."
+    ]),
+    recommendedSolution: `**Model Answer:**
+
+**Practical Difference:**
+- **Build Periodically:** Triggers a full build execution (compiling, testing, packaging) on a fixed clock schedule, **regardless of whether any code has changed**.
+  - *Best For:* Nightly cleanup jobs, scheduled security vulnerability scans, or batch reconciliation reports.
+- **Poll SCM:** Contacts the remote Git repository on a schedule and checks for new commit SHAs. If no new commits exist since the last build, it exits immediately. It **only triggers a build if new code is found**.
+  - *Best For:* Legacy firewalled Git servers that cannot send inbound webhooks to Jenkins.
+
+**Resource Trade-Offs (vs GitHub Webhooks):**
+- **Polling (Inefficient):** Running Poll SCM every minute across 100 jobs issues 144,000 Git network requests a day, causing high CPU load, bandwidth consumption, and triggering Git API rate limits.
+- **Webhooks (Event-Driven):** Zero polling overhead. Builds trigger in sub-second latency only when real commits are pushed.
+
+**Jenkins 5-Field Cron Syntax:**
+Structured in five space-separated fields:
+\`\`\`
+*     *     *     *     *
+┬     ┬     ┬     ┬     ┬
+│     │     │     │     │
+│     │     │     │     └───── Day of Week (0 - 7) (0 and 7 = Sun)
+│     │     │     └────────── Month (1 - 12)
+│     │     └─────────────── Day of Month (1 - 31)
+│     └──────────────────── Hour (0 - 23)
+└───────────────────────── Minute (0 - 59)
+\`\`\`
+
+**Common Cron Examples:**
+- \`*/5 * * * *\`: Runs every 5 minutes.
+- \`10 */5 * * *\`: Runs at minute 10 of every 5th hour.
+- \`* */2 * * 1-5\`: Runs at minute 1 of every 2 hours, Monday through Friday.
+- \`H 2 * * *\`: Runs once nightly between 2:00 AM and 2:59 AM (using hash \`H\` for distributed jitter).`,
+    rubricJson: JSON.stringify({
+      criteria: [
+        { name: "Build Periodically vs Poll SCM", weight: 35, description: "Accurately contrasts unconditional builds with commit-conditional builds." },
+        { name: "5-Field Cron Anatomy", weight: 35, description: "Explains minute, hour, day-of-month, month, day-of-week in order." },
+        { name: "Webhook Comparison & Best Practice", weight: 30, description: "Explains polling network overhead and advocates webhooks." }
+      ]
+    }),
+    tagsJson: JSON.stringify(["Jenkins", "Build Triggers", "Cron", "Poll SCM", "Build Periodically", "Interview"])
+  },
+  {
+    moduleNumber: 17,
+    topicSlug: "declarative-jenkinsfile-production-pipelines",
+    topicNumber: 2,
+    title: "Architecting Actionable Notifications with Email-ext & SMTP: Why Use 'post { failure }' Instead of Every Build?",
+    difficulty: "Intermediate",
+    prompt: "In a production alerting discussion: 'What two separate pieces of configuration does email notification in Jenkins require? Why is notifying only on failure (via post { failure { ... } }) vastly superior to notifying on every successful build, and how do you prevent alert fatigue?'",
+    explanation: "Tests knowledge of email plugin architecture, SMTP setup, and DevOps alerting best practices.",
+    hintsJson: JSON.stringify([
+      "Two configuration pieces: Email-ext plugin (templating) and SMTP server in Manage Jenkins -> Configure System.",
+      "Explain alert fatigue: 100 successful emails cause developers to filter emails to trash.",
+      "Explain post { failure { ... } } keeping alerts high-signal and actionable."
+    ]),
+    recommendedSolution: `**Model Answer:**
+
+**The Two Required Pieces of Configuration:**
+1. **The Email Extension Plugin (Email-ext):** Installed via Manage Plugins to provide flexible email templating, token substitution (\`\${BUILD_URL}\`, \`\${CHANGES}\`), and conditional triggers.
+2. **A Working Outgoing SMTP Mail Server:** Configured under **Manage Jenkins -> Configure System (System settings)** under **Extended E-mail Notification**, specifying SMTP server host (\`smtp.gmail.com\`), port (465/587), SSL/TLS flags, and authentication credentials (e.g. Gmail App Password).
+
+**Why 'post { failure { ... } }' is Vastly Superior to Every Build:**
+- **Eliminating Alert Fatigue:** If a team merges 40 pull requests a day, sending an email for every successful build generates 40 noisy emails. Developers quickly create Gmail inbox rules routing all Jenkins emails directly to Trash. When a real production build breaks, nobody notices!
+- **High Signal-to-Noise Ratio:** Placing notifications inside \`post { failure { mail ... } }\` ensures developers are only notified when their code has introduced an error that requires immediate engineering intervention.
+- **State Change Notifications:** An advanced pattern is notifying on \`unstable\` or \`fixed\` (notifying the team the moment a previously failing build is restored to green).
+
+**Declarative Pipeline Syntax Example:**
+\`\`\`groovy
+post {
+    always {
+        cleanWs()
+    }
+    failure {
+        mail to: 'backend-team@example.com',
+             subject: "[FAILED] \${currentBuild.fullDisplayName}",
+             body: "Build failed! Please inspect console logs at: \${env.BUILD_URL}"
+    }
+}
+\`\`\``,
+    rubricJson: JSON.stringify({
+      criteria: [
+        { name: "Two Configuration Elements", weight: 30, description: "Identifies Email-ext plugin and global SMTP server configuration." },
+        { name: "Alert Fatigue Psychology", weight: 35, description: "Explains how noisy success notifications destroy alerting effectiveness." },
+        { name: "Declarative post Implementation", weight: 35, description: "Shows failure condition block with actionable log URL." }
+      ]
+    }),
+    tagsJson: JSON.stringify(["Jenkins", "Notifications", "Email-ext", "SMTP", "Alert Fatigue", "post block", "Interview"])
+  },
+  {
+    moduleNumber: 17,
+    topicSlug: "declarative-jenkinsfile-production-pipelines",
+    topicNumber: 2,
+    title: "Implementing Interactive Human Approval Gates in Declarative Pipelines with the 'input' Step",
+    difficulty: "Intermediate",
+    prompt: "A financial compliance policy states: 'Automated test suites can run continuously, but promoting code to the production cloud environment must require explicit interactive human sign-off from a Release Lead.' How do you implement this in a Declarative Jenkinsfile using the 'input' step, and how do you protect against hanging pipelines?",
+    explanation: "Tests implementation of interactive gates in CI/CD pipelines, authorization scoping, and timeout guardrails.",
+    hintsJson: JSON.stringify([
+      "Explain the 'input' directive placed inside a stage.",
+      "Show parameters: message, ok, submitter.",
+      "Explain wrapping input in a 'timeout' block to prevent hanging pipelines."
+    ]),
+    recommendedSolution: `**Model Answer:**
+
+**Implementing the Approval Gate:**
+To satisfy enterprise change management and SOC2 compliance, Jenkins Declarative Pipelines provide the native \`input\` step, which pauses execution until an authorized human explicitly reviews and approves the stage.
+
+**Declarative Pipeline Implementation:**
+\`\`\`groovy
+stage('Production Deployment Gate') {
+    steps {
+        timeout(time: 2, unit: 'HOURS') {
+            input message: "Approve deployment of version \${env.BUILD_NUMBER} to Production?",
+                  ok: "Deploy to Production",
+                  submitter: "release-managers,lead-devops",
+                  submitterParameter: "APPROVED_BY"
+        }
+    }
+}
+stage('Deploy to Production') {
+    steps {
+        echo "Deploying to production, approved by: \${APPROVED_BY}"
+        sh './deploy-prod.sh'
+    }
+}
+\`\`\`
+
+**Key Parameters Explained:**
+1. **\`message\` & \`ok\`:** Provides clear contextual prompt and confirmation button in the Jenkins web UI and Blue Ocean.
+2. **\`submitter\`:** Restricts approval permissions strictly to users or groups authorized to promote code (e.g. \`release-managers\`), preventing unauthorized developers from approving their own releases.
+3. **\`timeout(time: 2, unit: 'HOURS')\`:** **Critical Guardrail.** If the release lead is unavailable or abandons the build, the pipeline automatically times out and aborts after 2 hours, releasing executor resources and preventing pipeline queues from deadlocking.`,
+    rubricJson: JSON.stringify({
+      criteria: [
+        { name: "input Directive Implementation", weight: 35, description: "Accurately demonstrates input step syntax inside a dedicated stage." },
+        { name: "Authorization Scoping", weight: 30, description: "Uses submitter parameter to restrict approval rights." },
+        { name: "Timeout Guardrails", weight: 35, description: "Explains timeout wrapping to prevent resource locking on abandoned builds." }
+      ]
+    }),
+    tagsJson: JSON.stringify(["Jenkins", "Pipelines", "input step", "Approval Gates", "Compliance", "Production Safety", "Interview"])
+  },
+  {
+    moduleNumber: 17,
+    topicSlug: "jenkins-selenium-maven-headless-testing",
+    topicNumber: 3,
+    title: "Why Run Selenium Automated Browser Tests Through Maven & Jenkins Rather Than Manually in Eclipse?",
+    difficulty: "Beginner",
+    prompt: "A QA lead asks: 'Our team already executes Selenium tests manually inside Eclipse before releases. Why should an organization invest in running Selenium tests headlessly through Maven and Jenkins in a continuous integration pipeline? What operational and reliability benefits does this provide?'",
+    explanation: "Contrasts manual IDE-based testing with automated CI/CD pipeline execution, dependency management, and regression prevention.",
+    hintsJson: JSON.stringify([
+      "Explain Maven: resolves exact dependencies and browser driver versions on any machine, eliminating 'works on my machine'.",
+      "Explain Jenkins: runs tests automatically on every commit/PR, ensuring immediate regression detection.",
+      "Explain trend reporting: JUnit test results tracked over time to identify flaky tests."
+    ]),
+    recommendedSolution: `**Model Answer:**
+
+Running Selenium tests manually inside Eclipse relies on human memory, local machine quirks, and is fundamentally unscalable. Shifting to Maven and Jenkins provides three transformative benefits:
+
+**1. Environment Independence & Dependency Management (Maven):**
+- In Eclipse, tests often depend on manually downloaded JAR files stored in arbitrary local folders, causing the classic *"it works on my machine because of the JARs I happened to add"* problem.
+- Maven's \`pom.xml\` declares exact versions of \`selenium-java\` and \`junit\` with transitives. Any machine—whether a developer's laptop or a fresh Linux CI agent—resolves the exact identical dependency graph every time.
+
+**2. Automated & Continuous Regression Testing (Jenkins):**
+- Manual testing in Eclipse only happens when a developer remembers to run it before a release.
+- In Jenkins, tests run **automatically on every single Git push, pull request, or scheduled nightly build**. Regressions are detected within minutes of a bad commit, shrinking root-cause analysis time from weeks to seconds.
+
+**3. Historical Metrics & Flaky Test Visibility:**
+- Running tests in Eclipse only shows a temporary green/red bar.
+- Jenkins archives standardized JUnit XML reports over time, rendering interactive graphs of pass/fail trends, test duration growth, and pinpointing intermittent (flaky) tests across releases.`,
+    rubricJson: JSON.stringify({
+      criteria: [
+        { name: "Maven Reproducibility Rationale", weight: 35, description: "Contrasts manual Eclipse JARs with declarative pom.xml dependencies." },
+        { name: "Continuous Integration Rationale", weight: 35, description: "Explains automated execution on push vs relying on manual human triggers." },
+        { name: "Historical Analytics", weight: 30, description: "Mentions JUnit XML test trend graphs and flaky test identification." }
+      ]
+    }),
+    tagsJson: JSON.stringify(["Jenkins", "Selenium", "Maven", "Automated Testing", "CI/CD", "Quality Assurance", "Interview"])
+  },
+  {
+    moduleNumber: 17,
+    topicSlug: "jenkins-selenium-maven-headless-testing",
+    topicNumber: 3,
+    title: "Describe the Full End-to-End CI/CD Test Pipeline from Git Push to JUnit XML Report Publishing",
+    difficulty: "Intermediate",
+    prompt: "Walk through the full end-to-end architecture of an automated testing pipeline: from code push in Git, through Maven compilation, headless browser execution on Linux CI agents, and publishing JUnit XML test reports in Jenkins.",
+    explanation: "Evaluates comprehensive understanding of the complete toolchain integration: Git -> Jenkins -> Maven -> Headless Selenium -> JUnit reports.",
+    hintsJson: JSON.stringify([
+      "Step 1: Code push triggers webhook.",
+      "Step 2: Jenkins agent checks out code.",
+      "Step 3: Maven resolves dependencies and invokes Surefire plugin.",
+      "Step 4: ChromeDriver launches headless Chrome and runs tests.",
+      "Step 5: driver.quit() cleans up processes.",
+      "Step 6: post { always { junit '...' } } parses XML reports."
+    ]),
+    recommendedSolution: `**Model Answer:**
+
+**The Complete End-to-End Testing Architecture:**
+
+1. **Trigger & Checkout:**
+   - A developer pushes code to GitHub. A webhook fires to Jenkins, triggering the pipeline.
+   - The Jenkins Controller dispatches the build to an agent node with Java and Chrome installed.
+   - Step: \`checkout scm\` clones the latest repository revision into the agent workspace.
+
+2. **Maven Build & Test Execution:**
+   - The pipeline executes \`sh 'mvn test'\`.
+   - Maven reads \`pom.xml\`, resolves \`selenium-java\` and \`junit\`, and compiles test classes into \`target/test-classes\`.
+   - Maven Surefire Plugin launches the test suite.
+
+3. **Headless Browser Automation:**
+   - Selenium initializes \`ChromeDriver\` with \`--headless=new\` and \`--no-sandbox\`.
+   - Chrome runs in the background without a physical GUI monitor.
+   - WebDriver navigates to target URLs, interacts with elements, and verifies JUnit assertions (\`assertEquals\`).
+   - In the \`@After\` teardown method, \`driver.quit()\` terminates the browser process and frees system memory.
+
+4. **JUnit Report Generation & Publishing:**
+   - Surefire captures test execution results, execution duration, and stack traces into standardized XML files: \`target/surefire-reports/TEST-*.xml\`.
+   - The Jenkinsfile \`post { always { junit '**/target/surefire-reports/*.xml' } }\` step parses these XML files unconditionally.
+   - Jenkins displays per-test pass/fail breakdowns, failure screenshots, and updates the project's **Test Result Trend** graph.`,
+    rubricJson: JSON.stringify({
+      criteria: [
+        { name: "Full Toolchain Integration", weight: 30, description: "Correctly connects Git, Jenkins, Maven, Selenium, and JUnit." },
+        { name: "Headless Execution Mechanics", weight: 35, description: "Explains headless browser launch, execution, and driver.quit() teardown." },
+        { name: "Surefire XML Archival", weight: 35, description: "Explains Surefire XML generation and Jenkins junit report publishing." }
+      ]
+    }),
+    tagsJson: JSON.stringify(["Jenkins", "Selenium", "Maven", "JUnit", "CI/CD Pipeline", "End-to-End", "Interview"])
+  },
+  {
+    moduleNumber: 17,
+    topicSlug: "jenkins-selenium-maven-headless-testing",
+    topicNumber: 3,
+    title: "Investigating Selenium Test Divergence: Passes Locally in Eclipse but Fails on Linux Jenkins Agent",
+    difficulty: "Intermediate",
+    prompt: "A developer complains: 'My Selenium test passes 100% of the time when I run it in Eclipse on my laptop, but it consistently fails when executed by the Jenkins CI agent on Linux.' As the DevOps/QA Lead, what are the four most likely root causes you would investigate?",
+    explanation: "Tests real-world debugging of environment drift, headless vs headed timing, browser driver versions, and display dependencies.",
+    hintsJson: JSON.stringify([
+      "Investigate 1: Headless vs Headed mode and missing GUI display on Linux.",
+      "Investigate 2: Browser and ChromeDriver version mismatches.",
+      "Investigate 3: Missing system dependencies (fonts, Xvfb, shared memory).",
+      "Investigate 4: Timing differences and race conditions (Thread.sleep vs WebDriverWait)."
+    ]),
+    recommendedSolution: `**Model Answer:**
+
+When Selenium tests diverge between a local workstation and a CI agent, the root cause is almost always **environment drift**. I investigate four primary areas:
+
+**1. Headless vs. Headed Execution & Missing Display:**
+- On a laptop, tests run headed (visible browser window). On a Linux CI server, there is no physical monitor.
+- If the test does not specify \`--headless=new\`, Chrome crashes immediately with \`Chrome failed to start: exited abnormally\`.
+- Furthermore, headless browsers default to a small viewport (e.g. 800x600). Elements visible on a 1080p laptop screen may collapse into a hamburger menu or fall below the fold in headless mode. Fix: Set \`options.addArguments("--window-size=1920,1080")\`.
+
+**2. Browser & ChromeDriver Version Mismatch:**
+- The developer's laptop has matching Chrome and ChromeDriver versions.
+- If the Linux CI agent has auto-updated Chrome to v124 while ChromeDriver is pinned to v122, tests fail with \`SessionNotCreatedException\`.
+
+**3. Timing & Resource Contention (Race Conditions):**
+- Laptops often have dedicated CPU and GPU acceleration. CI agents run under shared virtualized CPU loads where network and DOM rendering can take longer.
+- If tests rely on hardcoded \`Thread.sleep(2000)\`, the CI agent may take 2.2 seconds to render, causing \`NoSuchElementException\`. Fix: Replace sleeps with explicit \`WebDriverWait\`.
+
+**4. Missing Linux OS Dependencies & Shared Memory (/dev/shm):**
+- Linux containers allocate only 64MB to \`/dev/shm\` by default, causing Chrome to crash when loading large DOMs. Fix: Pass \`--disable-dev-shm-usage\` and \`--no-sandbox\`.
+- Missing standard web fonts (like Microsoft Core Fonts or Noto) can alter CSS layouts and button positions.`,
+    rubricJson: JSON.stringify({
+      criteria: [
+        { name: "Display & Viewport Differences", weight: 30, description: "Identifies headless crashes and viewport size differences." },
+        { name: "Browser/Driver Version Alignment", weight: 25, description: "Identifies version mismatch exceptions." },
+        { name: "Timing & Asynchronous Rendering", weight: 25, description: "Explains CI CPU contention and replacing sleep with WebDriverWait." },
+        { name: "Linux System Primitives", weight: 20, description: "Mentions /dev/shm shared memory exhaustion and missing font libraries." }
+      ]
+    }),
+    tagsJson: JSON.stringify(["Jenkins", "Selenium", "Debugging", "Environment Drift", "Headless", "Interview"])
+  },
+  {
+    moduleNumber: 17,
+    topicSlug: "jenkins-selenium-maven-headless-testing",
+    topicNumber: 3,
+    title: "Why Publish JUnit Test Result Reports as a Post-Build Action Rather Than Relying on Overall Build Status?",
+    difficulty: "Beginner",
+    prompt: "An interviewer asks: 'In a Jenkins pipeline, why is publishing the JUnit test result report as a post-build action (post { always { junit '...' } }) critical, rather than just relying on whether the overall build status is green or red?'",
+    explanation: "Tests understanding of test analytics, test trend visualization, flaky test tracking, and post-build always execution.",
+    hintsJson: JSON.stringify([
+      "Explain overall build status: only gives binary pass/fail without test names.",
+      "Explain JUnit XML reports: provides per-test-case metrics, stack traces, and failure trends.",
+      "Explain why 'always' condition is critical: parses reports even when tests fail."
+    ]),
+    recommendedSolution: `**Model Answer:**
+
+**The Limitations of Overall Build Status:**
+The overall build status is merely a binary flag (Success / Failure). If a build fails, all the developer sees is a red status. To find out what broke, they must manually scroll through 5,000 lines of raw console log output, wasting valuable engineering time.
+
+**Why Publishing the JUnit Test Result Report is Critical:**
+1. **Per-Test Granular Visibility:**
+   - Jenkins parses Surefire XML files and provides a structured web interface listing exact test method names, assertion errors, and failure stack traces in one click.
+2. **Historical Trend Tracking:**
+   - Jenkins renders an interactive **Test Result Trend** graph on the project dashboard. Engineers can see whether test execution time is degrading over releases or if test counts are increasing.
+3. **Isolating Flaky vs. Broken Tests:**
+   - Jenkins highlights test age (e.g. *"Failed in build #42, broken for 3 builds"*). This immediately differentiates an intermittent flaky test from a newly introduced regression.
+4. **Why 'always' is Mandatory:**
+   - In Declarative Pipelines, the step must be placed inside \`post { always { junit '**/target/surefire-reports/*.xml' } }\`.
+   - If placed inside \`success\`, the report is only published when all tests pass! The moment a test fails, the publisher would be skipped—completely blinding the team to which test caused the failure.`,
+    rubricJson: JSON.stringify({
+      criteria: [
+        { name: "Binary Status Limitation", weight: 30, description: "Explains the inefficiency of searching raw console logs." },
+        { name: "Granular Analytics & Trends", weight: 40, description: "Highlights per-test stacktraces, duration trends, and flaky test isolation." },
+        { name: "post { always } Requirement", weight: 30, description: "Explains why reports must be published unconditionally on failure." }
+      ]
+    }),
+    tagsJson: JSON.stringify(["Jenkins", "JUnit", "Test Reporting", "Surefire", "Metrics", "Best Practices", "Interview"])
+  },
+  {
+    moduleNumber: 17,
+    topicSlug: "jenkins-selenium-maven-headless-testing",
+    topicNumber: 3,
+    title: "Configuring Headless Chrome WebDriver for Containerized Linux CI Runners with ChromeDriver & Xvfb",
+    difficulty: "Advanced",
+    prompt: "Explain the technical challenges of running graphical browser tests on Linux CI servers without physical monitors. Detail how to configure ChromeOptions for headless execution (--headless=new, --no-sandbox, --disable-dev-shm-usage) and how Xvfb (Virtual Framebuffer) provides an alternative display emulator.",
+    explanation: "Deep dive into Linux graphics subsystems, headless Chrome architecture, container security constraints, and virtual display servers.",
+    hintsJson: JSON.stringify([
+      "Explain that Linux servers lack an X11 graphical display server.",
+      "Detail ChromeOptions: --headless=new, --no-sandbox, --disable-dev-shm-usage, --window-size.",
+      "Explain Xvfb: virtual memory display emulator (xvfb-run mvn test)."
+    ]),
+    recommendedSolution: `**Model Answer:**
+
+**The Technical Challenge:**
+Desktop browsers (Chrome, Firefox) are designed to interact with a display server (X11 or Wayland on Linux, Quartz on macOS). Standard enterprise CI/CD runners (AWS EC2 Linux instances, Docker containers, Kubernetes pods) operate in headless server environments with no physical monitor, GPU, or active X server (\`DISPLAY\` variable is unset). Attempting to open a graphical browser throws: \`Gtk-WARNING **: cannot open display: :0\`.
+
+**Approach 1: Modern Native Headless Chrome (Recommended):**
+Google Chrome includes a native headless mode that executes the full Chromium rendering engine (Blink + V8) in memory without requiring any graphical display server.
+
+**Required Configuration in Java:**
+\`\`\`java
+ChromeOptions options = new ChromeOptions();
+
+// 1. Enable modern headless mode (Chrome 109+)
+options.addArguments("--headless=new");
+
+// 2. Disable OS user sandbox (Mandatory in Docker/root containers)
+options.addArguments("--no-sandbox");
+
+// 3. Prevent shared memory crashes (/dev/shm exhaustion)
+options.addArguments("--disable-dev-shm-usage");
+
+// 4. Force standard desktop resolution (Prevents responsive layout shifts)
+options.addArguments("--window-size=1920,1080");
+
+// 5. Disable GPU hardware acceleration
+options.addArguments("--disable-gpu");
+
+WebDriver driver = new ChromeDriver(options);
+\`\`\`
+
+**Why '--no-sandbox' and '--disable-dev-shm-usage' are Crucial in CI:**
+- **\`--no-sandbox\`:** Docker containers typically run without \`SYS_ADMIN\` Linux kernel capabilities. Chrome's multi-process security sandbox requires specific namespace isolation that fails inside unprivileged containers unless disabled.
+- **\`--disable-dev-shm-usage\`:** Linux shared memory (\`/dev/shm\`) defaults to 64MB in Docker. Complex single-page apps (React/Angular) quickly exhaust this space, crashing the renderer. This flag forces Chrome to use the standard \`/tmp\` directory.
+
+**Approach 2: Virtual Framebuffer (Xvfb):**
+If legacy tests or third-party plugins require a genuine X11 display environment:
+1. Install Xvfb: \`sudo yum install xorg-x11-server-Xvfb -y\` (or \`apt-get install xvfb\`).
+2. Run tests wrapped inside a virtual framebuffer:
+   \`xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" mvn test\`
+- Xvfb emulates an X11 display entirely in system RAM, allowing headed browsers to run without physical hardware.`,
+    rubricJson: JSON.stringify({
+      criteria: [
+        { name: "Display Server Subsystem Challenge", weight: 25, description: "Explains lack of X11/Wayland display server on Linux runners." },
+        { name: "ChromeOptions Rationale", weight: 40, description: "Explains --headless=new, --no-sandbox, and --disable-dev-shm-usage mechanics." },
+        { name: "Xvfb Virtual Framebuffer Alternative", weight: 35, description: "Explains in-memory display emulation via xvfb-run." }
+      ]
+    }),
+    tagsJson: JSON.stringify(["Jenkins", "Selenium", "Headless Chrome", "Xvfb", "Linux", "Docker", "Advanced", "Interview"])
+  },
+  {
     moduleNumber: 18,
+    topicSlug: "docker-internals-container-architecture",
+    topicNumber: 1,
     title: "Linux Containers vs Virtual Machines: Namespaces, Cgroups & Kernel Architecture",
     difficulty: "Advanced",
     prompt: "In a Senior DevOps interview, explain the exact Linux kernel mechanisms that differentiate a Docker Container from a Type-2 or Type-1 Virtual Machine. Address process isolation, resource throttling, and the storage layer.",
@@ -659,6 +1864,8 @@ Git is fundamentally a **content-addressable filesystem**. Every piece of data s
   },
   {
     moduleNumber: 18,
+    topicSlug: "docker-images-dockerfile-registries",
+    topicNumber: 2,
     title: "Designing a Hardened, Minimal Production Dockerfile",
     difficulty: "Intermediate",
     prompt: "You are reviewing a Dockerfile submitted by a developer. The resulting image is 1.2GB in size, runs as root, and contains full build toolchains. Walk through the architectural steps and Dockerfile directives you would implement to produce a hardened, sub-100MB production image suitable for zero-trust environments.",
@@ -710,6 +1917,8 @@ Git is fundamentally a **content-addressable filesystem**. Every piece of data s
   },
   {
     moduleNumber: 19,
+    topicNumber: 2,
+    topicSlug: "kubernetes-objects-workloads-networking-storage",
     title: "Kubernetes Pod Lifecycle, Liveness, Readiness & Startup Probes Deep Dive",
     difficulty: "Intermediate",
     prompt: "An interviewer asks: 'Can you explain the exact lifecycle of a Kubernetes Pod from creation to termination? What is the functional difference between Liveness, Readiness, and Startup Probes, and what catastrophic bug happens if you misconfigure a Readiness probe as a Liveness probe?'",
@@ -760,6 +1969,8 @@ Git is fundamentally a **content-addressable filesystem**. Every piece of data s
   },
   {
     moduleNumber: 19,
+    topicNumber: 2,
+    topicSlug: "kubernetes-objects-workloads-networking-storage",
     title: "Kubernetes Service Discovery & Kube-Proxy Packet Routing (iptables vs IPVS)",
     difficulty: "Advanced",
     prompt: "How does a Pod in Kubernetes make an HTTP request to another service (e.g. 'http://payment-service:8080') and have that traffic load-balanced across multiple backend pods? Walk through CoreDNS resolution, Virtual ClusterIP, and Kube-Proxy packet translation using iptables vs IPVS.",
@@ -813,6 +2024,8 @@ Git is fundamentally a **content-addressable filesystem**. Every piece of data s
   },
   {
     moduleNumber: 19,
+    topicNumber: 2,
+    topicSlug: "kubernetes-objects-workloads-networking-storage",
     title: "Kubernetes Service Types: ClusterIP vs NodePort vs LoadBalancer vs Ingress",
     difficulty: "Beginner",
     prompt: "A junior engineer asks: 'When should I use ClusterIP, NodePort, LoadBalancer, or an Ingress Controller in Kubernetes?' How do you explain the architectural hierarchy and use cases in a technical interview?",
@@ -856,6 +2069,8 @@ Git is fundamentally a **content-addressable filesystem**. Every piece of data s
   },
   {
     moduleNumber: 19,
+    topicNumber: 1,
+    topicSlug: "kubernetes-architecture-control-plane-nodes",
     title: "How etcd Maintains Consistency in Kubernetes: Raft Consensus & Split-Brain Prevention",
     difficulty: "Advanced",
     prompt: "In Kubernetes, etcd is the single source of truth for all cluster state. Explain how the Raft consensus algorithm works inside etcd, why high-availability etcd clusters strictly require an odd number of members (3, 5, 7), and how etcd prevents split-brain scenarios during network partitions.",
@@ -957,4 +2172,12 @@ During a Rolling or Canary deployment, **Version 1 and Version 2 run concurrentl
     tagsJson: JSON.stringify(["CI/CD", "Deployments", "Blue-Green", "Canary", "RollingUpdate", "Database Migration", "Interview"])
   }
 ];
+
+const dockerInterviews = require('./dockerInterviewsData.js');
+module.exports.push(...dockerInterviews);
+
+const kubernetesInterviews = require('./kubernetesInterviewsData.js');
+module.exports.push(...kubernetesInterviews);
+
+
 
