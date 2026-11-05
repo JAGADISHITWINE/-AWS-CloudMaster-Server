@@ -16,7 +16,8 @@ exports.getInterviewQuestions = async (req, res, next) => {
             id: true,
             title: true,
             topicNumber: true,
-            module: { select: { title: true, moduleNumber: true } }
+            slug: true,
+            module: { select: { title: true, moduleNumber: true, slug: true } }
           }
         }
       },

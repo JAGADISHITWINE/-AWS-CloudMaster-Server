@@ -1664,4 +1664,11 @@ Object.assign(module.exports, dockerLabsData);
 const kubernetesLabsData = require('./kubernetesLabsData.js');
 Object.assign(module.exports, kubernetesLabsData);
 
+const awsAccountLabsData = require('./awsAccountLabsData.js');
+Object.assign(module.exports, awsAccountLabsData);
+
+const awsVpcLabsData = require('./awsVpcLabsData.js');
+Object.assign(module.exports, awsVpcLabsData);
+
+
 

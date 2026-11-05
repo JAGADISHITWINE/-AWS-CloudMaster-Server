@@ -1,20 +1,38 @@
 module.exports = [
   {
     moduleNumber: 1,
-    title: "AWS Global Infrastructure & Architecture",
+    title: "AWS Cloud Account Setup, Free Tier Governance & Global Infrastructure",
     slug: "global-infrastructure-and-architecture",
-    description: "Master Regions, Availability Zones, Edge Locations, Local Zones, AWS Global Network backbone, and multi-tier reference architectures.",
+    description: "Step-by-step AWS account creation, root account hardening, IAM best practices, AWS Budgets $1 guardrails, Cost Explorer accidental charges triage, AWS Support refund resolution, and global Regions/AZs architecture.",
     icon: "globe",
     level: "Beginner",
     topics: [
       {
         topicNumber: 1,
-        title: "Regions, Availability Zones & Edge Infrastructure",
+        title: "AWS Free Tier Account Creation, Root Security & IAM Best Practices",
+        slug: "aws-account-creation-root-security-iam",
+        summary: "Step-by-step account signup prerequisites (email, mobile OTP, card verification), root account MFA hardening, creating non-root IAM users, setting up AWS Budgets $1 threshold alerts, and navigating Free Tier 6-month trial vs Always-Free service limits.",
+        difficulty: "Beginner",
+        estimatedMinutes: 35,
+        keyTakeaway: "Never use the Root account for daily tasks; lock it down with MFA immediately, create an IAM user for administration, and set a $1 AWS Budget alert before provisioning resources."
+      },
+      {
+        topicNumber: 2,
+        title: "Accidental Charges Incident Triage, Cost Explorer & AWS Support Refund Resolution",
+        slug: "accidental-charges-cost-explorer-support-refunds",
+        summary: "Diagnose surprise cloud bills using AWS Billing Dashboard and Cost Explorer group-by-service/region, immediately terminate runaway resources (unattached Elastic IPs, orphan EBS snapshots, GPU instances), open an Account & Billing support case, write an effective one-time refund appeal, and understand multi-factor fraud detection.",
+        difficulty: "Intermediate",
+        estimatedMinutes: 40,
+        keyTakeaway: "Stopping an EC2 instance stops compute fees but NOT disk storage; delete orphan EBS volumes and release unattached Elastic IPs immediately, and file a polite support case for a one-time courtesy refund."
+      },
+      {
+        topicNumber: 3,
+        title: "AWS Global Infrastructure: Regions, Availability Zones & Edge Infrastructure",
         slug: "regions-azs-and-edge-infrastructure",
-        summary: "Understand the physical and logical layout of AWS: geographic Regions, isolated Availability Zones (AZs), low-latency Edge Locations, and Local Zones.",
+        summary: "Understand the physical and logical layout of AWS: geographic Regions, isolated Availability Zones (AZs), low-latency Edge Locations, Local Zones, and multi-AZ fault tolerance.",
         difficulty: "Beginner",
         estimatedMinutes: 30,
-        keyTakeaway: "Region = Geographic Area (independent isolated zone); AZ = Independent Data Center Group with dedicated power and networking."
+        keyTakeaway: "Region = Geographic Area (independent isolated zone); AZ = Independent Data Center Group with dedicated power and networking connected by low-latency fiber."
       }
     ]
   },
@@ -39,20 +57,38 @@ module.exports = [
   },
   {
     moduleNumber: 3,
-    title: "Amazon VPC – Advanced Networking",
+    title: "Amazon VPC – Advanced Cloud Networking & Traffic Engineering",
     slug: "amazon-vpc-advanced-networking",
-    description: "Architect secure virtual networks using VPCs, Public & Private Subnets, Route Tables, IGWs, NAT Gateways, Stateful Security Groups, and Stateless NACLs.",
+    description: "Architect production-grade virtual private clouds: Default vs Custom VPCs, IPv4/IPv6 CIDR subnetting, Internet Gateways, Egress-Only IGWs, Stateful Security Groups vs Stateless NACLs, DNS Firewall, VPC Flow Logs, NAT Gateways, VPC Endpoints, Peering, Site-to-Site VPN, and Transit Gateway.",
     icon: "network",
     level: "Intermediate",
     topics: [
       {
         topicNumber: 1,
-        title: "VPC Subnetting, Gateways & Packet Flow",
+        title: "VPC Architecture, Subnetting (CIDR), Gateways & Route Tables",
         slug: "vpc-subnetting-gateways-packet-flow",
-        summary: "Design isolated networks, routing traffic through Internet Gateways and NAT Gateways, comparing Stateful Security Groups vs Stateless NACLs.",
+        summary: "Master Default vs Custom VPCs, CIDR block allocation (/16 and /24), 5 AWS reserved IPs per subnet, Public vs Private subnets, Route Tables (Destination & Target), Internet Gateways, Egress-Only IPv6 Gateways, Carrier Gateways, Elastic IPs, and Bastion Host jump servers.",
         difficulty: "Intermediate",
         estimatedMinutes: 40,
-        keyTakeaway: "Security Groups are Stateful (return traffic auto-allowed); NACLs are Stateless (rules evaluated separately in both directions)."
+        keyTakeaway: "A subnet resides strictly within one Availability Zone; public subnets have a route table targeting an Internet Gateway (0.0.0.0/0 -> igw), whereas private subnets route internet-bound traffic through a NAT Gateway."
+      },
+      {
+        topicNumber: 2,
+        title: "VPC Security Architecture: Stateful Security Groups, Stateless NACLs, DNS Firewall & Flow Logs",
+        slug: "vpc-security-groups-nacls-firewall-flow-logs",
+        summary: "Implement defense-in-depth network security: instance-level Stateful Security Groups (allow rules only) vs subnet-level Stateless NACLs (numbered evaluation, explicit allow/deny, ephemeral return ports 1024-65535), Route 53 DNS Firewall (fail-open vs fail-closed), and out-of-band VPC Flow Logs to CloudWatch Logs and S3.",
+        difficulty: "Advanced",
+        estimatedMinutes: 45,
+        keyTakeaway: "Security Groups are stateful (inbound return traffic is automatically permitted), whereas NACLs are stateless and require explicit rules in both directions including ephemeral client return ports."
+      },
+      {
+        topicNumber: 3,
+        title: "Hybrid Connectivity & Advanced Routing: NAT Gateways, Endpoints, Peering, VPN & Transit Gateway",
+        slug: "vpc-peering-transit-gateway-endpoints-vpn",
+        summary: "Deploy managed NAT Gateways, private AWS service connectivity via Gateway Endpoints (S3/DynamoDB) and Interface Endpoints (PrivateLink), non-transitive VPC Peering, Site-to-Site IPsec VPN with dual tunnels, hub-and-spoke AWS Transit Gateway, Traffic Mirroring, and VPC Service Quotas.",
+        difficulty: "Advanced",
+        estimatedMinutes: 50,
+        keyTakeaway: "VPC Peering is non-transitive and creates complex N*(N-1)/2 meshes; AWS Transit Gateway solves this with a centralized star hub interconnecting thousands of VPCs and on-premises networks."
       }
     ]
   },

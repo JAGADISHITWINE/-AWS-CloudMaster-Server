@@ -135,6 +135,8 @@ module.exports = [
   },
   {
     moduleNumber: 3,
+    topicNumber: 2,
+    topicSlug: "vpc-security-groups-nacls-firewall-flow-logs",
     title: "Scenario: Secure EC2-to-RDS Private Communication",
     difficulty: "Intermediate",
     prompt: "Your backend API runs on EC2 instances inside a custom VPC. It must communicate with an Amazon RDS MySQL database. You must ensure that: (1) The database is NEVER reachable from the public internet, (2) Only the backend EC2 instances can connect to MySQL port 3306, and (3) No hardcoded database IP addresses or CIDR blocks are used in firewall rules. How would you configure the subnets, routing, and security groups?",
@@ -2070,6 +2072,13 @@ module.exports.push(...dockerScenarios);
 
 const kubernetesScenarios = require('./kubernetesScenariosData.js');
 module.exports.push(...kubernetesScenarios);
+
+const awsAccountScenarios = require('./awsAccountScenariosData.js');
+module.exports.push(...awsAccountScenarios);
+
+const awsVpcScenarios = require('./awsVpcScenariosData.js');
+module.exports.push(...awsVpcScenarios);
+
 
 
 

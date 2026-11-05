@@ -1,6 +1,8 @@
 module.exports = [
   {
     moduleNumber: 1,
+    topicNumber: 3,
+    topicSlug: "regions-azs-and-edge-infrastructure",
     title: "Explain the difference between an AWS Region and an Availability Zone.",
     difficulty: "Beginner",
     prompt: "A junior engineer on your team asks: 'What is the exact physical and logical difference between an AWS Region and an Availability Zone, and why does my architecture need both?' How would you explain this in an interview?",
@@ -65,6 +67,8 @@ In this scenario, because one policy contains an **Explicit Deny** on \`s3:Delet
   },
   {
     moduleNumber: 3,
+    topicNumber: 2,
+    topicSlug: "vpc-security-groups-nacls-firewall-flow-logs",
     title: "Compare Security Groups and Network ACLs (NACLs). When would you use each?",
     difficulty: "Intermediate",
     prompt: "Compare AWS Security Groups and Network ACLs in terms of statefulness, scope, rule evaluation order, and typical real-world use cases. When would you use a NACL instead of a Security Group?",
@@ -2178,6 +2182,16 @@ module.exports.push(...dockerInterviews);
 
 const kubernetesInterviews = require('./kubernetesInterviewsData.js');
 module.exports.push(...kubernetesInterviews);
+
+const awsAccountInterviews = require('./awsAccountInterviewsData.js');
+module.exports.push(...awsAccountInterviews);
+
+const awsVpcInterviews = require('./awsVpcInterviewsData.js');
+module.exports.push(...awsVpcInterviews);
+
+const awsTopicClassifiedInterviews = require('./awsTopicClassifiedInterviewsData.js');
+module.exports.push(...awsTopicClassifiedInterviews);
+
 
 
 

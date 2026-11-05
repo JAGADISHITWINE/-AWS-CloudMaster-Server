@@ -1,6 +1,8 @@
 module.exports = [
   {
     moduleNumber: 1,
+    topicNumber: 3,
+    topicSlug: "regions-azs-and-edge-infrastructure",
     type: "MCQ",
     difficulty: "Beginner",
     title: "AWS Region vs Availability Zone Mapping",
@@ -31,6 +33,8 @@ module.exports = [
   },
   {
     moduleNumber: 3,
+    topicNumber: 2,
+    topicSlug: "vpc-security-groups-nacls-firewall-flow-logs",
     type: "TRUE_FALSE",
     difficulty: "Intermediate",
     title: "Security Group Return Traffic Statefulness",
@@ -44,6 +48,8 @@ module.exports = [
   },
   {
     moduleNumber: 3,
+    topicNumber: 3,
+    topicSlug: "vpc-peering-transit-gateway-endpoints-vpn",
     type: "MCQ",
     difficulty: "Intermediate",
     title: "Free Tier VPC Cost Safety",
@@ -852,5 +858,12 @@ module.exports.push(...dockerQuizzes);
 
 const kubernetesQuizzes = require('./kubernetesQuizzesData.js');
 module.exports.push(...kubernetesQuizzes);
+
+const awsAccountQuizzes = require('./awsAccountQuizzesData.js');
+module.exports.push(...awsAccountQuizzes);
+
+const awsVpcQuizzes = require('./awsVpcQuizzesData.js');
+module.exports.push(...awsVpcQuizzes);
+
 
 
