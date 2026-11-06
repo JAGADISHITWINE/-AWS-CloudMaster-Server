@@ -865,5 +865,9 @@ module.exports.push(...awsAccountQuizzes);
 const awsVpcQuizzes = require('./awsVpcQuizzesData.js');
 module.exports.push(...awsVpcQuizzes);
 
+const fullstackQuizzes = require('./fullstackQuizzesData.js');
+module.exports.push(...fullstackQuizzes);
+
+
 
 

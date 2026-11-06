@@ -2192,6 +2192,10 @@ module.exports.push(...awsVpcInterviews);
 const awsTopicClassifiedInterviews = require('./awsTopicClassifiedInterviewsData.js');
 module.exports.push(...awsTopicClassifiedInterviews);
 
+const fullstackInterviews = require('./fullstackInterviewsData.js');
+module.exports.push(...fullstackInterviews);
+
+
 
 
 

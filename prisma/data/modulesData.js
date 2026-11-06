@@ -488,3 +488,7 @@ module.exports = [
     ]
   }
 ];
+
+const fullstackModules = require('./fullstackModulesData.js');
+module.exports.push(...fullstackModules);
+

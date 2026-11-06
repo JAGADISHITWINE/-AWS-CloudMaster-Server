@@ -2079,6 +2079,10 @@ module.exports.push(...awsAccountScenarios);
 const awsVpcScenarios = require('./awsVpcScenariosData.js');
 module.exports.push(...awsVpcScenarios);
 
+const fullstackScenarios = require('./fullstackScenariosData.js');
+module.exports.push(...fullstackScenarios);
+
+
 
 
 

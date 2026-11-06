@@ -2374,5 +2374,6 @@ module.exports = {
 
 const awsAccountNotes = require('./awsAccountNotesData.js');
 const awsVpcNotes = require('./awsVpcNotesData.js');
-Object.assign(module.exports, awsAccountNotes, awsVpcNotes);
+const fullstackNotes = require('./fullstackNotesData.js');
+Object.assign(module.exports, awsAccountNotes, awsVpcNotes, fullstackNotes);
 

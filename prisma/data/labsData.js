@@ -1670,5 +1670,9 @@ Object.assign(module.exports, awsAccountLabsData);
 const awsVpcLabsData = require('./awsVpcLabsData.js');
 Object.assign(module.exports, awsVpcLabsData);
 
+const fullstackLabsData = require('./fullstackLabsData.js');
+Object.assign(module.exports, fullstackLabsData);
+
+
 
 
