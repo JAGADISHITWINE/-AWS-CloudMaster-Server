@@ -136,25 +136,25 @@ async function main() {
             data: {
               topicId: topic.id,
               title: lab.title,
-              level: lab.level,
-              estimatedMinutes: lab.estimatedMinutes,
-              freeTierEligible: lab.freeTierEligible,
-              costRiskLevel: lab.costRiskLevel,
-              paidAlternativeWarning: lab.paidAlternativeWarning,
-              prerequisites: lab.prerequisites,
-              requiredPermissions: lab.requiredPermissions,
-              cleanupGuide: lab.cleanupGuide,
-              safeSimulationScript: lab.safeSimulationScript,
+              level: lab.level || 'Beginner',
+              estimatedMinutes: lab.estimatedMinutes || 30,
+              freeTierEligible: lab.freeTierEligible !== undefined ? lab.freeTierEligible : (lab.freeTierSafe !== undefined ? lab.freeTierSafe : true),
+              costRiskLevel: lab.costRiskLevel || 'LOW',
+              paidAlternativeWarning: lab.paidAlternativeWarning || null,
+              prerequisites: lab.prerequisites || 'Basic understanding of AWS cloud concepts and an active AWS Free Tier account.',
+              requiredPermissions: lab.requiredPermissions || 'Basic AWS permissions',
+              cleanupGuide: lab.cleanupGuide || 'Terminate any running instances and delete unused resources created during this lab to avoid ongoing charges.',
+              safeSimulationScript: lab.safeSimulationScript || null,
               steps: {
-                create: lab.steps.map(s => ({
+                create: (lab.steps || []).map(s => ({
                   stepNumber: s.stepNumber,
                   title: s.title,
                   description: s.description,
-                  consoleInstruction: s.consoleInstruction,
-                  cliCommand: s.cliCommand,
-                  expectedOutput: s.expectedOutput,
-                  verificationTip: s.verificationTip,
-                  troubleshooting: s.troubleshooting
+                  consoleInstruction: s.consoleInstruction || s.description || 'Follow instructions.',
+                  cliCommand: s.cliCommand || s.command || null,
+                  expectedOutput: s.expectedOutput || null,
+                  verificationTip: s.verificationTip || s.verification || 'Verify the command output.',
+                  troubleshooting: s.troubleshooting || 'Review cloud permissions and retry.'
                 }))
               }
             }
