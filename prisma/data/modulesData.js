@@ -492,3 +492,6 @@ module.exports = [
 const fullstackModules = require('./fullstackModulesData.js');
 module.exports.push(...fullstackModules);
 
+const pythonLearningData = require('./pythonLearningData.js');
+module.exports.push(...pythonLearningData.modules);
+

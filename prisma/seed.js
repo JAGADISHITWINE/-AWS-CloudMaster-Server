@@ -141,20 +141,20 @@ async function main() {
               freeTierEligible: lab.freeTierEligible,
               costRiskLevel: lab.costRiskLevel,
               paidAlternativeWarning: lab.paidAlternativeWarning,
-              prerequisites: lab.prerequisites,
-              requiredPermissions: lab.requiredPermissions,
-              cleanupGuide: lab.cleanupGuide,
+              prerequisites: lab.prerequisites || 'Review the topic notes and confirm you are using a safe practice environment.',
+              requiredPermissions: lab.requiredPermissions || 'No additional permissions specified for this lab.',
+              cleanupGuide: lab.cleanupGuide || 'Review created resources and remove any lab resources before finishing.',
               safeSimulationScript: lab.safeSimulationScript,
               steps: {
                 create: lab.steps.map(s => ({
                   stepNumber: s.stepNumber,
                   title: s.title,
                   description: s.description,
-                  consoleInstruction: s.consoleInstruction,
+                  consoleInstruction: s.consoleInstruction || s.description || '',
                   cliCommand: s.cliCommand,
                   expectedOutput: s.expectedOutput,
-                  verificationTip: s.verificationTip,
-                  troubleshooting: s.troubleshooting
+                  verificationTip: s.verificationTip || 'Compare the result with the expected output before continuing.',
+                  troubleshooting: s.troubleshooting || 'Review the command output and confirm prerequisites and configuration.'
                 }))
               }
             }
@@ -176,7 +176,7 @@ async function main() {
       }
     }
   }
-  console.log('✅ 20 Modules, Topics, Notes, and Practical Labs seeded.');
+  console.log(`✅ ${modulesData.length} Modules, Topics, Notes, and Practical Labs seeded.`);
 
   // 4. Seed Scenarios
   for (const s of scenariosData) {
